@@ -1,0 +1,4 @@
+
+As a cache for 
+	sensor chain
+	latest sensor reading

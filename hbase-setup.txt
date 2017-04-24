@@ -1,0 +1,10 @@
+
+table - 
+	sensor
+		main
+		chain
+	sensor_data
+		raw
+		clsifd
+	action_log
+		main
