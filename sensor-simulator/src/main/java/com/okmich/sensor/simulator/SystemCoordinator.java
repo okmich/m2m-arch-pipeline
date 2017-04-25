@@ -7,17 +7,19 @@ package com.okmich.sensor.simulator;
 
 import com.okmich.sensor.simulator.model.Reading;
 import static com.okmich.sensor.simulator.OptionRegistry.*;
-import com.okmich.sensor.simulator.gui.ApplicationFrame;
-import com.okmich.sensor.simulator.net.NetworkInterface;
-import com.okmich.sensor.simulator.net.CommandReceiverNetworkInterface;
-import com.okmich.sensor.simulator.net.DataFlowHandler;
-import com.okmich.sensor.simulator.net.DataFlowNetworkInterface;
+import com.okmich.sensor.simulator.gui.UserInterface;
+import com.okmich.sensor.simulator.service.DataTransferServerInterface;
+import com.okmich.sensor.simulator.service.CommandReceiverServerInterface;
+import com.okmich.sensor.simulator.service.DataFlowServerInterface;
+import com.okmich.sensor.simulator.service.handler.CommandReceiverHandler;
+import com.okmich.sensor.simulator.service.handler.DataFlowHanderImpl;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.okmich.sensor.simulator.service.handler.DataHandler;
 
 /**
  *
@@ -25,8 +27,8 @@ import java.util.logging.Logger;
  */
 public class SystemCoordinator {
 
-    private final NetworkInterface networkInterface;
-    private final ApplicationFrame appFrame;
+    private final DataTransferServerInterface networkInterface;
+    private final UserInterface userInterface;
     private final ScheduledExecutorService executorService;
     /**
      * LOG
@@ -35,12 +37,12 @@ public class SystemCoordinator {
 
     /**
      *
-     * @param networkInterface
-     * @param applicationFrame
+     * @param dtServerInterface
+     * @param userInterface
      */
-    public SystemCoordinator(NetworkInterface networkInterface, ApplicationFrame applicationFrame) {
-        this.networkInterface = networkInterface;
-        this.appFrame = applicationFrame;
+    public SystemCoordinator(DataTransferServerInterface dtServerInterface, UserInterface userInterface) {
+        this.networkInterface = dtServerInterface;
+        this.userInterface = userInterface;
         this.executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -51,7 +53,7 @@ public class SystemCoordinator {
         //initiate network connection
         try {
             this.networkInterface.initConnectionToServer(value(DEVICE_ID));
-            this.appFrame.setConnectionStatus(Status.STATUS_ON);
+            this.userInterface.setConnectionStatus(Status.STATUS_ON);
         } catch (IOException | IllegalStateException ex) {
             LOG.log(Level.SEVERE, null, ex);
             System.exit(-1);
@@ -60,15 +62,19 @@ public class SystemCoordinator {
         }
         try {
             //begin loop
-            this.executorService.scheduleWithFixedDelay(new ScheduledWorker(), 10, valueAsInteger(TXNFR_FREQ), TimeUnit.SECONDS);
+            this.executorService.scheduleWithFixedDelay(new ScheduledWorker(),
+                    10,
+                    valueAsInteger(TXNFR_FREQ),
+                    TimeUnit.SECONDS);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
         //start up the command reception if this is a valve station
         if (value(TYPE).equals(Status.STN_TYPE_VALVE)) {
+            DataHandler controlCommandHandler = new CommandReceiverHandler(this.userInterface);
             try {
                 //start another thread that listens for command from control
-                new Thread(new CommandReceiverNetworkInterface()).start();
+                new Thread(new CommandReceiverServerInterface(controlCommandHandler)).start();
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 System.exit(-1);
@@ -81,18 +87,19 @@ public class SystemCoordinator {
      */
     private class ScheduledWorker implements Runnable {
 
-        private final DataFlowNetworkInterface dataFlowNetworkInterface;
+        private final DataFlowServerInterface dataFlowNetworkInterface;
 
         public ScheduledWorker() throws IOException {
-            dataFlowNetworkInterface = new DataFlowNetworkInterface(new DataFlowHanderImpl());
+            dataFlowNetworkInterface = new DataFlowServerInterface(
+                    new DataFlowHanderImpl(networkInterface, userInterface));
         }
 
         @Override
         public void run() {
-            if (appFrame.isDisconnectedMode()) {
+            if (userInterface.isDisconnectedMode()) {
                 //the mode is disconnected
-                appFrame.setConnectionStatus(Status.STATUS_OFF);
-                appFrame.setFlowStatus(Status.STATUS_OFF);
+                userInterface.setConnectionStatus(Status.STATUS_OFF);
+                userInterface.setFlowStatus(Status.STATUS_OFF);
                 return;
             }
             try {
@@ -100,29 +107,8 @@ public class SystemCoordinator {
                 dataFlowNetworkInterface.requestData(OptionRegistry.value(OptionRegistry.DEVICE_ID));
             } catch (Exception ex) {
                 Logger.getLogger(ScheduledWorker.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-                appFrame.setConnectionStatus(Status.STATUS_OFF);
-                appFrame.setFlowStatus(Status.STATUS_OFF);
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private class DataFlowHanderImpl implements DataFlowHandler {
-
-        @Override
-        public void handleDataFlowResponse(String response) {
-            try {
-                //send data to server
-                Reading reading = DataGenerator.generate(response, appFrame.getMode());
-                networkInterface.transferDataToServer(reading);
-                appFrame.setConnectionStatus(Status.STATUS_ON);
-                appFrame.setFlowStatus(reading.isFlowActive() ? Status.STATUS_ON : Status.STATUS_STALE);
-                //send to application frame for display
-                appFrame.refreshTableData(reading);
-            } catch (Exception ex) {
-                Logger.getLogger(SystemCoordinator.class.getName()).log(Level.SEVERE, null, ex);
+                userInterface.setConnectionStatus(Status.STATUS_OFF);
+                userInterface.setFlowStatus(Status.STATUS_OFF);
             }
         }
     }

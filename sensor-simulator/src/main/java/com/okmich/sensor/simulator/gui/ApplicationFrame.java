@@ -16,7 +16,7 @@ import javax.swing.table.TableModel;
  *
  * @author m.enudi
  */
-public class ApplicationFrame extends javax.swing.JFrame {
+public class ApplicationFrame extends javax.swing.JFrame implements UserInterface {
 
     private final ImageIcon[] icons;
     private String simMode = "";
@@ -257,14 +257,17 @@ public class ApplicationFrame extends javax.swing.JFrame {
         }
     }
 
+    @Override
     public String getMode() {
         return this.simMode;
     }
 
+    @Override
     public void setMode(String mode) {
         this.simMode = mode;
     }
 
+    @Override
     public boolean isDisconnectedMode() {
         return this.simMode.equalsIgnoreCase("disconnection");
     }
@@ -278,6 +281,7 @@ public class ApplicationFrame extends javax.swing.JFrame {
      *
      * @param data
      */
+    @Override
     public void refreshTableData(Reading data) {
         if (data == null) {
             return;
@@ -306,10 +310,12 @@ public class ApplicationFrame extends javax.swing.JFrame {
         tableModel.setValueAt(data.getExtBodyForce(), 6, 1);
     }
 
+    @Override
     public void setConnectionStatus(int connStatus) {
         connectionStatusLabel.setIcon(this.icons[connStatus]);
     }
 
+    @Override
     public void setFlowStatus(int connStatus) {
         flowStatusLabel.setIcon(this.icons[connStatus]);
     }

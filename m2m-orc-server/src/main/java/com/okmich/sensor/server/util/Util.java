@@ -18,33 +18,44 @@ import org.apache.hadoop.hbase.util.Bytes;
  */
 public class Util {
 
-    /**
-     *
-     * @param request
-     * @return
-     */
-    public static List<String[]> parseStringData(String request) {
-        String[] pairs = request.split(";");
-        return Arrays.stream(pairs).map((String t) -> {
-            return t.split(":");
-        }).collect(Collectors.toList());
-    }
+//     /**
+//     *
+//     * @param request
+//     * @return
+//     */
+//    public static String[] parseStringData(String request) {
+//        String[] pairs = request.split(";");
+//        return Arrays.stream(pairs).map((String t) -> {
+//            return t.split(":");
+//        }).collect(Collectors.toList());
+//    }
+//    /**
+//     *
+//     * @param request
+//     * @return
+//     */
+//    public static List<String[]> parseStringData(String request) {
+//        String[] pairs = request.split(";");
+//        return Arrays.stream(pairs).map((String t) -> {
+//            return t.split(":");
+//        }).collect(Collectors.toList());
+//    }
 
-    /**
-     *
-     * @param request
-     * @return
-     */
-    public static Map<String, String> parseStringDataAsMap(String request) {
-        String[] pairs = request.split(";");
-        Map<String, String> map = new HashMap<>(pairs.length);
-        String[] pair;
-        for (String each : pairs) {
-            pair = each.split(":");
-            map.put(pair[0], pair[1].trim());
-        }
-        return map;
-    }
+//    /**
+//     *
+//     * @param request
+//     * @return
+//     */
+//    public static Map<String, String> parseStringDataAsMap(String request) {
+//        String[] pairs = request.split(";");
+//        Map<String, String> map = new HashMap<>(pairs.length);
+//        String[] pair;
+//        for (String each : pairs) {
+//            pair = each.split(":");
+//            map.put(pair[0], pair[1].trim());
+//        }
+//        return map;
+//    }
 
     public static byte[] as(String obj) {
         return Bytes.toBytes(obj);

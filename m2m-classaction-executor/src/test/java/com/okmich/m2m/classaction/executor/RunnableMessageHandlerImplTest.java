@@ -5,6 +5,7 @@
  */
 package com.okmich.m2m.classaction.executor;
 
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,9 +18,11 @@ public class RunnableMessageHandlerImplTest {
     private MessageHandler messageHandler;
 
     @Before
-    public void init() {
+    public void init() throws IOException {
+        CommandRegistry.initialize();
         this.messageHandler = new RunnableMessageHandlerImpl(
-                "TEST_COMMAND;0", new MockCommandPublisher(),
+                "TEST_COMMAND;0", new MockCacheService(),
+                new MockCommandPublisher(),
                 new MockKafkaMessageProducer(),
                 new MockCommandAuditRepoImpl());
     }
@@ -28,7 +31,7 @@ public class RunnableMessageHandlerImplTest {
     public void testHandleCommand() {
         this.messageHandler.handle("0001;435820349852345;23.20;21.29;"
                 + "100;10.10;4.30;0001;435820349852345;23.20;21.29;"
-                + "100;10.10;4.30;120;NOR;0");
+                + "100;10.10;4.30;120;0;0");
     }
 
 }

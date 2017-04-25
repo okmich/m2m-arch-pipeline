@@ -5,7 +5,7 @@
  */
 package com.okmich.m2m.classaction.executor;
 
-import com.okmich.m2m.classaction.executor.db.CommandAuditRepo;
+import com.okmich.m2m.classaction.executor.db.CacheService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,15 +13,16 @@ import java.util.logging.Logger;
  *
  * @author datadev
  */
-public class MockCommandAuditRepoImpl implements CommandAuditRepo {
+public class MockCacheService implements CacheService {
 
     /**
      * LOG
      */
-    private final static Logger LOG = Logger.getLogger(MockCommandAuditRepoImpl.class.getName());
+    private final static Logger LOG = Logger.getLogger(MockCacheService.class.getName());
 
     @Override
-    public void saveCommand(String command, String[] payload) {
-        LOG.log(Level.INFO, "saving the command {0} to db", command);
+    public String getSensorSupplyBaseDeviceId(String devId) {
+        LOG.log(Level.INFO, "get the cache value of {0}", devId);
+        return devId;
     }
 }

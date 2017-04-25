@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.m2m.classaction.executor.db;
+package com.okmich.sensor.simulator.service.handler;
 
 /**
  *
- * @author datadev
+ * @author m.enudi
  */
-public interface CommandAuditRepo {
+public interface DataHandler {
 
     /**
      *
-     * @param command
-     * @param payload
+     * @param response
      */
-    void saveCommand(String command, String[] payload);
+    void handle(String response);
 }

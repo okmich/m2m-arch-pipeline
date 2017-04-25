@@ -3,17 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.simulator.net;
+package com.okmich.m2m.backoffice.dashboard;
 
 /**
  *
- * @author m.enudi
+ * @author datadev
  */
-public interface DataFlowHandler {
+public final class Main {
 
-    /**
-     *
-     * @param response
-     */
-    void handleDataFlowResponse(String response);
+    private Main() {
+
+    }
+
+    public static void main(String[] args) {
+
+    }
 }

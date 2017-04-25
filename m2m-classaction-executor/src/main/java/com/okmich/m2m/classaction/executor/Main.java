@@ -5,6 +5,8 @@
  */
 package com.okmich.m2m.classaction.executor;
 
+import com.okmich.m2m.classaction.executor.db.CacheService;
+import com.okmich.m2m.classaction.executor.db.CacheServiceImpl;
 import com.okmich.m2m.classaction.executor.db.CommandAuditHBaseRepoImpl;
 import com.okmich.m2m.classaction.executor.db.CommandAuditRepo;
 import com.okmich.m2m.classaction.executor.kakfa.KafkaMessageConsumer;
@@ -25,6 +27,8 @@ public final class Main {
     private final KafkaMessageConsumer kafkaMessageConsumer;
     private final KafkaMessageProducer kafkaMessageProducer;
 
+    private final CacheService cacheService;
+
     private final CommandPublisher commandPublisher;
 
     private final CommandAuditRepo commandAuditRepo;
@@ -35,8 +39,11 @@ public final class Main {
         this.kafkaMessageProducer = new KafkaMessageProducerImpl();
         this.commandAuditRepo = new CommandAuditHBaseRepoImpl();
         this.commandPublisher = new CommandPublisherImpl();
+        this.cacheService = new CacheServiceImpl();
 
-        this.kafkaMessageConsumer = new KafkaMessageConsumer(commandPublisher,
+        this.kafkaMessageConsumer = new KafkaMessageConsumer(
+                cacheService,
+                commandPublisher,
                 kafkaMessageProducer,
                 commandAuditRepo);
     }

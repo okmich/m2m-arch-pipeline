@@ -7,6 +7,7 @@ package com.okmich.m2m.classaction.executor.kakfa;
 
 import com.okmich.m2m.classaction.executor.RunnableMessageHandlerImpl;
 import static com.okmich.m2m.classaction.executor.OptionRegistry.*;
+import com.okmich.m2m.classaction.executor.db.CacheService;
 import com.okmich.m2m.classaction.executor.db.CommandAuditRepo;
 import com.okmich.m2m.classaction.executor.mqtt.CommandPublisher;
 import java.util.Arrays;
@@ -25,6 +26,11 @@ public class KafkaMessageConsumer {
 
     private final KafkaConsumer<String, String> kafkaConsumer;
     private final ExecutorService executorService;
+    ;
+    /**
+     * cacheService
+     */
+    private final CacheService cacheService;
 
     private final CommandPublisher commandPublisher;
 
@@ -33,12 +39,14 @@ public class KafkaMessageConsumer {
     private final CommandAuditRepo commandAuditRepo;
 
     /**
-     * 
+     *
+     * @param cacheService
      * @param icommandPublisher
      * @param ikafkaMessageProducer
-     * @param icommandAuditRepo 
+     * @param icommandAuditRepo
      */
-    public KafkaMessageConsumer(CommandPublisher icommandPublisher,
+    public KafkaMessageConsumer(CacheService cacheService,
+            CommandPublisher icommandPublisher,
             KafkaMessageProducer ikafkaMessageProducer,
             CommandAuditRepo icommandAuditRepo) {
 
@@ -57,6 +65,7 @@ public class KafkaMessageConsumer {
         this.commandPublisher = icommandPublisher;
         this.kafkaMessageProducer = ikafkaMessageProducer;
         this.commandAuditRepo = icommandAuditRepo;
+        this.cacheService = cacheService;
     }
 
     /**
@@ -68,6 +77,7 @@ public class KafkaMessageConsumer {
             for (ConsumerRecord<String, String> record : records) {
                 this.executorService.submit(
                         new RunnableMessageHandlerImpl(record.value(),
+                                this.cacheService,
                                 this.commandPublisher,
                                 this.kafkaMessageProducer,
                                 this.commandAuditRepo));

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.simulator.net;
+package com.okmich.sensor.simulator.service;
 
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import java.io.IOException;
@@ -14,12 +14,13 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import com.okmich.sensor.simulator.service.handler.DataHandler;
 
 /**
  *
  * @author m.enudi
  */
-public class DataFlowNetworkInterface implements MqttCallback {
+public class DataFlowServerInterface implements MqttCallback {
 
     private static final String CMD_FLOW = "flow:";
     /**
@@ -35,20 +36,20 @@ public class DataFlowNetworkInterface implements MqttCallback {
      */
     private final MqttClient mqttClient;
     /**
-     * LOG
-     */
-    private static final Logger LOG = Logger.getLogger(DataFlowNetworkInterface.class.getName());
-    /**
      *
      */
-    private final DataFlowHandler handler;
+    private final DataHandler handler;
 
+    /**
+     * LOG
+     */
+    private static final Logger LOG = Logger.getLogger(DataFlowServerInterface.class.getName());
     /**
      *
      * @param dfHandler
      * @throws IOException
      */
-    public DataFlowNetworkInterface(DataFlowHandler dfHandler) throws IOException {
+    public DataFlowServerInterface(DataHandler dfHandler) throws IOException {
         try {
             this.mqttClient = new MqttClient(mqttServer(), value(DEVICE_ID) + "-dataFlow");
             this.mqttClient.connect();
@@ -84,7 +85,7 @@ public class DataFlowNetworkInterface implements MqttCallback {
 
     @Override
     public void messageArrived(String string, MqttMessage mm) throws Exception {
-        this.handler.handleDataFlowResponse(new String(mm.getPayload()));
+        this.handler.handle(new String(mm.getPayload()));
     }
 
     @Override

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.simulator.net;
+package com.okmich.sensor.simulator.service;
 
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import com.okmich.sensor.simulator.model.Reading;
@@ -18,7 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
  *
  * @author m.enudi
  */
-public class NetworkInterface {
+public class DataTransferServerInterface {
 
     private static final String CMD_INIT = "init:";
     private static final String CMD_DATA = "data:";
@@ -34,13 +34,13 @@ public class NetworkInterface {
     /**
      * LOG
      */
-    private static final Logger LOG = Logger.getLogger(NetworkInterface.class.getName());
+    private static final Logger LOG = Logger.getLogger(DataTransferServerInterface.class.getName());
 
     /**
      *
      * @throws IOException
      */
-    public NetworkInterface() throws IOException {
+    public DataTransferServerInterface() throws IOException {
         try {
             this.mqttClient = new MqttClient(mqttServer(), value(DEVICE_ID));
             this.mqttClient.connect();
@@ -61,6 +61,7 @@ public class NetworkInterface {
         String cmd = CMD_INIT + value(DEVICE_ID)
                 + ";" + value(TYPE)
                 + ";" + value(ADDRESS)
+                + ";" + value(SUPPLY_DEV_ID)
                 + ";" + value(DIST_SUPPLY_DEV)
                 + ";" + value(BS_DEV_ID)
                 + ";" + value(GEO);

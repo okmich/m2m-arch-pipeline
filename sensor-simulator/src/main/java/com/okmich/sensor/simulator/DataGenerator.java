@@ -15,7 +15,6 @@ import java.util.Random;
  */
 public final class DataGenerator {
 
-    private static DataGenerator SELF;
     private static float PRESSURE_VARIATIONS;
     private static float TEMP_VARIATIONS;
     private static float VOL_VARIATIONS;
@@ -35,12 +34,18 @@ public final class DataGenerator {
         TEMP_VARIATIONS = valueAsFloat(VAR_TEMPERATURE);
     }
 
+    /**
+     *
+     * @param dataFlow
+     * @param simMode
+     * @return
+     */
     public static Reading generate(String dataFlow, String simMode) {
         Reading reading = Reading.newFromString(dataFlow, value(DEVICE_ID));
         float stddev = 0;
         //check the mode
         //we will use the mode to control various ways of simulating different actions in the pipeline story
-        if (simMode == null || simMode.trim().isEmpty() || simMode.equalsIgnoreCase("normal")) {
+        if (simMode == null || simMode.trim().isEmpty() || simMode.equalsIgnoreCase("steady")) {
             //generate data within the range of acceptable variance for each field
             reading.setExtBodyForce(getNextRandomReading(reading.getExtBodyForce(), X_BODY_FORCE_VARIATIONS, stddev));
             reading.setFlowVelocity(getNextRandomReading(reading.getFlowVelocity(), FLOW_VELOCITY_VARIATIONS, stddev));
@@ -51,13 +56,9 @@ public final class DataGenerator {
             stddev = 1;
         } else if (simMode.equalsIgnoreCase("leakage")) {
             stddev = 1;
-
-        } else if (simMode.equalsIgnoreCase("disconnection")) {
+        } else { //disconnection
             //no need to check
             return null;
-        } else { //steady
-            stddev = 1;
-
         }
 
         return reading;

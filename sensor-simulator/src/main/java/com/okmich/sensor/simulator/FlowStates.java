@@ -3,18 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.m2m.classaction.executor.db;
+package com.okmich.sensor.simulator;
 
 /**
  *
  * @author datadev
  */
-public interface CommandAuditRepo {
-
-    /**
-     *
-     * @param command
-     * @param payload
-     */
-    void saveCommand(String command, String[] payload);
+public enum FlowStates {
+    STEADY, BLANK, TURBULENCE, LEAKAGE, DISCONNECTION;
 }

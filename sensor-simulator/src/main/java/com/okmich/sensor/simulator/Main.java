@@ -7,7 +7,7 @@ package com.okmich.sensor.simulator;
 
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import com.okmich.sensor.simulator.gui.ApplicationFrame;
-import com.okmich.sensor.simulator.net.NetworkInterface;
+import com.okmich.sensor.simulator.service.DataTransferServerInterface;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-    private final NetworkInterface networkInterface;
+    private final DataTransferServerInterface networkInterface;
     public final ApplicationFrame applicationFrame;
     public final SystemCoordinator systemCoordinator;
 
@@ -28,7 +28,7 @@ public class Main {
      * @throws IOException
      */
     public Main(String devID) throws IOException {
-        this.networkInterface = new NetworkInterface();
+        this.networkInterface = new DataTransferServerInterface();
         this.applicationFrame = new ApplicationFrame(value(TYPE));
         this.systemCoordinator = new SystemCoordinator(networkInterface, applicationFrame);
     }

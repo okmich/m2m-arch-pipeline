@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.simulator.net;
+package com.okmich.sensor.simulator.service;
 
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import java.io.IOException;
@@ -14,12 +14,13 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import com.okmich.sensor.simulator.service.handler.DataHandler;
 
 /**
  *
  * @author m.enudi
  */
-public final class CommandReceiverNetworkInterface implements Runnable, MqttCallbackExtended {
+public final class CommandReceiverServerInterface implements Runnable, MqttCallbackExtended {
 
     /**
      * mqttClient
@@ -30,15 +31,21 @@ public final class CommandReceiverNetworkInterface implements Runnable, MqttCall
      */
     private static final String TOPIC_ID = value(MQTT_SERVER_COMMADN_RECEIPT_TOPIC);
     /**
+     *
+     */
+    private final DataHandler handler;
+
+    /**
      * LOG
      */
-    private static final Logger LOG = Logger.getLogger(CommandReceiverNetworkInterface.class.getName());
+    private static final Logger LOG = Logger.getLogger(CommandReceiverServerInterface.class.getName());
 
     /**
      *
+     * @param handler
      * @throws IOException
      */
-    public CommandReceiverNetworkInterface() throws IOException {
+    public CommandReceiverServerInterface(DataHandler handler) throws IOException {
         try {
             this.mqttClient = new MqttClient(mqttServer(), value(DEVICE_ID) + "-command");
         } catch (MqttException ex) {
@@ -53,6 +60,7 @@ public final class CommandReceiverNetworkInterface implements Runnable, MqttCall
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
+        this.handler = handler;
     }
 
     @Override
@@ -83,11 +91,4 @@ public final class CommandReceiverNetworkInterface implements Runnable, MqttCall
         LOG.log(Level.SEVERE, "connectComplete on {0} saying {1}", new Object[]{reconnect, serverURI});
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            new Thread(new CommandReceiverNetworkInterface()).start();
-//        } catch (IOException ex) {
-//            LOG.log(Level.SEVERE, null, ex);
-//        }
-//    }
 }

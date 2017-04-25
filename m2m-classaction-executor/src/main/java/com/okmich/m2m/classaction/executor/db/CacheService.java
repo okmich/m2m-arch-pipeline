@@ -7,14 +7,15 @@ package com.okmich.m2m.classaction.executor.db;
 
 /**
  *
- * @author datadev
+ * @author m.enudi
  */
-public interface CommandAuditRepo {
+public interface CacheService {
 
     /**
      *
-     * @param command
-     * @param payload
+     * @param devId
+     * @return
      */
-    void saveCommand(String command, String[] payload);
+    String getSensorSupplyBaseDeviceId(String devId);
+
 }

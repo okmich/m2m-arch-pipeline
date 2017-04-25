@@ -5,6 +5,7 @@
  */
 package com.okmich.m2m.classaction.executor;
 
+import com.okmich.m2m.classaction.executor.db.CacheService;
 import com.okmich.m2m.classaction.executor.db.CommandAuditRepo;
 import com.okmich.m2m.classaction.executor.kakfa.KafkaMessageProducer;
 import com.okmich.m2m.classaction.executor.mqtt.CommandPublisher;
@@ -22,9 +23,13 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
      */
     private final String payload;
     /**
-     * kafkaMessageProducer
+     * commandAuditRepo
      */
     private final CommandAuditRepo commandAuditRepo;
+    /**
+     * cacheService
+     */
+    private final CacheService cacheService;
     /**
      * commandPublisher
      */
@@ -41,15 +46,18 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
     /**
      *
      * @param arg
+     * @param cacheService
      * @param commandPublisher
      * @param kafkaMessageProducer
      * @param commandAuditRepo
      */
     public RunnableMessageHandlerImpl(String arg,
+            CacheService cacheService,
             CommandPublisher commandPublisher,
             KafkaMessageProducer kafkaMessageProducer,
             CommandAuditRepo commandAuditRepo) {
         this.payload = arg;
+        this.cacheService = cacheService;
         this.commandPublisher = commandPublisher;
         this.kafkaMessageProducer = kafkaMessageProducer;
         this.commandAuditRepo = commandAuditRepo;
@@ -66,17 +74,18 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
         String[] parts = payload.split(";");
         //do the whole processing as thus
         //extract the clz 
-        String cmdKey = parts[15];
+        String clz = parts[15];
         //lookup the command from the clz
-        String cmd = CommandRegistry.getCommand(cmdKey);
+        String cmd = CommandRegistry.getCommand(clz);
         if (cmd != null && !cmd.isEmpty()) {
             try {
+                String command = createSensorCommand(cmd, parts);
                 //log your command to kakfa
-                kafkaMessageProducer.send(createKafkaMessage(cmd, parts));
+                kafkaMessageProducer.send(command);
                 //implement command execution
-                this.commandPublisher.sendMessage(cmd);
+                this.commandPublisher.sendMessage(command);
                 //save to db
-                this.commandAuditRepo.saveCommand(parts);
+                this.commandAuditRepo.saveCommand(command, parts);
             } catch (Exception ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }
@@ -89,8 +98,10 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
      * @param cmd
      * @return
      */
-    private String createKafkaMessage(String cmd, String parts[]) {
-        return cmd;
+    private String createSensorCommand(String cmd, String parts[]) {
+        //command= cmd,bsdevId,arg,ts
+        String baseDevId = cacheService.getSensorSupplyBaseDeviceId(parts[7]);
+        return String.format("%s,%s,%s,%d", cmd, baseDevId, parts[16], System.currentTimeMillis());
     }
 
 }
