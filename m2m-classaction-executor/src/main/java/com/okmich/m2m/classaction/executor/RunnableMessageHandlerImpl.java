@@ -83,7 +83,7 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
                 //log your command to kakfa
                 kafkaMessageProducer.send(command);
                 //implement command execution
-                this.commandPublisher.sendMessage(command);
+                this.commandPublisher.sendMessage(parts[7], command);
                 //save to db
                 this.commandAuditRepo.saveCommand(command, parts);
             } catch (Exception ex) {

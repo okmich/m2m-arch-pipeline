@@ -6,11 +6,9 @@
 package com.okmich.sensor.server.net.handler;
 
 import static com.okmich.sensor.server.OptionRegistry.*;
+import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.model.Sensor;
-import com.okmich.sensor.server.util.Util;
-import java.util.List;
-import com.okmich.sensor.server.db.SensorDAO;
 import com.okmich.sensor.server.db.SensorReadingDAO;
 import com.okmich.sensor.server.model.SensorReading;
 
@@ -23,28 +21,24 @@ public class DataflowRequestHandler extends Handler {
     /**
      *
      */
-    private final SensorDAO sensorDAO;
+    private final CacheService cacheService;
     private final SensorChainDAO sensorChainDAO;
-    private final SensorReadingDAO sensorReadingDAO;
 
     /**
      *
-     * @param sensorDAO
+     * @param cacheService
      * @param sensorChainDAO
-     * @param sensorReadingDAO
      */
-    public DataflowRequestHandler(SensorDAO sensorDAO,
-            SensorChainDAO sensorChainDAO,
-            SensorReadingDAO sensorReadingDAO) {
-        this.sensorDAO = sensorDAO;
+    public DataflowRequestHandler(CacheService cacheService,
+            SensorChainDAO sensorChainDAO) {
+        this.cacheService = cacheService;
         this.sensorChainDAO = sensorChainDAO;
-        this.sensorReadingDAO = sensorReadingDAO;
     }
 
     @Override
     public String handle(String request) {
-        //get the devId from the request
-        String devId = getDeviceId(request);
+        //get the devId from the request - the request is basically the devId
+        String devId = request;
         if (devId == null || getSensorByDevId(request) == null) {
             throw new IllegalArgumentException("no devId in request");
         }
@@ -64,27 +58,12 @@ public class DataflowRequestHandler extends Handler {
 
     /**
      *
-     * @param request
-     * @return
-     */
-    private String getDeviceId(String request) {
-        List<String[]> fields = Util.parseStringData(request);
-        for (String[] pairs : fields) {
-            if (pairs[0].equals(DEVICE_ID)) {
-                return pairs[1];
-            }
-        }
-        return null;
-    }
-
-    /**
-     *
      * @param devId
      * @return
      */
     private Sensor getSensorByDevId(String devId) {
         //db call to retrieve the previous node in the chain
-        Sensor node = this.sensorDAO.getSensor(devId);
+        Sensor node = this.cacheService.getSensor(devId);
         if (node == null) {
             throw new IllegalArgumentException("invalid node");
         }
@@ -98,6 +77,6 @@ public class DataflowRequestHandler extends Handler {
      */
     private SensorReading getDeviceCurrentData(String prevDev) {
         //db call to retrieve the data for the prevDev
-        return this.sensorReadingDAO.getSensorLatestReading(prevDev);
+        return this.cacheService.getSensorReading(prevDev);
     }
 }

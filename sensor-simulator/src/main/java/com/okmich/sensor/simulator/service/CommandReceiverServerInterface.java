@@ -29,7 +29,7 @@ public final class CommandReceiverServerInterface implements Runnable, MqttCallb
     /**
      * TOPIC_ID
      */
-    private static final String TOPIC_ID = value(MQTT_SERVER_COMMADN_RECEIPT_TOPIC);
+    private static final String TOPIC_ID = value(MQTT_SERVER_COMMADN_RECEIPT_TOPIC) + "/";
     /**
      *
      */
@@ -56,7 +56,7 @@ public final class CommandReceiverServerInterface implements Runnable, MqttCallb
         try {
             this.mqttClient.setCallback(this);
             this.mqttClient.connect();
-            this.mqttClient.subscribe(TOPIC_ID, 1);
+            this.mqttClient.subscribe(TOPIC_ID + value(DEVICE_ID), 1);
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, null, ex);
         }
@@ -65,12 +65,13 @@ public final class CommandReceiverServerInterface implements Runnable, MqttCallb
 
     @Override
     public void connectionLost(Throwable thrwbl) {
-        LOG.log(Level.SEVERE, "connection lost");
+        LOG.log(Level.INFO, "connection lost");
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage mm) throws Exception {
         LOG.log(Level.SEVERE, "messageArrived on {0} saying {1}", new Object[]{topic, new String(mm.getPayload())});
+        handler.handle(new String(mm.getPayload()));
     }
 
     @Override

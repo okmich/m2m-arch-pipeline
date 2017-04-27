@@ -11,7 +11,6 @@ import com.okmich.sensor.simulator.SystemCoordinator;
 import com.okmich.sensor.simulator.gui.UserInterface;
 import com.okmich.sensor.simulator.model.Reading;
 import com.okmich.sensor.simulator.service.DataTransferServerInterface;
-import java.lang.ref.WeakReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

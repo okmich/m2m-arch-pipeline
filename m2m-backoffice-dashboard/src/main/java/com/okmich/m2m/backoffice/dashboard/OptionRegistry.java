@@ -22,7 +22,11 @@ import java.util.logging.Logger;
 public final class OptionRegistry {
 
     private final static Map<String, String> hashMap = new HashMap<>();
-
+    
+    public final static String KAFKA_BROKER_URL = "kafka.broker.url";
+    
+    
+    public final static String EXECUTOR_THREADS = "no.work.threads";
     /**
      *
      */

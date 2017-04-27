@@ -1,0 +1,12 @@
+list of topics
+=================
+
+m2m.raw.event.data.topic	where every event from the gateway orc service will place raw events. The main consumer of this topic will be the front end
+
+m2m.enriched.event.data.topic	where every event from the gateway orc service will place enriched events. Enriched events are events that have been processed and are to be classifed as in by a ML module. The main consumer of this topic will be the streaming application
+
+m2m.loss.sensor.conn.topic	when sensors are detected to have loss connection, all such events will be placed on this topic.
+
+m2m.classified.msg.topic	The topic that where the streaming engine will place all event that has been classified and inferred upon. The main consumers of this topic will be the dashboard and action trigger applications 
+
+m2m.action.log.topic		Where every generated action from the action trigger application will be logged. The main consumer of this topic is the front end.

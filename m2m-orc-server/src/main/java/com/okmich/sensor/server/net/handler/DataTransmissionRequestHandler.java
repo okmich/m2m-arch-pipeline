@@ -7,14 +7,11 @@ package com.okmich.sensor.server.net.handler;
 
 import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.db.CacheService;
-import com.okmich.sensor.server.db.DBFactory;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.db.SensorReadingHBaseRepo;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
-import com.okmich.sensor.server.util.Util;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +30,10 @@ public class DataTransmissionRequestHandler extends Handler {
      */
     private final KafkaMessageProducer kafkaMessageProducer;
     /**
+     * sensorChainDAO
+     */
+    private final SensorChainDAO sensorChainDAO;
+    /**
      * sensorReadingHBaseRepo
      */
     private final SensorReadingHBaseRepo sensorReadingHBaseRepo;
@@ -46,13 +47,17 @@ public class DataTransmissionRequestHandler extends Handler {
      *
      * @param cacheService
      * @param kafkaMessageProducer
+     * @param sensorChainDAO
      * @param sensorReadingHBaseRepo
      */
-    public DataTransmissionRequestHandler(CacheService cacheService,
+    public DataTransmissionRequestHandler(
+            CacheService cacheService,
             KafkaMessageProducer kafkaMessageProducer,
+            SensorChainDAO sensorChainDAO,
             SensorReadingHBaseRepo sensorReadingHBaseRepo) {
         this.cacheService = cacheService;
         this.kafkaMessageProducer = kafkaMessageProducer;
+        this.sensorChainDAO = sensorChainDAO;
         this.sensorReadingHBaseRepo = sensorReadingHBaseRepo;
     }
 
@@ -86,11 +91,10 @@ public class DataTransmissionRequestHandler extends Handler {
      * @return
      */
     private String getDeviceId(String request) {
-        List<String[]> fields = Util.parseStringData(request);
-        for (String[] pairs : fields) {
-            if (pairs[0].equals(DEVICE_ID)) {
-                return pairs[1];
-            }
+        String[] fields = request.split(";");
+
+        if (!fields[0].isEmpty()) {
+            return fields[0];
         }
         return null;
     }
@@ -101,9 +105,8 @@ public class DataTransmissionRequestHandler extends Handler {
      * @return
      */
     private String enrichMessage(SensorReading sensorReading) {
-        SensorChainDAO sensorChainDAO = DBFactory.getSensorChainDAO();
         //
-        String suppDevId = sensorChainDAO.getFromDevID(sensorReading.getDevId());
+        String suppDevId = this.sensorChainDAO.getFromDevID(sensorReading.getDevId());
         if (suppDevId == null || suppDevId.isEmpty()) {
             //there is not supplying dev and the distant should be zero
             return "|" + sensorReading.toString() + "|" + 0;

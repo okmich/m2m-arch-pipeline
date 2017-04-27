@@ -5,10 +5,7 @@
  */
 package com.okmich.sensor.server.model;
 
-import static com.okmich.sensor.server.OptionRegistry.*;
-import com.okmich.sensor.server.util.Util;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  *
@@ -19,9 +16,9 @@ public class Sensor implements Serializable {
     private String devId;
     private String type;
     private String address;
+    private String supplyDevId;
     private String baseStationDevId;
     private float distSupplyStation;
-    private long lastConnectTime;
     private String geo;
 
     public Sensor() {
@@ -32,14 +29,15 @@ public class Sensor implements Serializable {
      * @param payload
      */
     public Sensor(String payload) {
-        //devId:zzzz;type:nssen|bssen;add:ipaddress;dsbs:300;bsdev:jjjjj;geo:23.030,-203
-        Map<String, String> map = Util.parseStringDataAsMap(payload);
-        this.devId = map.get(DEVICE_ID);
-        this.type = map.get(TYPE);
-        this.address = map.get(ADDRESS);
-        this.baseStationDevId = map.get(BS_DEV_ID);
-        this.distSupplyStation = Float.parseFloat(map.get(DIST_SUPPLY_STN));
-        this.geo = map.get(GEO);
+        //devId;type;add;sDevId;dsbs;bsdev;lct;geo
+        String[] parts = payload.split(";");
+        this.devId = parts[0];
+        this.type = parts[1];
+        this.address = parts[2];
+        this.supplyDevId = parts[3];
+        this.baseStationDevId = parts[4];
+        this.distSupplyStation = Float.parseFloat(parts[5]);
+        this.geo = parts[6];
     }
 
     /**
@@ -85,6 +83,20 @@ public class Sensor implements Serializable {
     }
 
     /**
+     * @return the supplyDevId
+     */
+    public String getSupplyDevId() {
+        return supplyDevId;
+    }
+
+    /**
+     * @param supplyDevId the supplyDevId to set
+     */
+    public void setSupplyDevId(String supplyDevId) {
+        this.supplyDevId = supplyDevId;
+    }
+
+    /**
      * @return the baseStationDevId
      */
     public String getBaseStationDevId() {
@@ -113,20 +125,6 @@ public class Sensor implements Serializable {
     }
 
     /**
-     * @return the lastConnectTime
-     */
-    public long getLastConnectTime() {
-        return lastConnectTime;
-    }
-
-    /**
-     * @param lastConnectTime the lastConnectTime to set
-     */
-    public void setLastConnectTime(long lastConnectTime) {
-        this.lastConnectTime = lastConnectTime;
-    }
-
-    /**
      * @return the geo
      */
     public String getGeo() {
@@ -142,9 +140,13 @@ public class Sensor implements Serializable {
 
     @Override
     public String toString() {
-        return "devId:" + devId + ";type:" + type
-                + ";add:" + address + ";dsbs:" + distSupplyStation
-                + ";bsdev:" + baseStationDevId + ";lct:" + lastConnectTime
-                + ";geo:" + geo;
+        return String.format("%s;%s;%s;%s;%s;%s;%s",
+                devId,
+                type,
+                address,
+                supplyDevId,
+                distSupplyStation,
+                baseStationDevId,
+                geo);
     }
 }

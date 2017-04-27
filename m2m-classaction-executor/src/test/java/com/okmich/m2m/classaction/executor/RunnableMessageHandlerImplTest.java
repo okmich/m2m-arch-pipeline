@@ -19,6 +19,7 @@ public class RunnableMessageHandlerImplTest {
 
     @Before
     public void init() throws IOException {
+        OptionRegistry.initialize(null);
         CommandRegistry.initialize();
         this.messageHandler = new RunnableMessageHandlerImpl(
                 "TEST_COMMAND;0", new MockCacheService(),

@@ -5,11 +5,6 @@
  */
 package com.okmich.sensor.server.util;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.hadoop.hbase.util.Bytes;
 
 /**

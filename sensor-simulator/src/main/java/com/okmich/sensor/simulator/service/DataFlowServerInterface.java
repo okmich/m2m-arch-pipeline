@@ -44,6 +44,7 @@ public class DataFlowServerInterface implements MqttCallback {
      * LOG
      */
     private static final Logger LOG = Logger.getLogger(DataFlowServerInterface.class.getName());
+
     /**
      *
      * @param dfHandler
@@ -54,7 +55,7 @@ public class DataFlowServerInterface implements MqttCallback {
             this.mqttClient = new MqttClient(mqttServer(), value(DEVICE_ID) + "-dataFlow");
             this.mqttClient.connect();
             this.mqttClient.setCallback(this);
-            this.mqttClient.subscribe(TOPIC_ID_2);
+            this.mqttClient.subscribe(TOPIC_ID_2 + "/" + value(DEVICE_ID));
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, null, ex);
             throw new IOException(ex.getMessage(), ex);
@@ -68,7 +69,7 @@ public class DataFlowServerInterface implements MqttCallback {
      * @throws java.lang.Exception
      */
     public void requestData(String devId) throws Exception {
-        MqttMessage mqttMessage = new MqttMessage((CMD_FLOW + "devId:" + devId).getBytes());
+        MqttMessage mqttMessage = new MqttMessage((CMD_FLOW + devId).getBytes());
         mqttMessage.setQos(0);
         try {
             mqttClient.publish(TOPIC_ID_1, mqttMessage);

@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.okmich</groupId>
-    <artifactId>m2m-backoffice-dashboard</artifactId>
+    <artifactId>m2m-dashboard</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -29,6 +29,11 @@
             <artifactId>kafka-clients</artifactId>
             <version>0.9.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+        </dependency>
     </dependencies>
-    <name>m2m-backoffice-dashboard</name>
+    <name>m2m-dashboard</name>
 </project>

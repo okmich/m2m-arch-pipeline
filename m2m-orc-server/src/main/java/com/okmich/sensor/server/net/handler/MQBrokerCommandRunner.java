@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.server.net;
+package com.okmich.sensor.server.net.handler;
 
 import com.okmich.sensor.server.db.CacheService;
+import com.okmich.sensor.server.db.SensorChainDAO;
+import com.okmich.sensor.server.db.SensorHBaseRepo;
 import com.okmich.sensor.server.db.SensorReadingHBaseRepo;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
-import com.okmich.sensor.server.net.handler.ConnectionInitiationHandler;
-import com.okmich.sensor.server.net.handler.DataTransmissionRequestHandler;
-import com.okmich.sensor.server.net.handler.Handler;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -31,6 +30,14 @@ public class MQBrokerCommandRunner implements CommandRunner {
      */
     private final KafkaMessageProducer kafkaMessageProducer;
     /**
+     * sensorChainDAO
+     */
+    private final SensorChainDAO sensorChainDAO;
+    /**
+     * sensorHBaseRepo
+     */
+    private final SensorHBaseRepo sensorHBaseRepo;
+    /**
      * sensorReadingHBaseRepo
      */
     private final SensorReadingHBaseRepo sensorReadingHBaseRepo;
@@ -46,13 +53,19 @@ public class MQBrokerCommandRunner implements CommandRunner {
      *
      * @param cacheService
      * @param kafkaMessageProducer
+     * @param isensorHBaseRepo
+     * @param sensorChainDAO
      * @param sensorReadingHBaseRepo
      */
     public MQBrokerCommandRunner(CacheService cacheService,
             KafkaMessageProducer kafkaMessageProducer,
+            SensorHBaseRepo isensorHBaseRepo,
+            SensorChainDAO sensorChainDAO,
             SensorReadingHBaseRepo sensorReadingHBaseRepo) {
         this.cacheService = cacheService;
         this.kafkaMessageProducer = kafkaMessageProducer;
+        this.sensorChainDAO = sensorChainDAO;
+        this.sensorHBaseRepo = isensorHBaseRepo;
         this.sensorReadingHBaseRepo = sensorReadingHBaseRepo;
 
         executorService = Executors.newFixedThreadPool(6);
@@ -69,12 +82,13 @@ public class MQBrokerCommandRunner implements CommandRunner {
             public void run() {
                 LOG.log(Level.INFO, "request command  is {0}", command);
                 if (command.startsWith(CMD_INIT)) {
-                    handler = new ConnectionInitiationHandler();
+                    handler = new ConnectionInitiationHandler(cacheService, sensorHBaseRepo);
                     request = command.substring(CMD_INIT.length());
                 } else if (command.startsWith(CMD_DATA)) {
                     handler = new DataTransmissionRequestHandler(
                             cacheService,
                             kafkaMessageProducer,
+                            sensorChainDAO,
                             sensorReadingHBaseRepo);
                     request = command.substring(CMD_DATA.length());
                 } else {

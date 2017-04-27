@@ -28,11 +28,11 @@ public class DataFlowNetworkInterface implements MqttCallback {
     /**
      * TOPIC_ID_1 - psensor_data_flow_request_topic_5XB90
      */
-    private static final String TOPIC_ID_1 = "psensor_data_flow_request_topic_5XB90";
+    private static final String TOPIC_ID_1 = value(MQTT_SERVER_DATAFLOW_REQUEST_TOPIC);
     /**
      * TOPIC_ID_2 - psensor_data_flow_response_topic_5X1JL
      */
-    private static final String TOPIC_ID_2 = "psensor_data_flow_response_topic_5X1JL";
+    private static final String TOPIC_ID_2 = value(MQTT_SERVER_DATAFLOW_RESPONSE_TOPIC) + "/";
     /**
      * mqttClient
      */
@@ -72,14 +72,15 @@ public class DataFlowNetworkInterface implements MqttCallback {
 
     /**
      *
+     * @param devId
      * @param response
      * @throws java.lang.Exception
      */
-    public void sendMessage(String response) throws Exception {
+    public void sendMessage(String devId, String response) throws Exception {
         MqttMessage mqttMessage = new MqttMessage(response.getBytes());
         mqttMessage.setQos(1);
         try {
-            mqttClient.publish(TOPIC_ID_2, mqttMessage);
+            mqttClient.publish(TOPIC_ID_2 + devId, mqttMessage);
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, null, ex);
             throw new Exception(ex.getMessage(), ex);
@@ -97,7 +98,8 @@ public class DataFlowNetworkInterface implements MqttCallback {
         LOG.log(Level.INFO, "message arrived : {0}", message);
         executorService.submit(() -> {
             try {
-                sendMessage(handler.handle(message.substring(CMD_FLOW.length())));
+                String devId = message.substring(CMD_FLOW.length());
+                sendMessage(devId, handler.handle(devId));
             } catch (Exception ex) {
                 LOG.log(Level.SEVERE, null, ex);
             }

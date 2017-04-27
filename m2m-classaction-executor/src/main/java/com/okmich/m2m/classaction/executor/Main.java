@@ -26,11 +26,17 @@ public final class Main {
 
     private final KafkaMessageConsumer kafkaMessageConsumer;
     private final KafkaMessageProducer kafkaMessageProducer;
-
+    /**
+     * cacheService
+     */
     private final CacheService cacheService;
-
+    /**
+     * commandPublisher
+     */
     private final CommandPublisher commandPublisher;
-
+    /**
+     * commandAuditRepo
+     */
     private final CommandAuditRepo commandAuditRepo;
 
     private static final Logger LOG = Logger.getLogger(Main.class.getName());

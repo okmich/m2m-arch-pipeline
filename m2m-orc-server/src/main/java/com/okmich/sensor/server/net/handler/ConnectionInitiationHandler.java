@@ -5,12 +5,9 @@
  */
 package com.okmich.sensor.server.net.handler;
 
-import static com.okmich.sensor.server.OptionRegistry.*;
-import com.okmich.sensor.server.db.DBFactory;
-import com.okmich.sensor.server.db.SensorDAO;
+import com.okmich.sensor.server.db.CacheService;
+import com.okmich.sensor.server.db.SensorHBaseRepo;
 import com.okmich.sensor.server.model.Sensor;
-import com.okmich.sensor.server.util.Util;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,32 +17,44 @@ import java.util.logging.Logger;
  */
 public class ConnectionInitiationHandler extends Handler {
 
+    /**
+     * cacheService
+     */
+    private final CacheService cacheService;
+    /**
+     * sensorHBaseRepo
+     */
+    private final SensorHBaseRepo sensorHBaseRepo;
+
     private static final Logger LOG = Logger.getLogger(ConnectionInitiationHandler.class.getName());
 
     /**
      *
+     * @param cacheService
+     * @param isensorHBaseRepo
      */
-    public ConnectionInitiationHandler() {
+    public ConnectionInitiationHandler(CacheService cacheService,
+            SensorHBaseRepo isensorHBaseRepo) {
+        this.cacheService = cacheService;
+        this.sensorHBaseRepo = isensorHBaseRepo;
     }
 
     @Override
     public String handle(String request) {
-        Map<String, String> fields = Util.parseStringDataAsMap(request);
         LOG.log(Level.INFO, request);
+        Sensor sensor = new Sensor(request);
 
-        SensorDAO sensorDAO = DBFactory.getSensorDao();
-        Sensor sensor = sensorDAO.getSensor(fields.get(DEVICE_ID));
-        if (sensor == null) {
+        Sensor sensor1 = sensorHBaseRepo.findOne(sensor.getDevId());
+        if (sensor1 == null) {
             throw new IllegalArgumentException("device node already exist");
         }
-        sensor.setAddress(fields.get(ADDRESS));
-        sensor.setType(fields.get(TYPE));
-        sensor.setBaseStationDevId(fields.get(BS_DEV_ID));
-        sensor.setDistSupplyDev(Float.parseFloat(fields.get(DIST_SUPPLY_STN)));
-        sensor.setGeo(fields.get(GEO));
-        sensor.setLastConnectTime(System.currentTimeMillis());
-        //update to db
-        sensorDAO.saveSensor(sensor);
+        try {
+            //save the data to cache
+            this.cacheService.saveSensor(sensor);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, null, ex);
+            return null;
+        }
 
         return "initiated";
     }

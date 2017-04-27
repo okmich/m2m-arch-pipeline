@@ -1,0 +1,11 @@
+mqtt.server.dtflow_rq.topic=m2m/flow/psensor_data_flow_request_topic_5XB90
+mqtt.server.dtflow_rsp.topic=m2m/flow/psensor_data_flow_response_topic_5X1JL
+mqtt.server.data.submit.topic=m2m/psensor_data_delivery_topic_5X928
+mqtt.server.cmd.recpt.topic=m2m/psensor_command_topic_238923
+
+
+mqtt.action.command.topic=m2m/psensor_command_topic_238923
+
+
+
+

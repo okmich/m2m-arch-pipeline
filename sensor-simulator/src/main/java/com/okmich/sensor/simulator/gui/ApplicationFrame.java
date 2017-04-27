@@ -24,6 +24,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     /**
      * Creates new form ApplicationFrame
+     * @param type
      */
     public ApplicationFrame(String type) {
         icons = new ImageIcon[3];
@@ -89,7 +90,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
                 .addComponent(connectionStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(flowStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel1.setText("Device ID:");
@@ -109,7 +110,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             }
         });
 
-        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Normal", "Turbulence", "Leakage", "Steady", "Disconnection", "StopFlow" }));
+        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Steady", "Turbulence", "Leakage", "Disconnection", "StopFlow" }));
 
         javax.swing.GroupLayout detailDisplayPanelLayout = new javax.swing.GroupLayout(detailDisplayPanel);
         detailDisplayPanel.setLayout(detailDisplayPanelLayout);
@@ -145,9 +146,9 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
                     .addComponent(jLabel2)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(50, 50, 50)
-                .addGroup(detailDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbmSimMode, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
+                .addGroup(detailDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(cbmSimMode))
                 .addContainerGap())
         );
 
@@ -168,7 +169,9 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
         basicDisplayPanelLayout.setVerticalGroup(
             basicDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(statusDisplayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(detailDisplayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(basicDisplayPanelLayout.createSequentialGroup()
+                .addComponent(detailDisplayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         readingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Readings"));
@@ -213,7 +216,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             readingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(readingPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 9, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -228,7 +231,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             .addGroup(layout.createSequentialGroup()
                 .addComponent(basicDisplayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(readingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(readingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

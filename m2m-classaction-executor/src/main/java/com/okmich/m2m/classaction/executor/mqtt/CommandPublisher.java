@@ -13,9 +13,10 @@ public interface CommandPublisher {
 
     /**
      *
+     * @param devId
      * @param request
      * @throws java.lang.Exception
      */
-    void sendMessage(String request) throws Exception;
+    void sendMessage(String devId, String request) throws Exception;
 
 }

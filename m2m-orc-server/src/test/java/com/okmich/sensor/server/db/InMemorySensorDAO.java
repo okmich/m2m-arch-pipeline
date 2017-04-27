@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.server.db.impl;
+package com.okmich.sensor.server.db;
 
 import com.okmich.sensor.server.model.Sensor;
 import java.util.HashMap;
 import java.util.Map;
-import com.okmich.sensor.server.db.SensorDAO;
 import java.util.List;
 
 /**

@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +23,7 @@ public final class OptionRegistry {
 
     private final static Map<String, String> hashMap = new HashMap<>();
 
-    public final static String TXNFR_FREQ = "txns_freq"; //in seconds: default is 30
+    public final static String TXNFR_FREQ = "sensor.data.txns_freq"; //in seconds: default is 30
     public final static String MODE = "mode";
 
     public final static String MQTT_SERVER = "mqtt.server.address";

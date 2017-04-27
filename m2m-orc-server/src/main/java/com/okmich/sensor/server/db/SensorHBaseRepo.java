@@ -16,9 +16,18 @@ public interface SensorHBaseRepo {
 
     /**
      *
-     * @return @throws java.lang.Exception
+     * @param id
+     * @return
+     *
      */
-    List<Sensor> findAll() throws Exception;
+    Sensor findOne(String id);
+
+    /**
+     *
+     *
+     * @return 
+     */
+    List<Sensor> findAll();
 
     /**
      *

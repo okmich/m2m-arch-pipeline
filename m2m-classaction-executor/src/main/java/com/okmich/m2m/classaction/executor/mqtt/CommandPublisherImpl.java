@@ -22,7 +22,7 @@ public class CommandPublisherImpl implements CommandPublisher {
     /**
      * TOPIC_ID
      */
-    private static final String TOPIC_ID = value(MQTT_COMMAND_TOPIC);
+    private static final String TOPIC_ID_PREFIX = value(MQTT_COMMAND_TOPIC) + "/";
     /**
      * mqttClient
      */
@@ -52,13 +52,13 @@ public class CommandPublisherImpl implements CommandPublisher {
      * @throws java.lang.Exception
      */
     @Override
-    public void sendMessage(String request) throws Exception {
+    public void sendMessage(String devId, String request) throws Exception {
         LOG.log(Level.INFO, "sending message {0}", request);
         MqttMessage mqttMessage = new MqttMessage(request.getBytes());
         mqttMessage.setQos(1);
         mqttMessage.setRetained(true);
         try {
-            mqttClient.publish(TOPIC_ID, mqttMessage);
+            mqttClient.publish(TOPIC_ID_PREFIX + devId, mqttMessage);
         } catch (MqttException ex) {
             throw new Exception(ex);
         }

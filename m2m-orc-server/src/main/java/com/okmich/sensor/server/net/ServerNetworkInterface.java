@@ -5,6 +5,7 @@
  */
 package com.okmich.sensor.server.net;
 
+import com.okmich.sensor.server.net.handler.CommandRunner;
 import static com.okmich.sensor.server.OptionRegistry.*;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -26,7 +27,7 @@ public class ServerNetworkInterface implements MqttCallbackExtended {
     /**
      * TOPIC_ID
      */
-    private static final String TOPIC_ID = "psensor_data_delivery_topic_5X928";
+    private static final String TOPIC_ID = value(MQTT_SERVER_DATA_SUBMIT_TOPIC);
     /**
      * mqttClient
      */

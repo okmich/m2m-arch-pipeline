@@ -5,9 +5,16 @@
  */
 package com.okmich.m2m.classaction.executor;
 
+import com.okmich.m2m.classaction.executor.mqtt.CommandPublisherImpl;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +40,10 @@ public final class OptionRegistry {
     public final static String REDIS_SERVER_PORT = "redis.server.port";
 
     public final static String EXECUTOR_THREADS = "max.executor.thread";
+    /**
+     * LOG
+     */
+    private static final Logger LOG = Logger.getLogger(OptionRegistry.class.getName());
 
     /**
      *
@@ -42,22 +53,42 @@ public final class OptionRegistry {
 
     /**
      *
-     * @param arguments
+     * @param args
      */
-    public static void initialize(String[] arguments) {
-        String pair[];
-        for (String param : arguments) {
-            pair = param.split("=");
-            hashMap.put(pair[0].substring(1).toLowerCase(), pair[1]);
+    public static void initialize(String[] args) {
+        Properties properties = new Properties();
+        String sensorConfig = System.getProperty("user.dir") + File.separator + "config.properties";
+        File file = new File(sensorConfig);
+        if (file.exists() && file.canRead()) {
+            try {
+                properties.load(new FileInputStream(file));
+                loadConfig(properties);
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
+        } else {
+            try {
+                properties.load(ClassLoader.getSystemResourceAsStream("config.properties"));
+                //save this file to user directory
+                properties.store(new FileOutputStream(sensorConfig), "System configuration");
+                //load it
+                loadConfig(properties);
+            } catch (IOException ex) {
+                LOG.log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+            }
         }
-        System.out.println("map" + hashMap);
+
     }
 
     /**
      *
      * @param properties
      */
-    public static void initialize(Properties properties) {
+    private static void loadConfig(Properties properties) {
+        properties.putAll(System.getProperties());
+        //user properties file to load the hashMap
         properties.keySet().forEach((key) -> {
             hashMap.put((String) key, (String) properties.get(key));
         });

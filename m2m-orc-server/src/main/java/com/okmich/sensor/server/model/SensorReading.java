@@ -5,9 +5,7 @@
  */
 package com.okmich.sensor.server.model;
 
-import com.okmich.sensor.server.util.Util;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  *
@@ -15,7 +13,7 @@ import java.util.Map;
  */
 public class SensorReading implements Serializable {
 
-    //"devId:" + devId + ";ts:" + timestamp + ";prs:" + pressure + ";tmp:" + temperature + ";vol:" + volume + ";flv:" + flowVelocity + ";xbf:" + extBodyForce;
+    //devId;ts;prs;tmp;vol;flv;xbf
     private String devId;
     private long timestamp;
     private float pressure;
@@ -28,14 +26,15 @@ public class SensorReading implements Serializable {
     }
 
     public SensorReading(String readings) {
-        Map<String, String> map = Util.parseStringDataAsMap(readings);
-        this.devId = map.get("devId");
-        this.timestamp = Long.parseLong(map.get("ts"));
-        this.pressure = Float.parseFloat(map.get("prs"));
-        this.temperature = Float.parseFloat(map.get("tmp"));
-        this.volume = Float.parseFloat(map.get("vol"));
-        this.flowVelocity = Float.parseFloat(map.get("flv"));
-        this.extBodyForce = Float.parseFloat(map.get("xbf"));
+        //devId;ts;prs;tmp;vol;flv;xbf
+        String[] fields = readings.split("\\|");
+        this.devId = (fields[0]);
+        this.timestamp = (Long.valueOf(fields[1]));
+        this.pressure = (getFloat(fields[2]));
+        this.temperature = (getFloat(fields[3]));
+        this.volume = (getFloat(fields[4]));
+        this.flowVelocity = (getFloat(fields[5]));
+        this.extBodyForce = (getFloat(fields[6]));
     }
 
     /**
@@ -136,10 +135,26 @@ public class SensorReading implements Serializable {
         this.extBodyForce = extBodyForce;
     }
 
+    private static String asString(Number val) {
+        if (val == null) {
+            return "";
+        } else {
+            return val.toString();
+        }
+    }
+
+    private static Float getFloat(String s) {
+        if (s == null || s.isEmpty()) {
+            return null;
+        } else {
+            return Float.valueOf(s);
+        }
+    }
+
     @Override
     public String toString() {
-        return "devId:" + this.devId + ";ts:" + timestamp
-                + ";prs:" + pressure + ";tmp:" + temperature + ";vol:" + volume
-                + ";flv:" + flowVelocity + ";xbf:" + extBodyForce;
+        return devId + ";" + timestamp + ";" + asString(pressure)
+                + ";" + asString(temperature) + ";" + asString(volume) + ";"
+                + asString(flowVelocity) + ";" + asString(extBodyForce);
     }
 }
