@@ -5,11 +5,13 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import java.util.List;
+
 /**
  *
  * @author ABME340
  */
-public class DashboardPanel extends javax.swing.JPanel {
+public class DashboardPanel extends javax.swing.JPanel implements UIView<String[]> {
 
     /**
      * Creates new form DashboardPanel
@@ -63,4 +65,9 @@ public class DashboardPanel extends javax.swing.JPanel {
     private javax.swing.JPanel chartPanel;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void refreshData(List<String[]> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

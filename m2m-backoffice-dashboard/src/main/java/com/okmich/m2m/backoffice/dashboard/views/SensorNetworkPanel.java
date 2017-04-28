@@ -5,13 +5,14 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
  *
  * @author ABME340
  */
-public class SensorNetworkPanel extends JPanel {
+public class SensorNetworkPanel extends JPanel implements UIView<String[]> {
 
     /**
      * Creates new form SensorNetworkPanel
@@ -32,6 +33,11 @@ public class SensorNetworkPanel extends JPanel {
         setPreferredSize(new java.awt.Dimension(400, 400));
         setLayout(new java.awt.GridLayout(1, 0));
     }// </editor-fold>//GEN-END:initComponents
+
+    @Override
+    public void refreshData(List<String[]> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 
 

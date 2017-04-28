@@ -99,9 +99,9 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
      * @return
      */
     private String createSensorCommand(String cmd, String parts[]) {
-        //command= cmd,bsdevId,arg,ts
+        //command= cmd;bsdevId;arg;ts
         String baseDevId = cacheService.getSensorSupplyBaseDeviceId(parts[7]);
-        return String.format("%s,%s,%s,%d", cmd, baseDevId, parts[16], System.currentTimeMillis());
+        return String.format("%s;%s;%s;%d", cmd, baseDevId, parts[16], System.currentTimeMillis());
     }
 
 }

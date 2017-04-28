@@ -121,7 +121,7 @@ public class SensorChainService {
                 if (sensorReading == null || isStaleReading(sensorReading)) {
                     //if the last reading is mor than threshhold seconds ago
                     //send lost sensor connection message to kafka
-                    kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId);
+                    kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId+";"+System.currentTimeMillis());
                     //get the real time chain-post sensor for this sensor and make its 
                     //chain-pre sensor the real time chain-pre sensor for this sensor 
                     String toDevId = sensorChainDAO.getToDevID(devId);

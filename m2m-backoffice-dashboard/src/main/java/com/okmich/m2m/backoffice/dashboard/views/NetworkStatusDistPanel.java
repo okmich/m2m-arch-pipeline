@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.views;
 
 import java.awt.Font;
+import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -17,7 +18,7 @@ import org.jfree.data.general.DefaultPieDataset;
  *
  * @author ABME340
  */
-public class NetworkStatusDistPanel extends ChartPanel {
+public class NetworkStatusDistPanel extends ChartPanel implements UIView<String[]> {
 
     public NetworkStatusDistPanel() {
         super(createJFreeChart());
@@ -54,6 +55,11 @@ public class NetworkStatusDistPanel extends ChartPanel {
                 new Font("Serif", java.awt.Font.BOLD, 18)));
 
         return chart;
+    }
+
+    @Override
+    public void refreshData(List<String[]> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

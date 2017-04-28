@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.messaging;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
+import com.okmich.m2m.backoffice.dashboard.controllers.UIController;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -20,13 +21,19 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  */
 public class KafkaMessageConsumer {
 
+    //list of all controllers 
+    private UIController actionPanelController;
+    private UIController connectedSensorPanelController;
+    private UIController disconnectedSensorPanelController;
+    private UIController eventPanelController;
+
     private final KafkaConsumer<String, String> kafkaConsumer;
     private final ExecutorService executorService;
 
     /**
      *
      */
-    public KafkaMessageConsumer() {
+    private KafkaMessageConsumer() {
 
         Properties props = new Properties();
         props.put("bootstrap.servers", value(KAFKA_BROKER_URL));
@@ -37,9 +44,26 @@ public class KafkaMessageConsumer {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         this.kafkaConsumer = new KafkaConsumer<>(props);
-        this.kafkaConsumer.subscribe(Arrays.asList(value("")));
+        //load topics
+        this.kafkaConsumer.subscribe(Arrays.asList(
+                value(KAFKA_ACTION_LOG_TOPIC),
+                value(KAFKA_ENRICHED_EVENT_TOPIC),
+                value(KAFKA_LOSS_CONN_TOPIC),
+                value(KAFKA_RAW_EVENT_TOPIC)));
 
         this.executorService = Executors.newFixedThreadPool(valueAsInteger(EXECUTOR_THREADS));
+    }
+
+    public KafkaMessageConsumer(UIController actionPanelController,
+            UIController connectedSensorPanelController,
+            UIController disconnectedSensorPanelController,
+            UIController eventPanelController) {
+        this();
+
+        this.actionPanelController = actionPanelController;
+        this.connectedSensorPanelController = connectedSensorPanelController;
+        this.disconnectedSensorPanelController = disconnectedSensorPanelController;
+        this.eventPanelController = eventPanelController;
     }
 
     /**
@@ -50,6 +74,23 @@ public class KafkaMessageConsumer {
             ConsumerRecords<String, String> records = this.kafkaConsumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
                 this.executorService.submit(() -> {
+                    String topic = record.topic();
+                    String payload = record.value();
+                    switch (topic) {
+                        case KAFKA_ACTION_LOG_TOPIC: //cmd;bsdevId;arg;ts
+                            actionPanelController.process(payload);
+                            break;
+                        case KAFKA_ENRICHED_EVENT_TOPIC: //
+                            eventPanelController.process(payload);
+                            break;
+                        case KAFKA_LOSS_CONN_TOPIC: //devId;ts
+                            disconnectedSensorPanelController.process(payload);
+                            break;
+                        case KAFKA_RAW_EVENT_TOPIC: //devId;type;add;sDevId;dsbs;bsdev;lct;geo
+                            connectedSensorPanelController.process(payload);
+                            break;
+                        default:
+                    }
                 });
             }
         }

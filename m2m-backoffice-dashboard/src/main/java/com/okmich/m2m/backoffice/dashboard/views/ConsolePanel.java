@@ -35,8 +35,14 @@ public class ConsolePanel extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createTitledBorder("Console"));
         setLayout(new java.awt.GridBagLayout());
 
+        consoleTextArea.setEditable(false);
         consoleTextArea.setColumns(20);
+        consoleTextArea.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
+        consoleTextArea.setForeground(new java.awt.Color(0, 51, 102));
         consoleTextArea.setRows(5);
+        consoleTextArea.setText("Ready.....");
+        consoleTextArea.setWrapStyleWord(true);
+        consoleTextArea.setEnabled(false);
         jScrollPane2.setViewportView(consoleTextArea);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -46,7 +52,7 @@ public class ConsolePanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         add(jScrollPane2, gridBagConstraints);
 
-        clearConsoleBtn.setText("jButton1");
+        clearConsoleBtn.setText("Clear Console");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

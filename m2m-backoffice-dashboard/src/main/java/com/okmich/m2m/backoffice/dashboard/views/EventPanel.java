@@ -5,11 +5,13 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import java.util.List;
+
 /**
  *
  * @author ABME340
  */
-public class EventPanel extends javax.swing.JPanel {
+public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
 
     /**
      * Creates new form FeedStatusPanel
@@ -60,4 +62,9 @@ public class EventPanel extends javax.swing.JPanel {
     private javax.swing.JTable eventTable;
     private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void refreshData(List<String[]> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

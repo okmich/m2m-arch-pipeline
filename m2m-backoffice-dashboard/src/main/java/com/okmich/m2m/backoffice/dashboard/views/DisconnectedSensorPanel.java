@@ -5,11 +5,14 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import java.util.List;
+
 /**
  *
  * @author ABME340
  */
-public class DisconnectedSensorPanel extends javax.swing.JPanel {
+public class DisconnectedSensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
 
     /**
      * Creates new form FeedStatusPanel
@@ -52,4 +55,9 @@ public class DisconnectedSensorPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void refreshData(List<Sensor> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

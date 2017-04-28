@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.views;
 
 import java.awt.Font;
+import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -21,7 +22,7 @@ import org.jfree.data.general.DatasetUtilities;
  *
  * @author ABME340
  */
-public class SourceProductionChartPanel extends ChartPanel {
+public class SourceProductionChartPanel extends ChartPanel implements UIView<String[]> {
     
     /**
      *
@@ -65,5 +66,10 @@ public class SourceProductionChartPanel extends ChartPanel {
         );
 
         return chart;
+    }
+
+    @Override
+    public void refreshData(List<String[]> tList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
