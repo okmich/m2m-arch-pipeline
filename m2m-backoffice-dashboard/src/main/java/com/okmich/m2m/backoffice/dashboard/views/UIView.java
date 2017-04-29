@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface UIView<T> {
     
+    void refreshData(T t);
+    
     void refreshData(List<T> tList);
     
 }

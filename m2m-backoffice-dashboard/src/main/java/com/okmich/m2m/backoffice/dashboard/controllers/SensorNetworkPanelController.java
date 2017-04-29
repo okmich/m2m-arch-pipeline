@@ -5,34 +5,40 @@
  */
 package com.okmich.m2m.backoffice.dashboard.controllers;
 
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
  * @author ABME340
  */
-public class SensorNetworkPanelController implements UIController {
+public class SensorNetworkPanelController implements UIController<Sensor> {
 
     /**
-     * 
+     *
      */
-    private final UIView uiview;
+    private final UIView<Sensor> uiview;
 
     /**
-     * 
-     * @param view 
+     *
+     * @param view
      */
-    public SensorNetworkPanelController(UIView view) {
+    public SensorNetworkPanelController(UIView<Sensor> view) {
         this.uiview = view;
     }
 
     @Override
-    public void process(Object t) {
-        
+    public void process(String t) {
+
     }
 
     @Override
     public void addChainControllers(UIController... controllers) {
+
+    }
+
+    @Override
+    public void perform(Sensor t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

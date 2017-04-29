@@ -5,6 +5,7 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.views.tablemodel.DefaultTableModel;
 import java.util.List;
 
 /**
@@ -13,10 +14,13 @@ import java.util.List;
  */
 public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> {
 
+    private final DefaultTableModel tableModel;
+
     /**
      * Creates new form FeedStatusPanel
      */
     public ActionPanel() {
+        tableModel = new DefaultTableModel(new String[]{"Sensor", "Action", "...", "Time"});
         initComponents();
     }
 
@@ -35,22 +39,7 @@ public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Automated Action Log"));
         setLayout(new java.awt.GridLayout(1, 1, 5, 5));
 
-        triggerActionTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Sensor", "Action", "...", "Timestamp"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        triggerActionTable.setModel(tableModel);
         triggerActionTable.setEnabled(false);
         jScrollPane1.setViewportView(triggerActionTable);
 
@@ -65,6 +54,13 @@ public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> 
 
     @Override
     public void refreshData(List<String[]> tList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (String[] data : tList) {
+            this.tableModel.add(data);
+        }
+    }
+
+    @Override
+    public void refreshData(String[] datat) {
+        this.tableModel.add(datat);
     }
 }

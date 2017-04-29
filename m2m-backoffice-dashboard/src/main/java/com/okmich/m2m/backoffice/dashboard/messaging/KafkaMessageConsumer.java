@@ -23,8 +23,8 @@ public class KafkaMessageConsumer {
 
     //list of all controllers 
     private UIController actionPanelController;
-    private UIController connectedSensorPanelController;
-    private UIController disconnectedSensorPanelController;
+    private UIController sensorPanelController;
+    private UIController disconnectedPanelController;
     private UIController eventPanelController;
 
     private final KafkaConsumer<String, String> kafkaConsumer;
@@ -55,15 +55,15 @@ public class KafkaMessageConsumer {
     }
 
     public KafkaMessageConsumer(UIController actionPanelController,
-            UIController connectedSensorPanelController,
-            UIController disconnectedSensorPanelController,
+            UIController sensorPanelController,
+            UIController disconnectedPanelController,
             UIController eventPanelController) {
         this();
 
         this.actionPanelController = actionPanelController;
-        this.connectedSensorPanelController = connectedSensorPanelController;
-        this.disconnectedSensorPanelController = disconnectedSensorPanelController;
+        this.sensorPanelController = sensorPanelController;
         this.eventPanelController = eventPanelController;
+        this.disconnectedPanelController = disconnectedPanelController;
     }
 
     /**
@@ -84,10 +84,10 @@ public class KafkaMessageConsumer {
                             eventPanelController.process(payload);
                             break;
                         case KAFKA_LOSS_CONN_TOPIC: //devId;ts
-                            disconnectedSensorPanelController.process(payload);
+                            disconnectedPanelController.process(payload);
                             break;
-                        case KAFKA_RAW_EVENT_TOPIC: //devId;type;add;sDevId;dsbs;bsdev;lct;geo
-                            connectedSensorPanelController.process(payload);
+                        case KAFKA_RAW_EVENT_TOPIC: //devId;ts;prs;tmp;vol;flv;xbf
+                            sensorPanelController.process(payload);
                             break;
                         default:
                     }

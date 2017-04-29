@@ -31,6 +31,8 @@ public final class OptionRegistry {
     public final static String KAFKA_ACTION_LOG_TOPIC = "kafka.m2m.action.log.topic";
     
     public final static String EXECUTOR_THREADS = "no.executor.thread";
+    
+    public final static String SOURCE_SENSOR_ID = "source.sensor.id";
     /**
      *
      */

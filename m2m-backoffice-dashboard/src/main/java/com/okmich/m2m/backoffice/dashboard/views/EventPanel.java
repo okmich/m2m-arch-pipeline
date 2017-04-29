@@ -5,7 +5,9 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.views.tablemodel.DefaultTableModel;
 import java.util.List;
+import javax.swing.table.AbstractTableModel;
 
 /**
  *
@@ -13,10 +15,13 @@ import java.util.List;
  */
 public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
 
+    private final DefaultTableModel tableModel;
+
     /**
      * Creates new form FeedStatusPanel
      */
     public EventPanel() {
+        tableModel = new DefaultTableModel(new String[]{"Sensor", "Action", "...", "Time"});
         initComponents();
     }
 
@@ -35,22 +40,7 @@ public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
         setBorder(javax.swing.BorderFactory.createTitledBorder("Detected Event"));
         setLayout(new java.awt.GridLayout(1, 0));
 
-        eventTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Sensor", "Event", "Time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        eventTable.setModel(tableModel);
         eventTable.setEnabled(false);
         jScrollPane3.setViewportView(eventTable);
 
@@ -65,6 +55,13 @@ public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
 
     @Override
     public void refreshData(List<String[]> tList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (String[] data : tList) {
+            this.tableModel.add(data);
+        }
+    }
+
+    @Override
+    public void refreshData(String[] datat) {
+        this.tableModel.add(datat);
     }
 }

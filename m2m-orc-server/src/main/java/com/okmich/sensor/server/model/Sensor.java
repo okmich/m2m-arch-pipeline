@@ -6,6 +6,7 @@
 package com.okmich.sensor.server.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -26,18 +27,10 @@ public class Sensor implements Serializable {
 
     /**
      *
-     * @param payload
+     * @param devId
      */
-    public Sensor(String payload) {
-        //devId;type;add;sDevId;dsbs;bsdev;lct;geo
-        String[] parts = payload.split(";");
-        this.devId = parts[0];
-        this.type = parts[1];
-        this.address = parts[2];
-        this.supplyDevId = parts[3];
-        this.baseStationDevId = parts[4];
-        this.distSupplyStation = Float.parseFloat(parts[5]);
-        this.geo = parts[6];
+    public Sensor(String devId) {
+        this.devId = devId;
     }
 
     /**
@@ -139,14 +132,56 @@ public class Sensor implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.devId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Sensor other = (Sensor) obj;
+        if (!Objects.equals(this.devId, other.devId)) {
+            return false;
+        }
+        return true;
+    }
+    
+    public static Sensor valueOf(String payload) {
+        //devId;type;add;sDevId;dsbs;bsdev;lct;geo
+        String[] parts = payload.split(";");
+        
+        Sensor s = new Sensor();
+                
+        s.devId = parts[0];
+        s.type = parts[1];
+        s.address = parts[2];
+        s.supplyDevId = parts[3];
+        s.baseStationDevId = parts[4];
+        s.distSupplyStation = Float.parseFloat(parts[5]);
+        s.geo = parts[6];
+       
+        return s;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s;%s;%s;%s;%s;%s;%s",
                 devId,
                 type,
                 address,
                 supplyDevId,
-                distSupplyStation,
                 baseStationDevId,
+                distSupplyStation,
                 geo);
     }
 }

@@ -68,6 +68,11 @@ public class DashboardPanel extends javax.swing.JPanel implements UIView<String[
 
     @Override
     public void refreshData(List<String[]> tList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+    }
+
+    @Override
+    public void refreshData(String[] t) {
+        
     }
 }

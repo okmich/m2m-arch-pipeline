@@ -5,18 +5,19 @@
  */
 package com.okmich.m2m.backoffice.dashboard.controllers;
 
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
  * @author ABME340
  */
-public class NetworkStatusDistPanelController implements UIController {
+public class NetworkStatusDistPanelController implements UIController<Sensor> {
 
     /**
      * 
      */
-    private final UIView uiview;
+    private final UIView<Sensor> uiview;
 
     /**
      * 
@@ -27,13 +28,17 @@ public class NetworkStatusDistPanelController implements UIController {
     }
 
     @Override
-    public void process(Object t) {
-        
+    public void process(String t) {
     }
 
     @Override
     public void addChainControllers(UIController... controllers) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
+    }
+
+    @Override
+    public void perform(Sensor t) {
+        uiview.refreshData(t);
     }
 
 }

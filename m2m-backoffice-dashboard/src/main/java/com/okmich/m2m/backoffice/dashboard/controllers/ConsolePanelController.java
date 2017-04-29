@@ -11,7 +11,7 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class ConsolePanelController implements UIController {
+public class ConsolePanelController<T> implements UIController<T> {
 
     private final UIView uiview;
 
@@ -20,13 +20,18 @@ public class ConsolePanelController implements UIController {
     }
 
     @Override
-    public void process(Object t) {
+    public void process(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void addChainControllers(UIController... controllers) {
-        
+
+    }
+
+    @Override
+    public void perform(T t) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

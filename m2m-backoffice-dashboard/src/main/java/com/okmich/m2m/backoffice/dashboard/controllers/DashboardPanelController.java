@@ -20,13 +20,18 @@ public class DashboardPanelController implements UIController {
     }
 
     @Override
-    public void process(Object t) {
+    public void process(String t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void addChainControllers(UIController... controllers) {
         
+    }
+
+    @Override
+    public void perform(Object t) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

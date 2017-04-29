@@ -5,6 +5,19 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.SensorRegistry;
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
+import edu.uci.ics.jung.visualization.renderers.Renderer;
+import java.awt.Color;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -12,13 +25,32 @@ import javax.swing.JPanel;
  *
  * @author ABME340
  */
-public class SensorNetworkPanel extends JPanel implements UIView<String[]> {
+public class SensorNetworkPanel extends JPanel implements UIView<Sensor> {
+
+    private final VisualizationViewer vizViewer;
+
+    private final List<Sensor> sensors;
 
     /**
      * Creates new form SensorNetworkPanel
+     *
+     * @param sensorRegistry
      */
-    public SensorNetworkPanel() {
+    public SensorNetworkPanel(SensorRegistry sensorRegistry) {
+        Graph<Sensor, String> networkGraph = new DirectedSparseGraph<>();
         initComponents();
+
+        this.sensors = sensorRegistry.getSensors();
+        for (Sensor s : sensors) {
+            networkGraph.addVertex(s);
+        }
+        for (Sensor s : sensors) {
+            if (s.getSupplyDevId() != null) {
+                networkGraph.addEdge(s.getDevId(), new Sensor(s.getSupplyDevId()), s);
+            }
+        }
+        this.vizViewer = createVizualizationViewer(networkGraph);
+        add(vizViewer);
     }
 
     /**
@@ -30,15 +62,64 @@ public class SensorNetworkPanel extends JPanel implements UIView<String[]> {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setPreferredSize(new java.awt.Dimension(400, 400));
+        setPreferredSize(new java.awt.Dimension(700, 300));
         setLayout(new java.awt.GridLayout(1, 0));
     }// </editor-fold>//GEN-END:initComponents
 
     @Override
-    public void refreshData(List<String[]> tList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void refreshData(List<Sensor> tList) {
+        for (Sensor s : tList) {
+            refreshData(s);
+        }
     }
 
+    @Override
+    public void refreshData(Sensor t) {
+        int idex = this.sensors.indexOf(t.getDevId());
+        if (idex > -1) {
+            Sensor sensor = this.sensors.get(idex);
+            sensor.setStatus(t.getStatus());
+        }
+        this.vizViewer.repaint();
+    }
+
+    private VisualizationViewer<Sensor, String> createVizualizationViewer(Graph<Sensor, String> graph) {
+        Layout<Sensor, String> layout = new ISOMLayout<>(graph);
+        layout.setSize(getPreferredSize());
+        VisualizationViewer<Sensor, String> vv = new VisualizationViewer<>(layout);
+        vv.setPreferredSize(getPreferredSize());
+        // Show vertex and edge labels
+        vv.getRenderContext().setVertexLabelTransformer((Sensor f) -> f.getDevId());
+        vv.getRenderContext().setVertexShapeTransformer((Sensor f) -> {
+            double width = f.getDevId().length() * 10.0;
+            if ("ns".equals(f.getType())) {
+                return new Ellipse2D.Double(-(width / 2), -12.5, width, 25);
+            } else {
+                return new Rectangle2D.Double(-(width / 2), -12.5, width, 25);
+            }
+        });
+        vv.getRenderContext().setVertexFillPaintTransformer((Sensor f) -> {
+            String status = f.getStatus();
+            switch (status) {
+                case Sensor.STATUS_ACTIVE:
+                    return Color.GREEN;
+                case Sensor.STATUS_INACTIVE:
+                    return Color.RED;
+                default:
+                    return Color.CYAN;
+            }
+        });
+        vv.getRenderContext().setEdgeLabelTransformer((String f) -> "");
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
+        // Create a graph mouse and add it to the visualization component
+        DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
+        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+        vv.setGraphMouse(gm);
+        // Add the mouses mode key listener to work it needs to be added to the visualization component
+        vv.addKeyListener(gm.getModeKeyListener());
+
+        return vv;
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

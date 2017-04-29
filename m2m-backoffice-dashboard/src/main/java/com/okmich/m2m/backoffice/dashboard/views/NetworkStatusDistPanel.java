@@ -5,8 +5,15 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.SensorRegistry;
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import java.awt.Font;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -18,24 +25,23 @@ import org.jfree.data.general.DefaultPieDataset;
  *
  * @author ABME340
  */
-public class NetworkStatusDistPanel extends ChartPanel implements UIView<String[]> {
+public final class NetworkStatusDistPanel extends ChartPanel implements UIView<Sensor> {
 
-    public NetworkStatusDistPanel() {
+    private static DefaultPieDataset dataset;
+    private final Set<String> sensors = new HashSet<>();
+
+    public NetworkStatusDistPanel(SensorRegistry sensorRegistry) {
         super(createJFreeChart());
+        refreshData(sensorRegistry.getSensors());
     }
-    
-    
-    
+
     /**
      * Creates a panel for the demo (used by SuperDemo.java).
      *
      * @return A panel.
      */
     public static JFreeChart createJFreeChart() {
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        dataset.setValue("Active", new Double(5));
-        dataset.setValue("Inactive", new Double(2));
-        dataset.setValue("Stale", new Double(3));
+        dataset = new DefaultPieDataset();
 
         JFreeChart chart = ChartFactory.createPieChart(
                 "", // chart title
@@ -50,7 +56,7 @@ public class NetworkStatusDistPanel extends ChartPanel implements UIView<String[
         plot.setNoDataMessage("No data available");
         plot.setCircular(false);
         plot.setLabelGap(0.02);
-        
+
         chart.setTitle(new TextTitle("Sensor network status distribution",
                 new Font("Serif", java.awt.Font.BOLD, 18)));
 
@@ -58,8 +64,42 @@ public class NetworkStatusDistPanel extends ChartPanel implements UIView<String[
     }
 
     @Override
-    public void refreshData(List<String[]> tList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void refreshData(List<Sensor> tList) {
+        tList.stream().forEach((Sensor s) -> refreshData(s));
     }
 
+    @Override
+    public void refreshData(Sensor t) {
+        boolean added = this.sensors.add(t.getDevId() + "=" + t.getStatus());
+        if (added) {
+            reloadDataset();
+        }
+    }
+
+    private void reloadDataset() {
+        Map<String, Long> groupting = this.sensors.stream()
+                .map((String t) -> t.split("=")[1])
+                .map((String s) -> getLabel(s))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        groupting.keySet().stream().forEach((key) -> {
+            dataset.setValue(key, groupting.get(key));
+        });
+    }
+
+    /**
+     *
+     * @param s
+     * @return
+     */
+    private String getLabel(String s) {
+        switch (s) {
+            case Sensor.STATUS_ACTIVE:
+                return "Connected and reading";
+            case Sensor.STATUS_INACTIVE:
+                return "Disconnected";
+            default:
+                return "Connected not reading";
+        }
+    }
 }

@@ -15,27 +15,26 @@ import java.util.List;
  *
  * @author ABME340
  */
-public class DisconnectedSensorPanelController implements UIController<Sensor> {
+public class SensorPanelController implements UIController<Sensor> {
 
+    private final UIView<Sensor> uiview;
     private final List<UIController<Sensor>> controllers;
 
-    /**
-     *
-     * @param view
-     */
-    public DisconnectedSensorPanelController(UIView view) {
-        //do nothing
+    public SensorPanelController(UIView<Sensor> view) {
+        this.uiview = view;
         this.controllers = new ArrayList<>();
     }
 
     @Override
     public void process(String t) {
-        //devId;ts
+        //devId;ts;prs;tmp;vol;flv;xbf
         String[] fields = t.split(";");
         Sensor sensor = new Sensor();
         sensor.setDevId(fields[0]);
         sensor.setTimestamp(Long.parseLong(fields[1]));
-        sensor.setStatus(Sensor.STATUS_INACTIVE);
+        sensor.setCapacity(Double.parseDouble(fields[4]));
+        sensor.setStatus(Sensor.STATUS_ACTIVE);
+        sensor.setFlowVelocity(Double.parseDouble(fields[5]));
         //
         perform(sensor);
         //perform for each
@@ -51,7 +50,7 @@ public class DisconnectedSensorPanelController implements UIController<Sensor> {
 
     @Override
     public void perform(Sensor t) {
-        //do nothing
+        uiview.refreshData(t);
     }
 
 }

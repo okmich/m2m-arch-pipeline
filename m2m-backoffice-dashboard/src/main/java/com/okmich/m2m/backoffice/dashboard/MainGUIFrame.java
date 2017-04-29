@@ -11,9 +11,8 @@ import com.okmich.m2m.backoffice.dashboard.views.ConsolePanel;
 import com.okmich.m2m.backoffice.dashboard.views.EventPanel;
 import com.okmich.m2m.backoffice.dashboard.views.SourceProductionChartPanel;
 import com.okmich.m2m.backoffice.dashboard.views.NetworkStatusDistPanel;
-import com.okmich.m2m.backoffice.dashboard.views.ConnectedSensorPanel;
+import com.okmich.m2m.backoffice.dashboard.views.SensorPanel;
 import com.okmich.m2m.backoffice.dashboard.views.SensorNetworkPanel;
-import com.okmich.m2m.backoffice.dashboard.views.DisconnectedSensorPanel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
@@ -28,8 +27,7 @@ public class MainGUIFrame extends javax.swing.JFrame {
 
     /**
      *
-     * @param connectedSensorPanel
-     * @param disconnectedSensorPanel
+     * @param sensorPanel
      * @param eventPanel
      * @param actionPanel
      * @param sourceProductionChartPanel
@@ -37,8 +35,7 @@ public class MainGUIFrame extends javax.swing.JFrame {
      * @param sensorNetworkPanel
      * @param consolePanel
      */
-    public MainGUIFrame(ConnectedSensorPanel connectedSensorPanel,
-            DisconnectedSensorPanel disconnectedSensorPanel,
+    public MainGUIFrame(SensorPanel sensorPanel,
             EventPanel eventPanel,
             ActionPanel actionPanel,
             SourceProductionChartPanel sourceProductionChartPanel,
@@ -76,11 +73,11 @@ public class MainGUIFrame extends javax.swing.JFrame {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> after getContentPane().add(new DashboardPanel(), BorderLayout.NORTH)");
         getContentPane().add(eventActionPanel, BorderLayout.EAST);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> after getContentPane().add(new eventActionPanel(), BorderLayout.EAST)");
-        JPanel feedPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-        feedPanel.add(connectedSensorPanel);
-        feedPanel.add(disconnectedSensorPanel);
+//        JPanel feedPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+//        feedPanel.add(connectedSensorPanel);
+//        feedPanel.add(disconnectedSensorPanel);
 
-        getContentPane().add(feedPanel, BorderLayout.WEST);
+        getContentPane().add(sensorPanel, BorderLayout.WEST);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>> after getContentPane().add(new FeedStatusPanel(), BorderLayout.WEST)");
 
         JPanel centerPanel = new JPanel(new GridLayout(2, 1, 5, 5));

@@ -11,9 +11,9 @@ package com.okmich.m2m.backoffice.dashboard.controllers;
  */
 public interface UIController<T> {
 
-    void process(T payload);
+    void process(String payload);
     
-    void addChainControllers(UIController... controllers);
+    void addChainControllers(UIController<T>... controllers);
     
-    //void perform(T t);
+    void perform(T t);
 }
