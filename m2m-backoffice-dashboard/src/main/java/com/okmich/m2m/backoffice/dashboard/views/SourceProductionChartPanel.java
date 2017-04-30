@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.views;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -30,7 +31,7 @@ import org.jfree.ui.StandardGradientPaintTransformer;
  *
  * @author ABME340
  */
-public class SourceProductionChartPanel extends ChartPanel implements UIView<String[]> {
+public class SourceProductionChartPanel extends ChartPanel implements UIView<Sensor> {
 
     private static DefaultValueDataset dataset;
 
@@ -102,12 +103,12 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Str
     }
 
     @Override
-    public void refreshData(List<String[]> tList) {
+    public void refreshData(List<Sensor> tList) {
 
     }
 
     @Override
-    public void refreshData(String[] t) {
-
+    public void refreshData(Sensor t) {
+        dataset.setValue(t.getCapacity());
     }
 }

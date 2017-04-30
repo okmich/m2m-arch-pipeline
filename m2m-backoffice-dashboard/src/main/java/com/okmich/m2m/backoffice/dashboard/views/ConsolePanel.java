@@ -5,11 +5,13 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import java.util.List;
+
 /**
  *
  * @author ABME340
  */
-public class ConsolePanel extends javax.swing.JPanel {
+public class ConsolePanel extends javax.swing.JPanel implements UIView<String> {
 
     /**
      * Creates new form ConsolePanel
@@ -37,8 +39,8 @@ public class ConsolePanel extends javax.swing.JPanel {
 
         consoleTextArea.setEditable(false);
         consoleTextArea.setColumns(20);
-        consoleTextArea.setFont(new java.awt.Font("Monospaced", 0, 10)); // NOI18N
-        consoleTextArea.setForeground(new java.awt.Color(0, 51, 102));
+        consoleTextArea.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        consoleTextArea.setForeground(java.awt.Color.black);
         consoleTextArea.setRows(5);
         consoleTextArea.setText("Ready.....");
         consoleTextArea.setWrapStyleWord(true);
@@ -69,4 +71,13 @@ public class ConsolePanel extends javax.swing.JPanel {
     private javax.swing.JTextArea consoleTextArea;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void refreshData(String t) {
+        consoleTextArea.setText(t + "\n" + consoleTextArea.getText());
+    }
+
+    @Override
+    public void refreshData(List<String> tList) {
+    }
 }

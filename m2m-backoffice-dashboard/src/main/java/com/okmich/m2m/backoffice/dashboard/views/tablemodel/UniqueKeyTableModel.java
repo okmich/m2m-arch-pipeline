@@ -5,11 +5,11 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views.tablemodel;
 
+import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
@@ -21,7 +21,7 @@ import javax.swing.table.AbstractTableModel;
 public class UniqueKeyTableModel extends AbstractTableModel {
 
     private final String[] columnNames;
-    private final List<String[]> dataset;
+    private final List<Sensor> dataset;
     private final Map<String, Integer> indexMap;
 
     private static final Logger LOG = Logger.getLogger(UniqueKeyTableModel.class.getName());
@@ -56,7 +56,6 @@ public class UniqueKeyTableModel extends AbstractTableModel {
 //                return String.class;
 //        }
 //    }
-
     @Override
     public int getColumnCount() {
         return columnNames.length;
@@ -69,20 +68,26 @@ public class UniqueKeyTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        String[] row = this.dataset.get(rowIndex);
+        Sensor row = this.dataset.get(rowIndex);
         if (row != null) {
-            return row[columnIndex];
+            switch (columnIndex) {
+                case 0:
+                    return row.getDevId();
+                case 1:
+                    return row.getAddress();
+                case 2:
+                    return row.getTimestamp();
+            }
+            return "";
         }
         return null;
     }
 
-    public void add(String key, String[] data) {
+    public void add(String key, Sensor data) {
         if (indexMap.containsKey(key)) {
             this.dataset.set(indexMap.get(key), data);
-        } else {
-            if (this.dataset.add(data)) {
-                indexMap.put(key, this.dataset.size() - 1);
-            }
+        } else if (this.dataset.add(data)) {
+            indexMap.put(key, this.dataset.size() - 1);
         }
         try {
             this.fireTableDataChanged();
@@ -94,7 +99,7 @@ public class UniqueKeyTableModel extends AbstractTableModel {
     public void remove(String key) {
         if (indexMap.containsKey(key)) {
             int index = indexMap.get(key);
-            dataset.remove(index);
+            dataset.remove(new Sensor(key));
             indexMap.values().stream().forEach((Integer t) -> {
                 if (t > index) {
                     --t;

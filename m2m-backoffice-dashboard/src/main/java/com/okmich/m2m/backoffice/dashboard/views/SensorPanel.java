@@ -107,10 +107,10 @@ public class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
     private void loadTableModels(Sensor sensor) {
         String dateTime = DF.format(new Date(sensor.getTimestamp()));
         if (Sensor.STATUS_INACTIVE.equals(sensor.getStatus())) {
-            disconnectedSensorTableModel.add(sensor.getDevId(), new String[]{sensor.getDevId(), sensor.getAddress(), dateTime});
+            disconnectedSensorTableModel.add(sensor.getDevId(), sensor);
             connectedSensorTableModel.remove(sensor.getDevId());
         } else {
-            connectedSensorTableModel.add(sensor.getDevId(), new String[]{sensor.getDevId(), sensor.getAddress(), dateTime});
+            connectedSensorTableModel.add(sensor.getDevId(), sensor);
             disconnectedSensorTableModel.remove(sensor.getDevId());
         }
     }

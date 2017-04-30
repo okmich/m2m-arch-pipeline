@@ -77,7 +77,7 @@ public final class Main {
         SourceProductionChartPanel sourceProductionChartPanel = new SourceProductionChartPanel();
 
         //create all the controllers
-        UIController<Object> consolePanelController = new ConsolePanelController(sensorPanel);
+        UIController<String> consolePanelController = new ConsolePanelController(consolePanel);
         DashboardPanelController dashboardPanelController = new DashboardPanelController(dashboardPanel);
         UIController<Sensor> networkStatusDistPanelController = new NetworkStatusDistPanelController(networkStatusDistPanel);
         UIController<Sensor> sensorNetworkPanelController
@@ -93,7 +93,9 @@ public final class Main {
         //wire the contoller chains
         sensorPanelController.addChainControllers(sourceProductionChartPanelController,
                 networkStatusDistPanelController, sensorNetworkPanelController);
-        disconnectedSensorPanelController.addChainControllers(sensorPanelController);
+        disconnectedSensorPanelController.addChainControllers(sensorPanelController,
+                networkStatusDistPanelController,
+                sensorNetworkPanelController);
 
         //create the main gui
         mainGUIFrame = new MainGUIFrame(sensorPanel,
@@ -107,7 +109,8 @@ public final class Main {
         kafkaMessageConsumer = new KafkaMessageConsumer(actionPanelController,
                 sensorPanelController,
                 disconnectedSensorPanelController,
-                eventPanelController);
+                eventPanelController,
+                consolePanelController);
     }
 
     public void start() {

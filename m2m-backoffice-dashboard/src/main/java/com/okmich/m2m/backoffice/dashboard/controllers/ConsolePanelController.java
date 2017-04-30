@@ -11,17 +11,17 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class ConsolePanelController<T> implements UIController<T> {
+public class ConsolePanelController implements UIController<String> {
 
-    private final UIView uiview;
+    private final UIView<String> uiview;
 
-    public ConsolePanelController(UIView view) {
+    public ConsolePanelController(UIView<String> view) {
         this.uiview = view;
     }
 
     @Override
     public void process(String t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        perform(t);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class ConsolePanelController<T> implements UIController<T> {
     }
 
     @Override
-    public void perform(T t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void perform(String t) {
+        uiview.refreshData(t);
     }
 
 }

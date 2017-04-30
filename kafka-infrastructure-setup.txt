@@ -10,3 +10,13 @@ m2m.loss.sensor.conn.topic	when sensors are detected to have loss connection, al
 m2m.classified.msg.topic	The topic that where the streaming engine will place all event that has been classified and inferred upon. The main consumers of this topic will be the dashboard and action trigger applications 
 
 m2m.action.log.topic		Where every generated action from the action trigger application will be logged. The main consumer of this topic is the front end.
+
+
+
+kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.raw.event.data.topic --create --partitions 1 --replication-factor 1
+kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.enriched.event.data.topic --create --partitions 1 --replication-factor 1
+kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.loss.sensor.conn.topic --create --partitions 1 --replication-factor 1
+kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.classified.msg.topic --create --partitions 1 --replication-factor 1
+kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.action.log.topic --create --partitions 1 --replication-factor 1
+
+

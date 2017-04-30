@@ -7,7 +7,6 @@ package com.okmich.m2m.backoffice.dashboard.views;
 
 import com.okmich.m2m.backoffice.dashboard.views.tablemodel.DefaultTableModel;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 
 /**
  *
@@ -38,6 +37,7 @@ public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
         eventTable = new javax.swing.JTable();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Detected Event"));
+        setPreferredSize(new java.awt.Dimension(350, 424));
         setLayout(new java.awt.GridLayout(1, 0));
 
         eventTable.setModel(tableModel);

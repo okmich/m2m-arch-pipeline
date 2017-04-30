@@ -75,7 +75,7 @@ public class SensorNetworkPanel extends JPanel implements UIView<Sensor> {
 
     @Override
     public void refreshData(Sensor t) {
-        int idex = this.sensors.indexOf(t.getDevId());
+        int idex = this.sensors.indexOf(t);
         if (idex > -1) {
             Sensor sensor = this.sensors.get(idex);
             sensor.setStatus(t.getStatus());

@@ -26,6 +26,7 @@ public class KafkaMessageConsumer {
     private UIController sensorPanelController;
     private UIController disconnectedPanelController;
     private UIController eventPanelController;
+    private UIController consoleController;
 
     private final KafkaConsumer<String, String> kafkaConsumer;
     private final ExecutorService executorService;
@@ -57,13 +58,15 @@ public class KafkaMessageConsumer {
     public KafkaMessageConsumer(UIController actionPanelController,
             UIController sensorPanelController,
             UIController disconnectedPanelController,
-            UIController eventPanelController) {
+            UIController eventPanelController,
+            UIController consoleController) {
         this();
 
         this.actionPanelController = actionPanelController;
         this.sensorPanelController = sensorPanelController;
         this.eventPanelController = eventPanelController;
         this.disconnectedPanelController = disconnectedPanelController;
+        this.consoleController = consoleController;
     }
 
     /**
@@ -76,21 +79,21 @@ public class KafkaMessageConsumer {
                 this.executorService.submit(() -> {
                     String topic = record.topic();
                     String payload = record.value();
-                    switch (topic) {
-                        case KAFKA_ACTION_LOG_TOPIC: //cmd;bsdevId;arg;ts
-                            actionPanelController.process(payload);
-                            break;
-                        case KAFKA_ENRICHED_EVENT_TOPIC: //
-                            eventPanelController.process(payload);
-                            break;
-                        case KAFKA_LOSS_CONN_TOPIC: //devId;ts
-                            disconnectedPanelController.process(payload);
-                            break;
-                        case KAFKA_RAW_EVENT_TOPIC: //devId;ts;prs;tmp;vol;flv;xbf
-                            sensorPanelController.process(payload);
-                            break;
-                        default:
+
+                    if (topic.equals(value(KAFKA_ACTION_LOG_TOPIC))) {
+                        //cmd;bsdevId;arg;ts
+                        actionPanelController.process(payload);
+                    } else if (topic.equals(value(KAFKA_ENRICHED_EVENT_TOPIC))) {
+                        //
+                        eventPanelController.process(payload);
+                    } else if (topic.equals(value(KAFKA_LOSS_CONN_TOPIC))) {
+                        //devId;ts
+                        disconnectedPanelController.process(payload);
+                    } else if (topic.equals(value(KAFKA_RAW_EVENT_TOPIC))) {
+                        //devId;ts;prs;tmp;vol;flv;xbf
+                        sensorPanelController.process(payload);
                     }
+                    consoleController.process(payload);
                 });
             }
         }

@@ -37,6 +37,7 @@ public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> 
         triggerActionTable = new javax.swing.JTable();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Automated Action Log"));
+        setPreferredSize(new java.awt.Dimension(350, 424));
         setLayout(new java.awt.GridLayout(1, 1, 5, 5));
 
         triggerActionTable.setModel(tableModel);

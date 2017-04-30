@@ -95,11 +95,11 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
     private String getLabel(String s) {
         switch (s) {
             case Sensor.STATUS_ACTIVE:
-                return "Connected and reading";
+                return "Active";
             case Sensor.STATUS_INACTIVE:
                 return "Disconnected";
             default:
-                return "Connected not reading";
+                return "Stale";
         }
     }
 }

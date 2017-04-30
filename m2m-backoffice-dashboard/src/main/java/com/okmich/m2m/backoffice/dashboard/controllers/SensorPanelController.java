@@ -38,9 +38,9 @@ public class SensorPanelController implements UIController<Sensor> {
         //
         perform(sensor);
         //perform for each
-        this.controllers.stream().forEach((UIController<Sensor> t1) -> {
+        for (UIController<Sensor> t1 : this.controllers) {
             t1.perform(sensor);
-        });
+        }
     }
 
     @Override

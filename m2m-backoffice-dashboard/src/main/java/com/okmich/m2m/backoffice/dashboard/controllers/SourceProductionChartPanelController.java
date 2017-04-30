@@ -18,7 +18,7 @@ public class SourceProductionChartPanelController implements UIController<Sensor
     /**
      * uiview
      */
-    private final UIView<Double> uiview;
+    private final UIView<Sensor> uiview;
 
     /**
      * SOURCE_SENSOR
@@ -55,6 +55,9 @@ public class SourceProductionChartPanelController implements UIController<Sensor
 
     @Override
     public void perform(Sensor t) {
+        if (!SOURCE_SENSOR.equals(t.getDevId())) {
+            return;
+        }
         //do nothing
         if (Sensor.STATUS_ACTIVE.equals(t.getStatus())) {
             long ts = t.getTimestamp();
@@ -62,8 +65,8 @@ public class SourceProductionChartPanelController implements UIController<Sensor
 
             //do some logic
             double totaldailyVol = 20;
-            
-            uiview.refreshData(totaldailyVol);
+            t.setCapacity(totaldailyVol);
+            uiview.refreshData(t);
         }
     }
 

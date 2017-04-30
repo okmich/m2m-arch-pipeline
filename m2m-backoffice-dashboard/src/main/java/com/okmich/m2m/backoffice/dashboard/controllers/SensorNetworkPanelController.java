@@ -39,7 +39,7 @@ public class SensorNetworkPanelController implements UIController<Sensor> {
 
     @Override
     public void perform(Sensor t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        uiview.refreshData(t);
     }
 
 }
