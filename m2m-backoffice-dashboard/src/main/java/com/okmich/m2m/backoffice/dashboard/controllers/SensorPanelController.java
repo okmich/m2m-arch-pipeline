@@ -27,14 +27,15 @@ public class SensorPanelController implements UIController<Sensor> {
 
     @Override
     public void process(String t) {
-        //devId;ts;prs;tmp;vol;flv;xbf
+        //devId;ts;prs;tmp;vol;flv;xbf;devId;ts;prs;tmp;vol;flv;xbf;dist;clz;incd
         String[] fields = t.split(";");
         Sensor sensor = new Sensor();
-        sensor.setDevId(fields[0]);
-        sensor.setTimestamp(Long.parseLong(fields[1]));
-        sensor.setCapacity(Double.parseDouble(fields[4]));
+        sensor.setDevId(fields[7]);
+        sensor.setTimestamp(Long.parseLong(fields[8]));
+        sensor.setCapacity(Double.parseDouble(fields[11]));
+        sensor.setFlowVelocity(Double.parseDouble(fields[12]));
+        sensor.setSupplyDevId(fields[0]);
         sensor.setStatus(Sensor.STATUS_ACTIVE);
-        sensor.setFlowVelocity(Double.parseDouble(fields[5]));
         //
         perform(sensor);
         //perform for each

@@ -14,31 +14,33 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
 public class EventPanelController implements UIController<String[]> {
 
     /**
-     * 
+     *
      */
-    private final UIView uiview;
+    private final UIView<String[]> uiview;
 
     /**
-     * 
-     * @param view 
+     *
+     * @param view
      */
-    public EventPanelController(UIView view) {
+    public EventPanelController(UIView<String[]> view) {
         this.uiview = view;
     }
 
     @Override
     public void process(String t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //devId;ts;prs;tmp;vol;flv;xbf;devId;ts;prs;tmp;vol;flv;xbf;dist;clz;incd
+        String[] fields = t.split(";");
+        perform(new String[]{fields[7], fields[15], fields[16], fields[8]});
     }
 
     @Override
     public void addChainControllers(UIController... controllers) {
-      
+
     }
 
     @Override
     public void perform(String[] t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        uiview.refreshData(t);
     }
 
 }

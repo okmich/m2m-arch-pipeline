@@ -49,8 +49,7 @@ public class KafkaMessageConsumer {
         this.kafkaConsumer.subscribe(Arrays.asList(
                 value(KAFKA_ACTION_LOG_TOPIC),
                 value(KAFKA_ENRICHED_EVENT_TOPIC),
-                value(KAFKA_LOSS_CONN_TOPIC),
-                value(KAFKA_RAW_EVENT_TOPIC)));
+                value(KAFKA_LOSS_CONN_TOPIC)));
 
         this.executorService = Executors.newFixedThreadPool(valueAsInteger(EXECUTOR_THREADS));
     }
@@ -84,14 +83,12 @@ public class KafkaMessageConsumer {
                         //cmd;bsdevId;arg;ts
                         actionPanelController.process(payload);
                     } else if (topic.equals(value(KAFKA_ENRICHED_EVENT_TOPIC))) {
-                        //
+                        //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
+                        sensorPanelController.process(payload);
                         eventPanelController.process(payload);
                     } else if (topic.equals(value(KAFKA_LOSS_CONN_TOPIC))) {
                         //devId;ts
                         disconnectedPanelController.process(payload);
-                    } else if (topic.equals(value(KAFKA_RAW_EVENT_TOPIC))) {
-                        //devId;ts;prs;tmp;vol;flv;xbf
-                        sensorPanelController.process(payload);
                     }
                     consoleController.process(payload);
                 });

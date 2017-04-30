@@ -31,22 +31,22 @@ class Reading (val xDevId : String, val xts : Long, val xPrs : Float, val xTmp :
 	 *
 	 * @return String
 	 */
-	override def toString : String = "xDvId:" + xDevId + ";xts:" +
-								xts + ";xPrs:" +
-								xPrs + ";xTmp:" +
-								xTmp + ";xVol:" +
-								xVol + ";xFlv:" +
-								xFlv + ";xXbr:" +
-								xXbr + ";iDvId:" +
-								iDevId + ";its:" +
-								its + ";iPrs:" +
-								iPrs + ";iTmp:" +
-								iTmp + ";iVol:" +
-								iVol + ";iFlv:" +
-								iFlv + ";iXbr:" +
-								iXbr + ";dist:" +
-								dist + ";cls:" +
-								cls + ";incd:" +
+	override def toString : String = xDevId + ";" +
+								xts + ";" +
+								xPrs + ";" +
+								xTmp + ";" +
+								xVol + ";" +
+								xFlv + ";" +
+								xXbr + ";" +
+								iDevId + ";" +
+								its + ";" +
+								iPrs + ";" +
+								iTmp + ";" +
+								iVol + ";" +
+								iFlv + ";" +
+								iXbr + ";" +
+								dist + ";" +
+								cls + ";" +
 								incd
 }
 

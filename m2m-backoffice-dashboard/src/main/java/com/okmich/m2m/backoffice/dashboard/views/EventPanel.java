@@ -20,7 +20,7 @@ public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
      * Creates new form FeedStatusPanel
      */
     public EventPanel() {
-        tableModel = new DefaultTableModel(new String[]{"Sensor", "Action", "...", "Time"});
+        tableModel = new DefaultTableModel(new String[]{"Sensor", "Event", "...", "Time"});
         initComponents();
     }
 
