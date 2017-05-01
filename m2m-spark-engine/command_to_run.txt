@@ -1,0 +1,1 @@
+spark-submit --class Main target/scala-2.10/m2m-pipeline-assembly-1.0.jar -name=M2M.Streaming.Engine -duration=15000 -consumeTopic=m2m.enriched.event.topic -produceTopic=m2m.classified.event.topic -kafkaBrokerUrls=datadev-box:9092  -zkHost=datadev-box -zkClientPort=2181

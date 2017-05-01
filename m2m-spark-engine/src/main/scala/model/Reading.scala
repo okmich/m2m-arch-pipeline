@@ -1,30 +1,14 @@
 package model
 
 class Reading (val xDevId : String, val xts : Long, val xPrs : Float, val xTmp : Float, val xVol : Float,
-				val xFlv : Float, val xXbr : Float,
-			 val iDevId : String, val its : Long, val iPrs : Float, val iTmp : Float, val iVol : Float,
-			 val iFlv : Float, val iXbr : Float, val dist : Float, var cls : String = "", var incd : Float = 0f
+				 val xFlv : Float, val xXbr : Float,
+				 val iDevId : String, val its : Long, val iPrs : Float, val iTmp : Float, val iVol : Float,
+				 val iFlv : Float, val iXbr : Float, val dist : Float, var fSts : String = "A", var cls : String = "",
+				 var incd : Float = 0f
 		 ) extends java.io.Serializable {
 
-	//rowkey
-	//xDevId
-	//xts
-	//xPrs
-	//xTmp
-	//xVol
-	//xFlv
-	//xXbr
-	//iDevId
-	//its
-	//iPrs
-	//iTmp
-	//iVol
-	//iFlv
-	//iXbr
-	//dist
-	//cls
 	def toTuple  = {
-		(xDevId + ":" + (-1 * xts).toString, xDevId, xts, xPrs, xTmp, xVol, xFlv, xXbr, iDevId, its, iPrs, iTmp, iVol, iFlv, iXbr, dist, cls, incd)
+		(xDevId + ":" + (-1 * xts).toString, xDevId, xts, xPrs, xTmp, xVol, xFlv, xXbr, iDevId, its, iPrs, iTmp, iVol, iFlv, iXbr, dist, fSts, cls, incd)
 	}
 
 	/**
@@ -46,6 +30,7 @@ class Reading (val xDevId : String, val xts : Long, val xPrs : Float, val xTmp :
 								iFlv + ";" +
 								iXbr + ";" +
 								dist + ";" +
+								fSts + ";" +
 								cls + ";" +
 								incd
 }
@@ -72,13 +57,17 @@ object Reading {
   //         + ";prs:" + pressure + ";tmp:" + temperature + ";vol:" + volume
   //         + ";flv:" + flowVelocity + ";xbf:" + extBodyForce;
 	private def parseReading(s: String) = {
-		val parts = s.split(";")
-		(parts(0), 						//devId
-			parts(1).toLong, 		//ts
-			parts(2).toFloat, 	//prs
-			parts(3).toFloat, 	//tmp
-			parts(4).toFloat, 	//vol
-			parts(5).toFloat, 	//flv
-			parts(6).toFloat)		//xbf
+		if (s.isEmpty){
+			("",0L,0f,0f,0f,0f,0f)
+		}else{
+			val parts = s.split(";")
+			(parts(0), 						//devId
+				parts(1).toLong, 		//ts
+				parts(2).toFloat, 	//prs
+				parts(3).toFloat, 	//tmp
+				parts(4).toFloat, 	//vol
+				parts(5).toFloat, 	//flv
+				parts(6).toFloat)		//xbf
+		}
 	}
 }

@@ -25,12 +25,15 @@ object Main {
 
 	def main(args: Array[String]) : Unit  = {
 		if (args.length < 5){
-			println("General arguments: -name=<app_name> -duration=<duration> -consumeTopic=<consume_topic> -produceTopic=<produce_topic> -kafkaBrokerUrls=<broker_list>")
+			println("General arguments: -name=<app_name> -duration=<duration> -consumeTopic=<consume_topic> -produceTopic=<produce_topic> -kafkaBrokerUrls=<broker_list> -zkHost=<zk_host> -zkClientPort=<zk_port>")
 			System.exit(-1)
 		}
 		val opts = parseCmdLineArgs(args)
 
 		val sparkConf = new SparkConf().setAppName(opts("name"))
+		sparkConf.set("hbase.zookeeper.quorum", opts("zkHost"))
+		sparkConf.set("hbase.zookeeper.property.clientPort", opts("zkClientPort"))
+		sparkConf.set("spark.hbase.host", opts("zkHost"))
 		val streamingCtx = new StreamingContext(sparkConf, Milliseconds(opts("duration").toInt))
 
 		val receiverTopics = Set(opts("consumeTopic"))
@@ -59,16 +62,16 @@ object Main {
 	 * @param rdd
 	 */
 	def processSensorReadingRDD(rdd: RDD[String], bOpts: Broadcast[Map[String, String]]) : Unit ={
-		val enrichedReading = rdd.mapPartition(partn => {
+		val enrichedReading = rdd.mapPartitions(partn => {
 			//convert each string to Reading
 			val opts = bOpts.value
-			val kafkaDwnStreanProd = new KafkaMessageProducer()
+			val kafkaDwnStreanProd = new KafkaMessageProducer(opts("kafkaBrokerUrls"), opts("produceTopic"))
 			//convert to Reading RDD
 			val readingRDD = partn map (Reading(_))
 			//perform ML classification
 			val classifiedReading = classify(readingRDD)
 			//send classified Reading to Kafka downstream
-			kafkaDwnStreanProd.sendMessage(classifiedReading, opts("kafkaBrokerUrls"), opts("produceTopic"))
+			kafkaDwnStreanProd.sendMessage(classifiedReading)
 			//return
 			classifiedReading
 		})
@@ -84,7 +87,7 @@ object Main {
 	 * @return Iterator[Reading]
 	 */
 	def classify(rdd: Iterator[Reading]) : Iterator[Reading] = {
-
+		
 		rdd
 	}
 
@@ -96,7 +99,7 @@ object Main {
 	def saveToHBase(rdd: RDD[Reading]) : Unit = {
 		rdd.map(i => i.toTuple)
 		 	.toHBaseTable("sensor_data")
-		    .toColumns("pDvId", "pts", "pPrs", "pTmp", "pVol", "pFlv", "pXbr", "iDvId", "ts", "prs", "tmp", "vol", "flv", "xbr", "dst", "clz", "incd")
+		    .toColumns("pDvId", "pts", "pPrs", "pTmp", "pVol", "pFlv", "pXbr", "iDvId", "ts", "prs", "tmp", "vol", "flv", "xbr", "dst", "fsts", "clz", "incd")
 		    .inColumnFamily("clsifd")
 		    .save()
 	}
