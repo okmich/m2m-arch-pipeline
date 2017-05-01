@@ -16,6 +16,9 @@ import java.util.List;
 public interface CacheService {
 
     String M2M_SENSORS = "m2m.sensors";
+    String M2M_PRODUCTION = "m2m.prod";
+    String SENSOR_HASH_KEY = "sensor";
+    String READING_HASH_KEY = "sensor.reading";
 
     /**
      *
@@ -25,8 +28,8 @@ public interface CacheService {
     Sensor getSensor(String devId);
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     List<Sensor> getSensors();
 
@@ -54,5 +57,11 @@ public interface CacheService {
      * @param sensorReading
      */
     void saveSensorReading(SensorReading sensorReading);
+
+    /**
+     *
+     * @param vol
+     */
+    void updateDailyProduction(double vol, long ts);
 
 }

@@ -85,7 +85,7 @@ public final class Main {
         UIController<Sensor> sensorNetworkPanelController
                 = new SensorNetworkPanelController(sensorNetworkPanel);
         UIController<Sensor> sourceProductionChartPanelController
-                = new SourceProductionChartPanelController(sourceProductionChartPanel);
+                = new SourceProductionChartPanelController(sourceProductionChartPanel, cacheService);
 
         UIController<String[]> actionPanelController = new ActionPanelController(actionPanel);
         UIController<Sensor> sensorPanelController = new SensorPanelController(sensorPanel);

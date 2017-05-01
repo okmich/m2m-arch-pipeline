@@ -15,7 +15,6 @@ import com.okmich.sensor.server.model.SensorReading;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author m.enudi
@@ -77,6 +76,12 @@ public class DataTransmissionRequestHandler extends Handler {
             String enrichedMsg = enrichMessage(sensorReading);
             //send enrich data to kafka
             kafkaMessageProducer.send(value(KAFKA_ENRICHED_MESSAGE_TOPIC), enrichedMsg);
+            //if the device is the root sensor, update total daily production
+            if (value(SOURCE_SENSOR_ID).equals(devId)) {
+                //assumption of thirty seconds to cut the reading to thirty seconds
+                cacheService.updateDailyProduction(sensorReading.getVolume() / 120,
+                        sensorReading.getTimestamp());
+            }
             //save reading to hbase
             sensorReadingHBaseRepo.save(sensorReading);
             return "received";
@@ -110,14 +115,14 @@ public class DataTransmissionRequestHandler extends Handler {
         String suppDevId = this.sensorChainDAO.getFromDevID(sensorReading.getDevId());
         if (suppDevId == null || suppDevId.isEmpty()) {
             //there is not supplying dev and the distant should be zero
-            return "|" + sensorReading.toString() + "|" + 0;
+            return value(INIT_DATA) + "|" + sensorReading.toString() + "|" + 0;
         } else {
             SensorReading sensorReadingSuppDev = cacheService.getSensorReading(suppDevId);
             if (sensorReadingSuppDev == null) {
                 throw new IllegalArgumentException("");
             }
             float dist = getDistanceBetweenSensors(suppDevId, sensorReading.getDevId());
-            return sensorReadingSuppDev.toString() + "|" + sensorReading.toString() + "|dist:" + dist;
+            return sensorReadingSuppDev.toString() + "|" + sensorReading.toString() + "|" + dist;
         }
     }
 

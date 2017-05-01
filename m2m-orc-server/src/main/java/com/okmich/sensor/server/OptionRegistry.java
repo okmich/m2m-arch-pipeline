@@ -50,6 +50,8 @@ public final class OptionRegistry {
     public final static String REDIS_SERVER_PORT = "redis.server.port";
 
     public final static String NO_DATA_THRESHHOLD = "no.sensor.dev.data.threshhold";
+    
+    public final static String SOURCE_SENSOR_ID = "source.sensor.id";
     /**
      *
      */

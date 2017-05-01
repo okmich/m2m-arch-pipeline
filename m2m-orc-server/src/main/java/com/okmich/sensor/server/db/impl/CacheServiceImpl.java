@@ -9,6 +9,9 @@ import com.okmich.sensor.server.db.CacheService;
 import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import redis.clients.jedis.Jedis;
@@ -19,11 +22,9 @@ import redis.clients.jedis.Jedis;
  */
 public final class CacheServiceImpl implements CacheService {
 
+    private static final DateFormat SDF = new SimpleDateFormat("yyyyMMddd");
+
     private final Jedis jedis;
-
-    private static final String SENSOR_HASH_KEY = "sensor";
-
-    private static final String READING_HASH_KEY = "sensor.reading";
 
     public CacheServiceImpl() {
         jedis = new Jedis(value(REDIS_SERVER_ADDRESS),
@@ -84,7 +85,7 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public void saveSensorReading(SensorReading sensorReading) {
-        jedis.hset(READING_HASH_KEY,sensorReading.getDevId(), sensorReading.toString());
+        jedis.hset(READING_HASH_KEY, sensorReading.getDevId(), sensorReading.toString());
     }
 
     /**
@@ -94,10 +95,22 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public SensorReading getSensorReading(String devId) {
-        String record = jedis.hget(READING_HASH_KEY,devId);
+        String record = jedis.hget(READING_HASH_KEY, devId);
         if (record == null || record.trim().isEmpty()) {
             return null;
         }
         return new SensorReading(record);
+    }
+
+    @Override
+    public void updateDailyProduction(double vol, long ts) {
+        String key = SDF.format(new Date(ts));
+        String prodVal = jedis.hget(M2M_PRODUCTION, key);
+        double totalProd = 0d;
+        if (prodVal != null) {
+            totalProd = Double.parseDouble(prodVal);
+        }
+        totalProd += vol;
+        jedis.hset(M2M_PRODUCTION, key, Double.toString(totalProd));
     }
 }

@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.controllers;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
+import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
@@ -15,17 +16,17 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  */
 public class SourceProductionChartPanelController extends AbstractController<Sensor> {
 
-    /**
-     * SOURCE_SENSOR
-     */
+    private final CacheService cacheService;
     private final static String SOURCE_SENSOR = value(SOURCE_SENSOR_ID);
 
     /**
      *
      * @param view
+     * @param cacheService
      */
-    public SourceProductionChartPanelController(UIView view) {
+    public SourceProductionChartPanelController(UIView view, CacheService cacheService) {
         super(view);
+        this.cacheService = cacheService;
     }
 
     @Override
@@ -33,12 +34,11 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
         //devId;ts;prs;tmp;vol;flv;xbf
         String[] fields = t.split(";");
         long ts = Long.parseLong(fields[1]);
-        double vol = Double.parseDouble(fields[4]);
 
-        double totaldailyVol = 20;
-        Sensor sensor = new Sensor();
-        sensor.setCapacity(totaldailyVol);
         if (SOURCE_SENSOR.equals(fields[0])) {
+            Sensor sensor = new Sensor();
+            sensor.setDevId(fields[0]);
+            sensor.setStatus(Sensor.STATUS_ACTIVE);
             //do some load
             perform(sensor);
         }
@@ -49,14 +49,9 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
         if (!SOURCE_SENSOR.equals(t.getDevId())) {
             return;
         }
-        //do nothing
         if (Sensor.STATUS_ACTIVE.equals(t.getStatus())) {
-            long ts = t.getTimestamp();
-            double vol = t.getCapacity();
-
-            //do some logic
-            double totaldailyVol = 20;
-            t.setCapacity(totaldailyVol);
+            //get daily production from cache
+            t.setCapacity(cacheService.getDailyProduction(t.getTimestamp()));
             this.uiView.refreshData(t);
         }
     }
