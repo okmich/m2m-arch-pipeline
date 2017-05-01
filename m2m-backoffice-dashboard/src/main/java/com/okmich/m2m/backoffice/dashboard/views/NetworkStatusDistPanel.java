@@ -5,7 +5,7 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
-import com.okmich.m2m.backoffice.dashboard.SensorRegistry;
+import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import java.awt.Font;
 import java.util.HashSet;
@@ -30,9 +30,9 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
     private static DefaultPieDataset dataset;
     private final Set<String> sensors = new HashSet<>();
 
-    public NetworkStatusDistPanel(SensorRegistry sensorRegistry) {
+    public NetworkStatusDistPanel(CacheService cacheService) {
         super(createJFreeChart());
-        refreshData(sensorRegistry.getSensors());
+        refreshData(cacheService.getSensors());
     }
 
     /**

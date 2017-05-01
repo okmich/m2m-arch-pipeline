@@ -12,33 +12,24 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class NetworkStatusDistPanelController implements UIController<Sensor> {
+public class NetworkStatusDistPanelController extends AbstractController<Sensor> {
 
     /**
-     * 
-     */
-    private final UIView<Sensor> uiview;
-
-    /**
-     * 
-     * @param view 
+     *
+     * @param view
      */
     public NetworkStatusDistPanelController(UIView view) {
-        this.uiview = view;
+        super(view);
     }
 
     @Override
     public void process(String t) {
+        //do nothing
     }
 
     @Override
-    public void addChainControllers(UIController... controllers) {
-       
-    }
-
-    @Override
-    public void perform(Sensor t) {
-        uiview.refreshData(t);
+    protected Sensor transformPayload(String payload) {
+        return null;
     }
 
 }

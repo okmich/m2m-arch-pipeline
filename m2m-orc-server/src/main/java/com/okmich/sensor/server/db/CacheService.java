@@ -7,6 +7,7 @@ package com.okmich.sensor.server.db;
 
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
+import java.util.List;
 
 /**
  *
@@ -14,12 +15,20 @@ import com.okmich.sensor.server.model.SensorReading;
  */
 public interface CacheService {
 
+    String M2M_SENSORS = "m2m.sensors";
+
     /**
      *
      * @param devId
      * @return
      */
     Sensor getSensor(String devId);
+
+    /**
+     * 
+     * @return 
+     */
+    List<Sensor> getSensors();
 
     /**
      *
@@ -33,6 +42,12 @@ public interface CacheService {
      * @param sensor
      */
     void saveSensor(Sensor sensor);
+
+    /**
+     *
+     * @param sensors
+     */
+    void saveSensors(List<Sensor> sensors);
 
     /**
      *

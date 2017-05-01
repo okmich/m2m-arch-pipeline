@@ -5,12 +5,14 @@
  */
 package com.okmich.sensor.server.db.impl;
 
+import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.db.SensorReadingHBaseRepo;
 import com.okmich.sensor.server.model.SensorReading;
 import static com.okmich.sensor.server.util.Util.as;
 import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -28,7 +30,11 @@ public class SensorReadingHBaseRepoImpl implements SensorReadingHBaseRepo {
     /**
      * TABLE_SENSOR
      */
-    public static final byte[] TABLE_SENSOR_READING = as("sensor_reading");
+    public static final String TABLE_SENSOR_READING = "sensor_data";
+    /**
+     * TABLE_SENSOR
+     */
+    public static final byte[] TABLE_SENSOR_READING_BYTE = as(TABLE_SENSOR_READING);
     /**
      * COLUMN_FAMILY_RAW
      */
@@ -68,8 +74,10 @@ public class SensorReadingHBaseRepoImpl implements SensorReadingHBaseRepo {
      */
     public SensorReadingHBaseRepoImpl() throws IOException {
         Configuration conf = HBaseConfiguration.create();
+        conf.set(HConstants.ZOOKEEPER_QUORUM, value(HBASE_ZOOKEEPER_QUORUM));
+        conf.set(HConstants.ZOOKEEPER_CLIENT_PORT, value(HBASE_ZOOKEEPER_CLIENT_PORT));
         Connection connection = ConnectionFactory.createConnection(conf);
-        this.table = connection.getTable(TableName.valueOf("sensor_reading"));
+        this.table = connection.getTable(TableName.valueOf(TABLE_SENSOR_READING));
     }
 
     /**
@@ -82,11 +90,13 @@ public class SensorReadingHBaseRepoImpl implements SensorReadingHBaseRepo {
         long reverseTstamp = Long.MAX_VALUE - sensorReading.getTimestamp();
         Put put = new Put(as(sensorReading.getDevId() + "-" + reverseTstamp));
 
-        put.addColumn(TABLE_SENSOR_READING, COLUMN_PRESSURE, as(sensorReading.getPressure()));
-        put.addColumn(TABLE_SENSOR_READING, COLUMN_TEMPERATURE, as(sensorReading.getTemperature()));
-        put.addColumn(TABLE_SENSOR_READING, COLUMN_VOLUME, as(sensorReading.getVolume()));
-        put.addColumn(TABLE_SENSOR_READING, COLUMN_FLOW_VELOCITY, as(sensorReading.getFlowVelocity()));
-        put.addColumn(TABLE_SENSOR_READING, COLUMN_EXTERNAL_BODY_FORCE, as(sensorReading.getExtBodyForce()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_DEV_ID, as(sensorReading.getDevId()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_TIMESTAMP, as(sensorReading.getTimestamp()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_PRESSURE, as(sensorReading.getPressure()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_TEMPERATURE, as(sensorReading.getTemperature()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_VOLUME, as(sensorReading.getVolume()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_FLOW_VELOCITY, as(sensorReading.getFlowVelocity()));
+        put.addColumn(COLUMN_FAMILY_RAW, COLUMN_EXTERNAL_BODY_FORCE, as(sensorReading.getExtBodyForce()));
 
         try {
             table.put(put);

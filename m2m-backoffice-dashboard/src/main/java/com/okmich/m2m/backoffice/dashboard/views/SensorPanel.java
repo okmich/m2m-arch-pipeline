@@ -5,7 +5,7 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
-import com.okmich.m2m.backoffice.dashboard.SensorRegistry;
+import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.tablemodel.UniqueKeyTableModel;
 import java.text.DateFormat;
@@ -27,14 +27,14 @@ public class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
     /**
      * Creates new form FeedStatusPanel
      *
-     * @param sensorRegistry
+     * @param cacheService
      */
-    public SensorPanel(SensorRegistry sensorRegistry) {
+    public SensorPanel(CacheService cacheService) {
         disconnectedSensorTableModel = new UniqueKeyTableModel(new String[]{"Sensor", "Address", "Last feed"});
         connectedSensorTableModel = new UniqueKeyTableModel(new String[]{"Sensor", "Address", "Last feed"});
         initComponents();
 
-        refreshData(sensorRegistry.getSensors());
+        refreshData(cacheService.getSensors());
     }
 
     /**

@@ -13,7 +13,6 @@ m2m.action.log.topic		Where every generated action from the action trigger appli
 
 
 
-kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.raw.event.data.topic --create --partitions 1 --replication-factor 1
 kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.enriched.event.data.topic --create --partitions 1 --replication-factor 1
 kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.loss.sensor.conn.topic --create --partitions 1 --replication-factor 1
 kafka-topics.sh --zookeeper 192.168.8.120:2181 --topic m2m.classified.msg.topic --create --partitions 1 --replication-factor 1

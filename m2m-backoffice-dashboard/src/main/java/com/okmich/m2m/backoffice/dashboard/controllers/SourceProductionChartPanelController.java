@@ -13,12 +13,7 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class SourceProductionChartPanelController implements UIController<Sensor> {
-
-    /**
-     * uiview
-     */
-    private final UIView<Sensor> uiview;
+public class SourceProductionChartPanelController extends AbstractController<Sensor> {
 
     /**
      * SOURCE_SENSOR
@@ -30,7 +25,7 @@ public class SourceProductionChartPanelController implements UIController<Sensor
      * @param view
      */
     public SourceProductionChartPanelController(UIView view) {
-        this.uiview = view;
+        super(view);
     }
 
     @Override
@@ -50,10 +45,6 @@ public class SourceProductionChartPanelController implements UIController<Sensor
     }
 
     @Override
-    public void addChainControllers(UIController... controllers) {
-    }
-
-    @Override
     public void perform(Sensor t) {
         if (!SOURCE_SENSOR.equals(t.getDevId())) {
             return;
@@ -66,8 +57,13 @@ public class SourceProductionChartPanelController implements UIController<Sensor
             //do some logic
             double totaldailyVol = 20;
             t.setCapacity(totaldailyVol);
-            uiview.refreshData(t);
+            this.uiView.refreshData(t);
         }
+    }
+
+    @Override
+    protected Sensor transformPayload(String payload) {
+        return null;
     }
 
 }

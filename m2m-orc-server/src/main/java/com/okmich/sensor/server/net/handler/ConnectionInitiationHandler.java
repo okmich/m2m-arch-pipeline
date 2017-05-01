@@ -42,13 +42,14 @@ public class ConnectionInitiationHandler extends Handler {
     @Override
     public String handle(String request) {
         LOG.log(Level.INFO, request);
-        Sensor sensor = new Sensor(request);
+        Sensor sensor = Sensor.valueOf(request);
 
         Sensor sensor1 = sensorHBaseRepo.findOne(sensor.getDevId());
-        if (sensor1 == null) {
-            throw new IllegalArgumentException("device node already exist");
-        }
+
         try {
+            if (sensor1 == null) {
+                throw new IllegalArgumentException("device node does not exist");
+            }
             //save the data to cache
             this.cacheService.saveSensor(sensor);
         } catch (Exception ex) {

@@ -155,21 +155,21 @@ public class Sensor implements Serializable {
         }
         return true;
     }
-    
+
     public static Sensor valueOf(String payload) {
         //devId;type;add;sDevId;dsbs;bsdev;lct;geo
         String[] parts = payload.split(";");
-        
+
         Sensor s = new Sensor();
-                
+
         s.devId = parts[0];
         s.type = parts[1];
         s.address = parts[2];
         s.supplyDevId = parts[3];
         s.baseStationDevId = parts[4];
-        s.distSupplyStation = Float.parseFloat(parts[5]);
+        s.distSupplyStation = parts[5] == null || parts[5].isEmpty() ? 0f : Float.parseFloat(parts[5]);
         s.geo = parts[6];
-       
+
         return s;
     }
 

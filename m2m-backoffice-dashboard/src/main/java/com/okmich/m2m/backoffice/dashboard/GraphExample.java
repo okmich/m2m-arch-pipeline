@@ -27,7 +27,7 @@ import javax.swing.JFrame;
  *
  * @author m.enudi
  */
-public class SensorRegistry {
+public class GraphExample {
 
     private Graph<Sensor, String> sensorNetwork;
 
@@ -48,7 +48,7 @@ public class SensorRegistry {
             + "00013;ns;sensor 00013 physical address;00011;00010;50;lat,lon\n"
             + "00014;ns;00014 address;00013;00010;70;lat,lon";
 
-    public SensorRegistry() {
+    public GraphExample() {
         String[] sensorString = records.split("\\n");
         this.sensors = new ArrayList<>(sensorString.length);
         for (String each : sensorString) {
@@ -66,49 +66,49 @@ public class SensorRegistry {
         }
     }
 
-    public static void main(String[] args) {
-        SensorRegistry sensorRegistry = new SensorRegistry();
-
-        Layout<Sensor, String> layout = new ISOMLayout<>(sensorRegistry.sensorNetwork);
-        //layout.setSize(new Dimension(600, 600));
-        VisualizationViewer<Sensor, String> vv = new VisualizationViewer<>(layout);
-        //vv.setPreferredSize(new Dimension(650, 650));
-        // Show vertex and edge labels
-        vv.getRenderContext().setVertexLabelTransformer((Sensor f) -> f.getDevId());
-        vv.getRenderContext().setVertexShapeTransformer((Sensor f) -> {
-            double width = f.getDevId().length() * 10.0;
-            if ("ns".equals(f.getType())) {
-                return new Ellipse2D.Double(-(width / 2), -12.5, width, 25);
-            } else {
-                return new Rectangle2D.Double(-(width / 2), -12.5, width, 25);
-            }
-        });
-        vv.getRenderContext().setEdgeLabelTransformer((String f) -> "");
-        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
-        // Create a graph mouse and add it to the visualization component
-        DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
-        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-        vv.setGraphMouse(gm);
-        // Add the mouses mode key listener to work it needs to be added to the visualization component
-        vv.addKeyListener(gm.getModeKeyListener());
-        JFrame frame = new JFrame("Interactive Graph View 2");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(vv);
-        frame.pack();
-        frame.setVisible(true);
-
-        try {
-            Thread.currentThread().sleep(2000);
-            for (Sensor s : sensorRegistry.getSensors()) {
-                s.setStatus(STATUS_ACTIVE);
-                Thread.currentThread().sleep(1000);
-                vv.repaint();
-            }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SensorRegistry.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
+//    public static void main(String[] args) {
+//        SensorRegistry_Backup sensorRegistry = new SensorRegistry_Backup();
+//
+//        Layout<Sensor, String> layout = new ISOMLayout<>(sensorRegistry.sensorNetwork);
+//        //layout.setSize(new Dimension(600, 600));
+//        VisualizationViewer<Sensor, String> vv = new VisualizationViewer<>(layout);
+//        //vv.setPreferredSize(new Dimension(650, 650));
+//        // Show vertex and edge labels
+//        vv.getRenderContext().setVertexLabelTransformer((Sensor f) -> f.getDevId());
+//        vv.getRenderContext().setVertexShapeTransformer((Sensor f) -> {
+//            double width = f.getDevId().length() * 10.0;
+//            if ("ns".equals(f.getType())) {
+//                return new Ellipse2D.Double(-(width / 2), -12.5, width, 25);
+//            } else {
+//                return new Rectangle2D.Double(-(width / 2), -12.5, width, 25);
+//            }
+//        });
+//        vv.getRenderContext().setEdgeLabelTransformer((String f) -> "");
+//        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
+//        // Create a graph mouse and add it to the visualization component
+//        DefaultModalGraphMouse gm = new DefaultModalGraphMouse();
+//        gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+//        vv.setGraphMouse(gm);
+//        // Add the mouses mode key listener to work it needs to be added to the visualization component
+//        vv.addKeyListener(gm.getModeKeyListener());
+//        JFrame frame = new JFrame("Interactive Graph View 2");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.getContentPane().add(vv);
+//        frame.pack();
+//        frame.setVisible(true);
+//
+//        try {
+//            Thread.currentThread().sleep(2000);
+//            for (Sensor s : sensorRegistry.getSensors()) {
+//                s.setStatus(STATUS_ACTIVE);
+//                Thread.currentThread().sleep(1000);
+//                vv.repaint();
+//            }
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(SensorRegistry_Backup.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//    }
 
     /**
      * @return the sensors

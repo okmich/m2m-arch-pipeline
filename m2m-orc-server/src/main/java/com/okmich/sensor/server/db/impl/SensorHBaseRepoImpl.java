@@ -5,6 +5,7 @@
  */
 package com.okmich.sensor.server.db.impl;
 
+import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.db.SensorHBaseRepo;
 import com.okmich.sensor.server.model.Sensor;
 import static com.okmich.sensor.server.util.Util.*;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -79,6 +81,8 @@ public class SensorHBaseRepoImpl implements SensorHBaseRepo {
      */
     public SensorHBaseRepoImpl() throws IOException {
         Configuration conf = HBaseConfiguration.create();
+        conf.set(HConstants.ZOOKEEPER_QUORUM, value(HBASE_ZOOKEEPER_QUORUM));
+        conf.set(HConstants.ZOOKEEPER_CLIENT_PORT, value(HBASE_ZOOKEEPER_CLIENT_PORT));
         Connection connection = ConnectionFactory.createConnection(conf);
         this.table = connection.getTable(TableName.valueOf("sensor"));
     }
@@ -150,12 +154,13 @@ public class SensorHBaseRepoImpl implements SensorHBaseRepo {
                 sensor = new Sensor();
                 sensor.setAddress(getString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_DEV_ADDRESS)));
                 sensor.setBaseStationDevId(getString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_BS_SUPPLY_DEV_ID)));
-                sensor.setDevId(getString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_DEV_ID)));
-                sensor.setDistSupplyDev(getFloat(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_DIST_SUPPLY_STN)));
+                sensor.setDevId(getString(result.getRow()));
+                sensor.setSupplyDevId(Bytes.toString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_SUPPLY_DEV_ID)));
                 sensor.setType(getString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_DEV_TYPE)));
                 sensor.setGeo(Bytes.toString(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_GEO_LOCATION)));
                 sensor.setDistSupplyDev(Bytes.toFloat(result.getValue(COLUMN_FAMILY_MAIN, COLUMN_DIST_SUPPLY_STN)));
 
+                sensors.add(sensor);
                 result = resultScanner.next();
             }
             return sensors;

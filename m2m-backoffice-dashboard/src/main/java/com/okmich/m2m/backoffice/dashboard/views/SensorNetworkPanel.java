@@ -5,7 +5,7 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
-import com.okmich.m2m.backoffice.dashboard.SensorRegistry;
+import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -34,18 +34,18 @@ public class SensorNetworkPanel extends JPanel implements UIView<Sensor> {
     /**
      * Creates new form SensorNetworkPanel
      *
-     * @param sensorRegistry
+     * @param cacheService
      */
-    public SensorNetworkPanel(SensorRegistry sensorRegistry) {
+    public SensorNetworkPanel(CacheService cacheService) {
         Graph<Sensor, String> networkGraph = new DirectedSparseGraph<>();
         initComponents();
 
-        this.sensors = sensorRegistry.getSensors();
+        this.sensors = cacheService.getSensors();
         for (Sensor s : sensors) {
             networkGraph.addVertex(s);
         }
         for (Sensor s : sensors) {
-            if (s.getSupplyDevId() != null) {
+            if (s.getSupplyDevId() != null && !s.getSupplyDevId().isEmpty()) {
                 networkGraph.addEdge(s.getDevId(), new Sensor(s.getSupplyDevId()), s);
             }
         }

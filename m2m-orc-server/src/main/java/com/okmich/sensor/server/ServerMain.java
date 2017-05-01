@@ -14,15 +14,15 @@ import com.okmich.sensor.server.net.handler.DataflowRequestHandler;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.okmich.sensor.server.db.SensorDAO;
 import com.okmich.sensor.server.db.SensorHBaseRepo;
-import com.okmich.sensor.server.db.SensorReadingDAO;
 import com.okmich.sensor.server.db.SensorReadingHBaseRepo;
 import com.okmich.sensor.server.db.impl.CacheServiceImpl;
 import com.okmich.sensor.server.db.impl.SensorChainDAOImpl;
 import com.okmich.sensor.server.db.impl.SensorHBaseRepoImpl;
 import com.okmich.sensor.server.db.impl.SensorReadingHBaseRepoImpl;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
+import com.okmich.sensor.server.model.Sensor;
+import java.util.List;
 
 /**
  *
@@ -45,9 +45,11 @@ public class ServerMain {
 
     public static void main(String[] args) throws IOException {
         //for dev purpose, initialize the OptionRegistry
+        LOG.log(Level.INFO, "initializing configuration variables");
         OptionRegistry.initialize(args);
 
         try {
+
             ServerMain main = new ServerMain();
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, null, ex);
@@ -55,6 +57,7 @@ public class ServerMain {
     }
 
     private void bootstrapObjects() throws IOException {
+        LOG.log(Level.INFO, "boostrapping all application service objects");
         //data access objects
 
         CacheService cacheService = new CacheServiceImpl();
@@ -64,16 +67,37 @@ public class ServerMain {
 
         SensorChainDAO sensorChainDAO = new SensorChainDAOImpl();
 
+        LOG.log(Level.INFO, "refreshing the cache with all sensor records");
+        cacheSensors(sensorHBaseRepo, cacheService);
+
         ServerNetworkInterface serverNetworkInterface = new ServerNetworkInterface();
+        LOG.log(Level.INFO, "starting the server interface");
         serverNetworkInterface.setCommandRunner(
                 new MQBrokerCommandRunner(cacheService,
                         kafkaMessageProducer,
                         sensorHBaseRepo,
                         sensorChainDAO,
                         sensorReadingHBaseRepo));
+        LOG.log(Level.INFO, "ready to service client request");
 
+        LOG.log(Level.INFO, "starting the data flow simulating service");
         DataFlowNetworkInterface dataFlowNetworkInterface
                 = new DataFlowNetworkInterface(new DataflowRequestHandler(cacheService, sensorChainDAO));
 
+        LOG.log(Level.INFO, "initiating the sensor chain service");
+        sensorChainService = new SensorChainService(cacheService, kafkaMessageProducer, sensorChainDAO);
+        LOG.log(Level.INFO, "starting the sensor chain service");
+        sensorChainService.start();
+    }
+
+    /**
+     *
+     * @param sensorHBaseRepo
+     * @param cacheService
+     */
+    private void cacheSensors(SensorHBaseRepo sensorHBaseRepo, CacheService cacheService) {
+        List<Sensor> sensors = sensorHBaseRepo.findAll();
+        cacheService.saveSensors(sensors);
+        LOG.log(Level.INFO, "{0} sensors loaded to cache", sensors.size());
     }
 }

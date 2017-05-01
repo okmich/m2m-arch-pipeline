@@ -15,6 +15,8 @@ import com.okmich.m2m.backoffice.dashboard.controllers.NetworkStatusDistPanelCon
 import com.okmich.m2m.backoffice.dashboard.controllers.SensorNetworkPanelController;
 import com.okmich.m2m.backoffice.dashboard.controllers.SourceProductionChartPanelController;
 import com.okmich.m2m.backoffice.dashboard.controllers.UIController;
+import com.okmich.m2m.backoffice.dashboard.db.CacheService;
+import com.okmich.m2m.backoffice.dashboard.db.CacheServiceImpl;
 import com.okmich.m2m.backoffice.dashboard.messaging.KafkaMessageConsumer;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.ActionPanel;
@@ -64,16 +66,16 @@ public final class Main {
     }
 
     private void buildApplicationContext() {
+        CacheService cacheService = new CacheServiceImpl();
         //Sensor Registry
-        SensorRegistry sensorRegistry = new SensorRegistry();
         //create all views
         ActionPanel actionPanel = new ActionPanel();
-        SensorPanel sensorPanel = new SensorPanel(sensorRegistry);
+        SensorPanel sensorPanel = new SensorPanel(cacheService);
         ConsolePanel consolePanel = new ConsolePanel();
         DashboardPanel dashboardPanel = new DashboardPanel();
         EventPanel eventPanel = new EventPanel();
-        NetworkStatusDistPanel networkStatusDistPanel = new NetworkStatusDistPanel(sensorRegistry);
-        SensorNetworkPanel sensorNetworkPanel = new SensorNetworkPanel(sensorRegistry);
+        NetworkStatusDistPanel networkStatusDistPanel = new NetworkStatusDistPanel(cacheService);
+        SensorNetworkPanel sensorNetworkPanel = new SensorNetworkPanel(cacheService);
         SourceProductionChartPanel sourceProductionChartPanel = new SourceProductionChartPanel();
 
         //create all the controllers

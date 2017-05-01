@@ -7,10 +7,14 @@ package com.okmich.m2m.backoffice.dashboard.messaging;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
 import com.okmich.m2m.backoffice.dashboard.controllers.UIController;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -30,6 +34,15 @@ public class KafkaMessageConsumer {
 
     private final KafkaConsumer<String, String> kafkaConsumer;
     private final ExecutorService executorService;
+    /**
+     *
+     */
+    private static final Logger LOG = Logger.getLogger(KafkaMessageConsumer.class.getName());
+
+    private static final String TOPIC_ACTION_LOG = value(KAFKA_ACTION_LOG_TOPIC);
+    private static final String TOPIC_CLASSIFIED_EVENT_LOG = value(KAFKA_CLASSIFIED_EVENT_TOPIC);
+    private static final String TOPIC_LOSS_CONN_LOG = value(KAFKA_LOSS_CONN_TOPIC);
+    private static final String TOPIC_ENRICHED_EVENT_LOG = value(KAFKA_ENRICHED_EVENT_TOPIC);
 
     /**
      *
@@ -38,7 +51,7 @@ public class KafkaMessageConsumer {
 
         Properties props = new Properties();
         props.put("bootstrap.servers", value(KAFKA_BROKER_URL));
-        props.put("group.id", "test");
+        props.put("group.id", "kafka-consumer-frontend");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");
@@ -47,9 +60,10 @@ public class KafkaMessageConsumer {
         this.kafkaConsumer = new KafkaConsumer<>(props);
         //load topics
         this.kafkaConsumer.subscribe(Arrays.asList(
-                value(KAFKA_ACTION_LOG_TOPIC),
-                value(KAFKA_ENRICHED_EVENT_TOPIC),
-                value(KAFKA_LOSS_CONN_TOPIC)));
+                TOPIC_ENRICHED_EVENT_LOG,
+                TOPIC_CLASSIFIED_EVENT_LOG,
+                TOPIC_ACTION_LOG,
+                TOPIC_LOSS_CONN_LOG));
 
         this.executorService = Executors.newFixedThreadPool(valueAsInteger(EXECUTOR_THREADS));
     }
@@ -79,18 +93,21 @@ public class KafkaMessageConsumer {
                     String topic = record.topic();
                     String payload = record.value();
 
-                    if (topic.equals(value(KAFKA_ACTION_LOG_TOPIC))) {
+                    if (topic.equals(TOPIC_ACTION_LOG)) {
                         //cmd;bsdevId;arg;ts
                         actionPanelController.process(payload);
-                    } else if (topic.equals(value(KAFKA_ENRICHED_EVENT_TOPIC))) {
-                        //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
-                        sensorPanelController.process(payload);
+                    } else if (topic.equals(TOPIC_CLASSIFIED_EVENT_LOG)) {
+                        //
                         eventPanelController.process(payload);
-                    } else if (topic.equals(value(KAFKA_LOSS_CONN_TOPIC))) {
+                    } else if (topic.equals(KAFKA_LOSS_CONN_TOPIC)) {
                         //devId;ts
                         disconnectedPanelController.process(payload);
+                    } else if (topic.equals(TOPIC_ENRICHED_EVENT_LOG)) {
+                        //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
+                        sensorPanelController.process(payload);
                     }
                     consoleController.process(payload);
+                    LOG.log(Level.INFO, "message received on {0}", topic);
                 });
             }
         }

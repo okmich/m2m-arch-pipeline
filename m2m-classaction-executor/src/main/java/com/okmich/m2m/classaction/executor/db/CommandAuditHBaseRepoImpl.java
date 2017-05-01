@@ -5,12 +5,14 @@
  */
 package com.okmich.m2m.classaction.executor.db;
 
+import static com.okmich.m2m.classaction.executor.OptionRegistry.*;
 import static com.okmich.m2m.classaction.executor.db.Util.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -28,7 +30,7 @@ public class CommandAuditHBaseRepoImpl implements CommandAuditRepo {
     /**
      * TABLE_SENSOR
      */
-    public static final byte[] TABLE_SENSOR = as("action_log");
+    public static final byte[] TABLE_ACTION_LOG = as("action_log");
     /**
      * COLUMN_FAMILY_MAIN
      */
@@ -69,8 +71,10 @@ public class CommandAuditHBaseRepoImpl implements CommandAuditRepo {
      */
     public CommandAuditHBaseRepoImpl() throws IOException {
         Configuration conf = HBaseConfiguration.create();
+        conf.set(HConstants.ZOOKEEPER_QUORUM, value(HBASE_ZOOKEEPER_QUORUM));
+        conf.set(HConstants.ZOOKEEPER_CLIENT_PORT, value(HBASE_ZOOKEEPER_CLIENT_PORT));
         Connection connection = ConnectionFactory.createConnection(conf);
-        this.table = connection.getTable(TableName.valueOf("sensor_reading"));
+        this.table = connection.getTable(TableName.valueOf("action_log"));
     }
 
     @Override

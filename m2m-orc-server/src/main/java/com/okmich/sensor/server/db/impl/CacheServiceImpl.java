@@ -9,6 +9,8 @@ import com.okmich.sensor.server.db.CacheService;
 import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
+import java.util.List;
+import java.util.stream.Collectors;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -18,6 +20,10 @@ import redis.clients.jedis.Jedis;
 public final class CacheServiceImpl implements CacheService {
 
     private final Jedis jedis;
+
+    private static final String SENSOR_HASH_KEY = "sensor";
+
+    private static final String READING_HASH_KEY = "sensor.reading";
 
     public CacheServiceImpl() {
         jedis = new Jedis(value(REDIS_SERVER_ADDRESS),
@@ -30,7 +36,19 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public void saveSensor(Sensor sensor) {
-        jedis.set(sensor.getDevId(), sensor.toString());
+        jedis.hset(SENSOR_HASH_KEY, sensor.getDevId(), sensor.toString());
+    }
+
+    /**
+     *
+     * @param sensors
+     */
+    @Override
+    public void saveSensors(List<Sensor> sensors) {
+        jedis.del(M2M_SENSORS);
+        for (Sensor s : sensors) {
+            jedis.rpush(M2M_SENSORS, s.toString());
+        }
     }
 
     /**
@@ -40,11 +58,24 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public Sensor getSensor(String devId) {
-        String record = jedis.get(devId);
+        String record = jedis.hget(SENSOR_HASH_KEY, devId);
         if (record == null || record.trim().isEmpty()) {
             return null;
         }
-        return new Sensor(record);
+        return Sensor.valueOf(record);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<Sensor> getSensors() {
+        Long len = jedis.llen(M2M_SENSORS);
+        List<String> strs = jedis.lrange(M2M_SENSORS, 0, len);
+
+        return strs.stream().map((String t) -> Sensor.valueOf(t))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -53,7 +84,7 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public void saveSensorReading(SensorReading sensorReading) {
-        jedis.set(sensorReading.getDevId(), sensorReading.toString());
+        jedis.hset(READING_HASH_KEY,sensorReading.getDevId(), sensorReading.toString());
     }
 
     /**
@@ -63,7 +94,7 @@ public final class CacheServiceImpl implements CacheService {
      */
     @Override
     public SensorReading getSensorReading(String devId) {
-        String record = jedis.get(devId);
+        String record = jedis.hget(READING_HASH_KEY,devId);
         if (record == null || record.trim().isEmpty()) {
             return null;
         }

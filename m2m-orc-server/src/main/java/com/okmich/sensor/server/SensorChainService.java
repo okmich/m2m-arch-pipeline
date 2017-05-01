@@ -11,7 +11,6 @@ import static com.okmich.sensor.server.OptionRegistry.value;
 import static com.okmich.sensor.server.OptionRegistry.valueAsInteger;
 import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
-import com.okmich.sensor.server.db.SensorHBaseRepo;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
@@ -31,7 +30,6 @@ public class SensorChainService {
 
     private final CacheService cacheService;
     private final KafkaMessageProducer kafkaMessageProducer;
-    private final SensorHBaseRepo sensorHBaseRepo;
     private final SensorChainDAO sensorChainDAO;
     private final ScheduledExecutorService scheduledService;
     private final ExecutorService executorService;
@@ -51,16 +49,13 @@ public class SensorChainService {
      * @param cacheService
      * @param kafkaMessageProducer
      * @param sensorChainDAO
-     * @param sensorHBaseRepo
      */
     public SensorChainService(CacheService cacheService,
             KafkaMessageProducer kafkaMessageProducer,
-            SensorChainDAO sensorChainDAO,
-            SensorHBaseRepo sensorHBaseRepo) {
+            SensorChainDAO sensorChainDAO) {
         this.cacheService = cacheService;
         this.kafkaMessageProducer = kafkaMessageProducer;
         this.sensorChainDAO = sensorChainDAO;
-        this.sensorHBaseRepo = sensorHBaseRepo;
 
         scheduledService = Executors.newScheduledThreadPool(1);
         executorService = Executors.newFixedThreadPool(1);
@@ -75,7 +70,7 @@ public class SensorChainService {
         LOG.log(Level.INFO, "Starting the sensor chain maintenance service");
         scheduledService.scheduleWithFixedDelay(sensorChainUpdateService,
                 2 * THRESHHOLD, THRESHHOLD, TimeUnit.SECONDS);
-
+        LOG.log(Level.INFO, "Sensor chain maintenance service to start in {0} seconds", THRESHHOLD);
     }
 
     /**
@@ -103,10 +98,11 @@ public class SensorChainService {
 
         @Override
         public void run() {
+            LOG.info("==== start running sensorChainUpdateService");
             //get the list of all sensors
             List<Sensor> sensors;
             try {
-                sensors = sensorHBaseRepo.findAll();
+                sensors = cacheService.getSensors();
             } catch (Exception ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 return;
@@ -121,16 +117,19 @@ public class SensorChainService {
                 if (sensorReading == null || isStaleReading(sensorReading)) {
                     //if the last reading is mor than threshhold seconds ago
                     //send lost sensor connection message to kafka
-                    kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId+";"+System.currentTimeMillis());
+                    kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId + ";" + System.currentTimeMillis());
                     //get the real time chain-post sensor for this sensor and make its 
                     //chain-pre sensor the real time chain-pre sensor for this sensor 
-                    String toDevId = sensorChainDAO.getToDevID(devId);
-                    sensorChainDAO.saveSensorChain(toDevId,
-                            sensorChainDAO.getFromDevID(devId),
-                            sensorChainDAO.getToDevID(toDevId));
+                    String fromDevId = sensorChainDAO.getFromDevID(devId);
+                    if (fromDevId != null) {
+                        sensorChainDAO.saveSensorChain(fromDevId,
+                                sensorChainDAO.getFromDevID(fromDevId),
+                                sensorChainDAO.getToDevID(devId));
+                    }
                 }
                 //if the last reading is withing the threshhold seconds, do nothing
             }
+            LOG.info("==== done running sensorChainUpdateService");
         }
 
         /**
@@ -140,7 +139,7 @@ public class SensorChainService {
          */
         private boolean isStaleReading(SensorReading sensorReading) {
             long diff = (System.currentTimeMillis() - sensorReading.getTimestamp()) / 1000;
-            return THRESHHOLD >= diff;
+            return diff >= THRESHHOLD;
         }
 
     };

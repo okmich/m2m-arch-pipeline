@@ -20,14 +20,16 @@ import redis.clients.jedis.Jedis;
 public class SensorChainDAOImpl implements SensorChainDAO {
 
     private final Jedis jedis;
+
+    private static final String CHAIN_HASH_KEY = "sensor.chain";
     /**
      *
      */
-    private static final String PRE = "pre";
+    private static final String PRE = "0";
     /**
      *
      */
-    private static final String POST = "post";
+    private static final String POST = "1";
 
     /**
      *
@@ -42,34 +44,34 @@ public class SensorChainDAOImpl implements SensorChainDAO {
         String[] vals;
         for (String key : chainMap.keySet()) {
             vals = chainMap.get(key).split("-");
-            jedis.hset("o" + key, PRE, vals[0]);
-            jedis.hset("o" + key, POST, vals[1]);
+            jedis.hset(CHAIN_HASH_KEY, PRE + key, vals[0]);
+            jedis.hset(CHAIN_HASH_KEY, POST + key, vals[1]);
         }
     }
 
     @Override
     public String getOrgFromDevID(String devId) {
-        return jedis.hget("o" + devId, PRE);
+        return jedis.hget(CHAIN_HASH_KEY, PRE + devId);
     }
 
     @Override
     public String getOrgToDevID(String devId) {
-        return jedis.hget("o" + devId, POST);
+        return jedis.hget(CHAIN_HASH_KEY, POST + devId);
     }
 
     @Override
     public void saveSensorChain(String devId, String fromID, String toID) {
-        jedis.hset(devId, PRE, fromID);
-        jedis.hset(devId, POST, toID);
+        jedis.hset(CHAIN_HASH_KEY, PRE + devId, fromID);
+        jedis.hset(CHAIN_HASH_KEY, POST + devId, toID);
     }
 
     @Override
     public String getFromDevID(String devId) {
-        return jedis.hget(devId, PRE);
+        return jedis.hget(CHAIN_HASH_KEY, PRE + devId);
     }
 
     @Override
     public String getToDevID(String devId) {
-        return jedis.hget(devId, POST);
+        return jedis.hget(CHAIN_HASH_KEY, POST + devId);
     }
 }

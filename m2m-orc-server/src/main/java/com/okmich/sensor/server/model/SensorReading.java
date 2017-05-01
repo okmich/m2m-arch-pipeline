@@ -27,7 +27,7 @@ public class SensorReading implements Serializable {
 
     public SensorReading(String readings) {
         //devId;ts;prs;tmp;vol;flv;xbf
-        String[] fields = readings.split("\\|");
+        String[] fields = readings.split(";");
         this.devId = (fields[0]);
         this.timestamp = (Long.valueOf(fields[1]));
         this.pressure = (getFloat(fields[2]));

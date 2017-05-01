@@ -11,27 +11,15 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class DashboardPanelController implements UIController {
+public class DashboardPanelController extends AbstractController<String> {
 
-    private final UIView uiview;
-
-    public DashboardPanelController(UIView view) {
-        this.uiview = view;
+    public DashboardPanelController(UIView<String> view) {
+        super(view);
     }
 
     @Override
-    public void process(String t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addChainControllers(UIController... controllers) {
-        
-    }
-
-    @Override
-    public void perform(Object t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected String transformPayload(String payload) {
+        return payload;
     }
 
 }

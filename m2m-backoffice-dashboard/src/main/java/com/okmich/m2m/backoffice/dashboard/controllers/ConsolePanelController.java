@@ -11,27 +11,15 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
  *
  * @author ABME340
  */
-public class ConsolePanelController implements UIController<String> {
-
-    private final UIView<String> uiview;
+public class ConsolePanelController extends AbstractController<String> {
 
     public ConsolePanelController(UIView<String> view) {
-        this.uiview = view;
+        super(view);
     }
 
     @Override
-    public void process(String t) {
-        perform(t);
-    }
-
-    @Override
-    public void addChainControllers(UIController... controllers) {
-
-    }
-
-    @Override
-    public void perform(String t) {
-        uiview.refreshData(t);
+    protected String transformPayload(String payload) {
+        return payload;
     }
 
 }

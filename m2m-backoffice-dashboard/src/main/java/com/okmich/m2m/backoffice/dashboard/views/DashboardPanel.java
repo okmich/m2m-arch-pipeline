@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author ABME340
  */
-public class DashboardPanel extends javax.swing.JPanel implements UIView<String[]> {
+public class DashboardPanel extends javax.swing.JPanel implements UIView<String> {
 
     /**
      * Creates new form DashboardPanel
@@ -67,12 +67,12 @@ public class DashboardPanel extends javax.swing.JPanel implements UIView<String[
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void refreshData(List<String[]> tList) {
+    public void refreshData(List<String> tList) {
         
     }
 
     @Override
-    public void refreshData(String[] t) {
+    public void refreshData(String t) {
         
     }
 }

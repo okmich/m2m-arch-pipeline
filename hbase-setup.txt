@@ -8,3 +8,8 @@ table -
 		clsifd
 	action_log
 		main
+
+
+create 'sensor','main','chain'
+create 'sensor_data', 'raw','clsifd'
+create 'action_log', 'main'
