@@ -6,6 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.views;
 
 import java.util.List;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -13,10 +14,13 @@ import java.util.List;
  */
 public class DashboardPanel extends javax.swing.JPanel implements UIView<String> {
 
+    private ImageIcon icon;
+
     /**
      * Creates new form DashboardPanel
      */
     public DashboardPanel() {
+        icon = new ImageIcon(getClass().getResource("/images/smart-pipe.fw.png"), "");
         initComponents();
     }
 
@@ -31,6 +35,7 @@ public class DashboardPanel extends javax.swing.JPanel implements UIView<String>
         java.awt.GridBagConstraints gridBagConstraints;
 
         appTitlePanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         chartPanel = new javax.swing.JPanel();
 
@@ -39,7 +44,9 @@ public class DashboardPanel extends javax.swing.JPanel implements UIView<String>
         setLayout(new java.awt.GridBagLayout());
 
         appTitlePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        appTitlePanel.setLayout(new javax.swing.BoxLayout(appTitlePanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel2.setIcon(icon);
+        appTitlePanel.add(jLabel2);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 102, 102));
@@ -64,15 +71,16 @@ public class DashboardPanel extends javax.swing.JPanel implements UIView<String>
     private javax.swing.JPanel appTitlePanel;
     private javax.swing.JPanel chartPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void refreshData(List<String> tList) {
-        
+
     }
 
     @Override
     public void refreshData(String t) {
-        
+
     }
 }

@@ -40,10 +40,15 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
-        <Property name="axis" type="int" value="1"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
       <SubComponents>
+        <Component class="javax.swing.JLabel" name="jLabel2">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="icon" type="code"/>
+            </Property>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
