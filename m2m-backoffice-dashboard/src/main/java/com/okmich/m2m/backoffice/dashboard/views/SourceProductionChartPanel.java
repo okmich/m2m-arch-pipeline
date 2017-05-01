@@ -97,7 +97,7 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Sen
 
         JFreeChart chart = new JFreeChart(dialplot);
         chart.setTitle(new TextTitle("Daily production at source - (Sensor " + value(SOURCE_SENSOR_ID) + ")",
-                new Font("Serif", java.awt.Font.BOLD, 18)));
+                new Font("Serif", java.awt.Font.BOLD, 16)));
 
         return chart;
     }

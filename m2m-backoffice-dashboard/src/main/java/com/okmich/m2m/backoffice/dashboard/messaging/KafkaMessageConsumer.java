@@ -7,8 +7,6 @@ package com.okmich.m2m.backoffice.dashboard.messaging;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
 import com.okmich.m2m.backoffice.dashboard.controllers.UIController;
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;

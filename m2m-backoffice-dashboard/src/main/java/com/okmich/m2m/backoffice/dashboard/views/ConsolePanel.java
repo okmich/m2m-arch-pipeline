@@ -40,10 +40,10 @@ public class ConsolePanel extends javax.swing.JPanel implements UIView<String> {
         consoleTextArea.setEditable(false);
         consoleTextArea.setColumns(20);
         consoleTextArea.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
-        consoleTextArea.setForeground(java.awt.Color.black);
-        consoleTextArea.setRows(5);
+        consoleTextArea.setRows(4);
         consoleTextArea.setText("Ready.....");
         consoleTextArea.setWrapStyleWord(true);
+        consoleTextArea.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         consoleTextArea.setEnabled(false);
         jScrollPane2.setViewportView(consoleTextArea);
 
@@ -55,15 +55,25 @@ public class ConsolePanel extends javax.swing.JPanel implements UIView<String> {
         add(jScrollPane2, gridBagConstraints);
 
         clearConsoleBtn.setText("Clear Console");
+        clearConsoleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearConsoleBtnActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 1;
         gridBagConstraints.ipady = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(clearConsoleBtn, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void clearConsoleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearConsoleBtnActionPerformed
+        // TODO add your handling code here:
+        consoleTextArea.setText("");
+    }//GEN-LAST:event_clearConsoleBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
