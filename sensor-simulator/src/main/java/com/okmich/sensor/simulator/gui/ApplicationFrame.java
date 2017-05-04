@@ -5,6 +5,7 @@
  */
 package com.okmich.sensor.simulator.gui;
 
+import com.okmich.sensor.simulator.FlowStates;
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import com.okmich.sensor.simulator.model.Reading;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     /**
      * Creates new form ApplicationFrame
+     *
      * @param type
      */
     public ApplicationFrame(String type) {
@@ -110,7 +112,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             }
         });
 
-        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Steady", "Turbulence", "Leakage", "Disconnection", "StopFlow" }));
+        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { FlowStates.STEADY.toString(), FlowStates.TURBULENCE.toString(), FlowStates.LEAKAGE.toString(), FlowStates.DISCONNECTION.toString(), "StopFlow" }));
 
         javax.swing.GroupLayout detailDisplayPanelLayout = new javax.swing.GroupLayout(detailDisplayPanel);
         detailDisplayPanel.setLayout(detailDisplayPanelLayout);
@@ -241,6 +243,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
         String mode = cbmSimMode.getSelectedItem().toString();
         if (mode.equalsIgnoreCase("stopflow")) {
             cbmSimMode.setSelectedIndex(0);
+            return;
         }
         this.simMode = cbmSimMode.getSelectedItem().toString();
         this.setTitle("Sensor Simulation (" + this.simMode + ")");
@@ -268,11 +271,13 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
     @Override
     public void setMode(String mode) {
         this.simMode = mode;
+        cbmSimMode.setSelectedItem(mode);
+        this.setTitle("Sensor Simulation (" + this.simMode + ")");
     }
 
     @Override
     public boolean isDisconnectedMode() {
-        return this.simMode.equalsIgnoreCase("disconnection");
+        return this.simMode.equalsIgnoreCase(FlowStates.DISCONNECTION.toString());
     }
 
     private void setIconLabel(JLabel label, int i) {

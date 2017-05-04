@@ -5,6 +5,7 @@
  */
 package com.okmich.sensor.simulator.service.handler;
 
+import com.okmich.sensor.simulator.FlowStates;
 import com.okmich.sensor.simulator.SystemCoordinator;
 import com.okmich.sensor.simulator.TransitionCommands;
 import com.okmich.sensor.simulator.gui.UserInterface;
@@ -35,23 +36,16 @@ public class CommandReceiverHandler implements DataHandler {
             String[] parts = response.split(";");
             TransitionCommands trnsCmd = TransitionCommands.valueOf(parts[0]);
             switch (trnsCmd) {
-                case DECRX:
-
-                    break;
-                case INCRX:
-
-                    break;
                 case PTOFF:
-
+                    ui.setMode(FlowStates.DISCONNECTION.toString());
                     break;
                 case PUTON:
-
+                    ui.setMode(FlowStates.STEADY.toString());
                     break;
                 case DEFLT:
+                    ui.setMode(FlowStates.STEADY.toString());
                 default:
-
             }
-
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, null, ex);
         }

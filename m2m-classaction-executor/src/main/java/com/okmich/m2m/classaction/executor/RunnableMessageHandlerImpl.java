@@ -74,7 +74,7 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
         String[] parts = payload.split(";");
         //do the whole processing as thus
         //extract the clz 
-        String clz = parts[15];
+        String clz = parts[16];
         //lookup the command from the clz
         String cmd = CommandRegistry.getCommand(clz);
         if (cmd != null && !cmd.isEmpty()) {

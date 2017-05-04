@@ -5,21 +5,20 @@
  */
 package com.okmich.sensor.simulator;
 
-import com.okmich.sensor.simulator.model.Reading;
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import com.okmich.sensor.simulator.gui.UserInterface;
-import com.okmich.sensor.simulator.service.DataTransferServerInterface;
 import com.okmich.sensor.simulator.service.CommandReceiverServerInterface;
 import com.okmich.sensor.simulator.service.DataFlowServerInterface;
+import com.okmich.sensor.simulator.service.DataTransferServerInterface;
 import com.okmich.sensor.simulator.service.handler.CommandReceiverHandler;
 import com.okmich.sensor.simulator.service.handler.DataFlowHanderImpl;
+import com.okmich.sensor.simulator.service.handler.DataHandler;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.okmich.sensor.simulator.service.handler.DataHandler;
 
 /**
  *
@@ -104,7 +103,7 @@ public class SystemCoordinator {
             }
             try {
                 //get new data for reading
-                dataFlowNetworkInterface.requestData(OptionRegistry.value(OptionRegistry.DEVICE_ID));
+                dataFlowNetworkInterface.requestData(value(DEVICE_ID));
             } catch (Exception ex) {
                 Logger.getLogger(ScheduledWorker.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
                 userInterface.setConnectionStatus(Status.STATUS_OFF);

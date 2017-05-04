@@ -201,14 +201,8 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="cbmSimMode">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="Steady"/>
-                    <StringItem index="1" value="Turbulence"/>
-                    <StringItem index="2" value="Leakage"/>
-                    <StringItem index="3" value="Disconnection"/>
-                    <StringItem index="4" value="StopFlow"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { FlowStates.STEADY.toString(), FlowStates.TURBULENCE.toString(), FlowStates.LEAKAGE.toString(), FlowStates.DISCONNECTION.toString(), &quot;StopFlow&quot; })" type="code"/>
                 </Property>
               </Properties>
             </Component>

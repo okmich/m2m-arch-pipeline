@@ -87,8 +87,7 @@ object Main {
 	 * @return Iterator[Reading]
 	 */
 	def classify(rdd: Iterator[Reading]) : Iterator[Reading] = {
-		
-		rdd
+		rdd.map(LowFormClassifier.classify(_))
 	}
 
 	/**

@@ -40,11 +40,11 @@ public final class OptionRegistry {
     public final static String ADDRESS = "sensor.add";
     public final static String GEO = "sensor.geo";
 
-    public final static String VAR_PRESSURE = "sensor.reading.var.prs";
-    public final static String VAR_TEMPERATURE = "sensor.reading.var.tmp";
-    public final static String VAR_FLOW_VELOCITY = "sensor.reading.var.flv";
-    public final static String VAR_VOLUME = "sensor.reading.var.vol";
-    public final static String VAR_EXTERNAL_BODY_FORCE = "sensor.reading.var.xbf";
+    public final static String RANGE_PRESSURE = "sensor.reading.var.prs";
+    public final static String RANGE_TEMPERATURE = "sensor.reading.var.tmp";
+    public final static String RANGE_FLOW_VELOCITY = "sensor.reading.var.flv";
+    public final static String RANGE_VOLUME = "sensor.reading.var.vol";
+    public final static String RANGE_EXTERNAL_BODY_FORCE = "sensor.reading.var.xbf";
 
     /**
      *
