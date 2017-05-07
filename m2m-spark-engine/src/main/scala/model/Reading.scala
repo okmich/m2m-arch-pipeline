@@ -10,6 +10,8 @@ class Reading (val xDevId : String, val xts : Long, val xPrs : Float, val xTmp :
 
 	val isInactive = if ((xPrs == 0f && iPrs ==0f) || (xVol == 0f && iVol == 0f) || (xFlv ==0f && iFlv == 0f)) true else false
 
+	val sourceExist = if (xPrs == 0f && xTmp == 0f && xVol == 0f && xFlv == 0f) false else true
+
 	def toTuple  = {
 		(xDevId + ":" + (-1 * xts).toString, xDevId, xts, xPrs, xTmp, xVol, xFlv, xXbr, iDevId, its, iPrs, iTmp, iVol, iFlv, iXbr, dist, fSts, cls, incd)
 	}

@@ -12,11 +12,11 @@ object LowFormClassifier{
 	val CLASS_TURBULENCE = "TUB"
 	val CLASS_LEAKAGE = "LKG"
 
-    val RANGE_PRESSURE = "sensor.reading.var.prs";
-    val RANGE_TEMPERATURE = "sensor.reading.var.tmp";
-    val RANGE_FLOW_VELOCITY = "sensor.reading.var.flv";
-    val RANGE_VOLUME = "sensor.reading.var.vol";
-    val RANGE_EXTERNAL_BODY_FORCE = "sensor.reading.var.xbf";
+    val RANGE_PRESSURE = "sensor.reading.range.prs";
+    val RANGE_TEMPERATURE = "sensor.reading.range.tmp";
+    val RANGE_FLOW_VELOCITY = "sensor.reading.range.flv";
+    val RANGE_VOLUME = "sensor.reading.range.vol";
+    val RANGE_EXTERNAL_BODY_FORCE = "sensor.reading.range.xbf";
 	
 	val fieldBoundaries : Map[String, (Float, Float)] = {
 		def getBounds(s: String) : (Float, Float) = {
@@ -37,7 +37,20 @@ object LowFormClassifier{
 		if (reading.isInactive){
 			reading.fSts = "I"
 			reading.cls = CLASS_NORMAL
-		}else {
+		} else if (!reading.sourceExist) {
+			reading.fSts = "A"
+
+			val pressure = compareBoundary(RANGE_PRESSURE, reading.iPrs)
+			val volume = compareBoundary(RANGE_VOLUME, reading.iVol)
+			val flowVelocity = compareBoundary(RANGE_FLOW_VELOCITY, reading.iFlv)
+
+			if (pressure == -1 && volume == -1 && flowVelocity == -1) 
+				reading.cls = CLASS_LEAKAGE
+			else if (pressure == 1)
+				reading.cls = CLASS_TURBULENCE
+			else 
+				reading.cls = CLASS_NORMAL
+		} else {
 			//we will just focus on pressure, flow velocity and volume
 			reading.fSts = "A"
 
@@ -64,7 +77,7 @@ object LowFormClassifier{
 		val xLevel = compareBoundary(key,x)
 		val iLevel = compareBoundary(key,i)
 		if (xLevel == iLevel) 0
-		else if (xLevel < iLevel) -1
+		else if (xLevel > iLevel) -1
 		else 1
 	}
 
