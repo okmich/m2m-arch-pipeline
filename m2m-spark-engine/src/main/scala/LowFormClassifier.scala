@@ -2,6 +2,7 @@
 import java.util.{Properties => JProperties}
 import scala.io.Source
 
+import model.Reading
 
 import scala.collection.JavaConverters._
 
@@ -28,7 +29,7 @@ object LowFormClassifier{
 
 		val pMap = props.asScala //contains key=val-val
 
-		pMap.map(m => (m._1 -> getBounds(m._2)))
+		pMap.map(m => (m._1 -> getBounds(m._2))).toMap
 	}
 
 	def classify(reading: Reading) : Reading = {
@@ -38,23 +39,41 @@ object LowFormClassifier{
 			reading.cls = CLASS_NORMAL
 		}else {
 			//we will just focus on pressure, flow velocity and volume
+			reading.fSts = "A"
 
-			reading.xPrs
-			reading.iPrs
+			val pressure = btw(RANGE_PRESSURE, reading.xPrs, reading.iPrs)
+			val volume = btw(RANGE_VOLUME, reading.xVol, reading.iVol)
+			val flowVelocity = btw(RANGE_FLOW_VELOCITY, reading.xFlv, reading.iFlv)
 
-			reading.xVol
-			reading.iVol
-
-			reading.xFlv
-			reading.iFlv
+			if (pressure == -1 && (volume == -1 || flowVelocity == -1)){
+				reading.cls = CLASS_LEAKAGE
+			} else if (pressure == 1){
+				reading.cls= CLASS_TURBULENCE
+			} else{
+				reading.cls = CLASS_NORMAL
+			}
 		}
-
 		reading
 	}
 
+	/**
+	 *
+	 *
+	 */
+	private def btw(key: String, x: Float, i: Float) : Int = {
+		val xLevel = compareBoundary(key,x)
+		val iLevel = compareBoundary(key,i)
+		if (xLevel == iLevel) 0
+		else if (xLevel < iLevel) -1
+		else 1
+	}
 
+	/**
+	 *
+	 *
+	 */
 	private def compareBoundary(key: String, value: Float) : Int = {
-		val boundaries = fieldBoundariesget(key)
+		val boundaries = fieldBoundaries(key)
 
 		if (value <= boundaries._1) -1
 		else if (value > boundaries._2) 1

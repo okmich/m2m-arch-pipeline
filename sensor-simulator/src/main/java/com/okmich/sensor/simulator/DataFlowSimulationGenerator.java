@@ -15,18 +15,18 @@ import java.util.Random;
  */
 public final class DataFlowSimulationGenerator {
 
-    private static float[] PRESSURE_VARIATIONS;
-    private static float[] TEMP_VARIATIONS;
-    private static float[] VOL_VARIATIONS;
-    private static float[] FLOW_VELOCITY_VARIATIONS;
-    private static float[] X_BODY_FORCE_VARIATIONS;
+    public static float[] PRESSURE_VARIATIONS;
+    public static float[] TEMP_VARIATIONS;
+    public static float[] VOL_VARIATIONS;
+    public static float[] FLOW_VELOCITY_VARIATIONS;
+    public static float[] X_BODY_FORCE_VARIATIONS;
 
     private static final Random RAND = new Random();
 
     private DataFlowSimulationGenerator() {
     }
 
-    public static void initilize() {
+    public static void initialize() {
         VOL_VARIATIONS = getRange(value(RANGE_VOLUME));
         FLOW_VELOCITY_VARIATIONS = getRange(value(RANGE_FLOW_VELOCITY));
         PRESSURE_VARIATIONS = getRange(value(RANGE_PRESSURE));
@@ -47,27 +47,31 @@ public final class DataFlowSimulationGenerator {
         }
         //check the mode
         //we will use the mode to control various ways of simulating different actions in the pipeline story
-        if (simMode == null || simMode.trim().isEmpty() || simMode.equalsIgnoreCase("steady")) {
+        if (simMode == null || simMode.trim().isEmpty() || simMode.equalsIgnoreCase("normal")) {
             //generate data within the range of acceptable variance for each field
-            reading.setFlowVelocity(getRandomValueWithinRange(FLOW_VELOCITY_VARIATIONS));
-            reading.setPressure(getRandomValueWithinRange(PRESSURE_VARIATIONS));
-            reading.setVolume(getRandomValueWithinRange(VOL_VARIATIONS));
+            reading.setFlowVelocity(alter(reading.getFlowVelocity(), 0.01f));
+            reading.setPressure(alter(reading.getPressure(), 0.01f));
+            reading.setVolume(alter(reading.getVolume(), 0.00001f));
+            reading.setExtBodyForce(alter(reading.getExtBodyForce(), 0.0001f));
+            reading.setTemperature(alter(reading.getTemperature(), 0.01f));
         } else if (simMode.equalsIgnoreCase("turbulence")) {
             reading.setFlowVelocity(getRandomValueAboveRange(FLOW_VELOCITY_VARIATIONS));
             reading.setPressure(getRandomValueAboveRange(PRESSURE_VARIATIONS));
             reading.setVolume(getRandomValueAboveRange(VOL_VARIATIONS));
+            reading.setExtBodyForce(getRandomValueAboveRange(X_BODY_FORCE_VARIATIONS));
         } else if (simMode.equalsIgnoreCase("leakage")) {
             reading.setFlowVelocity(getRandomValueBelowRange(FLOW_VELOCITY_VARIATIONS));
             reading.setPressure(getRandomValueBelowRange(PRESSURE_VARIATIONS));
             reading.setVolume(getRandomValueBelowRange(VOL_VARIATIONS));
-        } else { //disconnection
-            //no need to check
+            reading.setExtBodyForce(getRandomValueWithinRange(X_BODY_FORCE_VARIATIONS));
+        } else { //stop flow
+            //no need tocheck
             reading.setFlowVelocity(0f);
             reading.setPressure(getRandomValueBelowRange(PRESSURE_VARIATIONS));
             reading.setVolume(0f);
+            reading.setExtBodyForce(getRandomValueWithinRange(X_BODY_FORCE_VARIATIONS));
         }
         reading.setTemperature(getRandomValueWithinRange(TEMP_VARIATIONS));
-        reading.setExtBodyForce(getRandomValueWithinRange(X_BODY_FORCE_VARIATIONS));
 
         return reading;
     }
@@ -76,7 +80,7 @@ public final class DataFlowSimulationGenerator {
         String[] vals = s.split("-");
         float min = vals[0].isEmpty() ? 0f : Float.parseFloat(vals[0]);
         //if no max is specified, make it twice the min value
-        float max = vals[1].isEmpty() ? 2 * min : Float.parseFloat(vals[1]);
+        float max = vals.length <= 1 || vals[1].isEmpty() ? 2 * min : Float.parseFloat(vals[1]);
         return new float[]{min, max};
     }
 
@@ -86,7 +90,8 @@ public final class DataFlowSimulationGenerator {
      * @return
      */
     private static float getRandomValueWithinRange(float[] range) {
-        return range[0] + ((range[1] - range[0]) / RAND.nextInt(10));
+
+        return range[0] + ((range[1] - range[0]) / randomIntDivisor());
     }
 
     /**
@@ -95,7 +100,7 @@ public final class DataFlowSimulationGenerator {
      * @return
      */
     private static float getRandomValueBelowRange(float[] range) {
-        return range[0] - ((range[1] - range[0]) / RAND.nextInt(10));
+        return range[0] - ((range[1] - range[0]) / randomIntDivisor());
     }
 
     /**
@@ -104,6 +109,23 @@ public final class DataFlowSimulationGenerator {
      * @return
      */
     private static float getRandomValueAboveRange(float[] range) {
-        return range[1] + ((range[1] - range[0]) / RAND.nextInt(10));
+        return range[1] + ((range[1] - range[0]) / randomIntDivisor());
+    }
+
+    private static float alter(float value, float e) {
+        if (RAND.nextBoolean()) {
+            return value + e;
+        } else {
+            return value - e;
+        }
+    }
+
+    private static float randomIntDivisor() {
+        int div = RAND.nextInt(10);
+        if (div == 0) {
+            return 3;
+        } else {
+            return div;
+        }
     }
 }

@@ -40,11 +40,13 @@ public final class OptionRegistry {
     public final static String ADDRESS = "sensor.add";
     public final static String GEO = "sensor.geo";
 
-    public final static String RANGE_PRESSURE = "sensor.reading.var.prs";
-    public final static String RANGE_TEMPERATURE = "sensor.reading.var.tmp";
-    public final static String RANGE_FLOW_VELOCITY = "sensor.reading.var.flv";
-    public final static String RANGE_VOLUME = "sensor.reading.var.vol";
-    public final static String RANGE_EXTERNAL_BODY_FORCE = "sensor.reading.var.xbf";
+    public final static String RANGE_PRESSURE = "sensor.reading.range.prs";
+    public final static String RANGE_TEMPERATURE = "sensor.reading.range.tmp";
+    public final static String RANGE_FLOW_VELOCITY = "sensor.reading.range.flv";
+    public final static String RANGE_VOLUME = "sensor.reading.range.vol";
+    public final static String RANGE_EXTERNAL_BODY_FORCE = "sensor.reading.range.xbf";
+
+    public final static String INIT_DATA = "init.data";
 
     /**
      *
@@ -85,7 +87,7 @@ public final class OptionRegistry {
                 throw new RuntimeException(ex);
             }
         }
-
+//        properties.list(System.out);
     }
 
     /**

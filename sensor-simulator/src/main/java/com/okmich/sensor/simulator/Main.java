@@ -38,7 +38,7 @@ public class Main {
             OptionRegistry.initialize(args);
 
             //initialize the DataGenerator
-            DataFlowSimulationGenerator.initilize();
+            DataFlowSimulationGenerator.initialize();
             new Main(value(DEVICE_ID)).startApp();
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

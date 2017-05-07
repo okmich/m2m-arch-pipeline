@@ -6,6 +6,7 @@
 package com.okmich.sensor.simulator.gui;
 
 import com.okmich.sensor.simulator.FlowStates;
+import static com.okmich.sensor.simulator.FlowStates.*;
 import static com.okmich.sensor.simulator.OptionRegistry.*;
 import com.okmich.sensor.simulator.model.Reading;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     private final ImageIcon[] icons;
     private String simMode = "";
-    private String type;
+    private final String type;
 
     /**
      * Creates new form ApplicationFrame
@@ -112,7 +113,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             }
         });
 
-        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { FlowStates.STEADY.toString(), FlowStates.TURBULENCE.toString(), FlowStates.LEAKAGE.toString(), FlowStates.DISCONNECTION.toString(), "StopFlow" }));
+        cbmSimMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] {FlowStates.NORMAL.toString(), TURBULENCE.toString(), LEAKAGE.toString(), DISCONNECTION.toString(), STOPFLOW.toString() }));
 
         javax.swing.GroupLayout detailDisplayPanelLayout = new javax.swing.GroupLayout(detailDisplayPanel);
         detailDisplayPanel.setLayout(detailDisplayPanelLayout);
@@ -245,8 +246,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             cbmSimMode.setSelectedIndex(0);
             return;
         }
-        this.simMode = cbmSimMode.getSelectedItem().toString();
-        this.setTitle("Sensor Simulation (" + this.simMode + ")");
+        setMode(this.cbmSimMode.getSelectedItem().toString());
     }//GEN-LAST:event_btnSimulateActionPerformed
 
     /**
@@ -277,7 +277,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     @Override
     public boolean isDisconnectedMode() {
-        return this.simMode.equalsIgnoreCase(FlowStates.DISCONNECTION.toString());
+        return this.simMode.equalsIgnoreCase(DISCONNECTION.toString());
     }
 
     private void setIconLabel(JLabel label, int i) {

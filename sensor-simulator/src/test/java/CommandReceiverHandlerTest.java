@@ -19,7 +19,7 @@ public class CommandReceiverHandlerTest {
     }
 
     @Test
-    public void testHandle(String response) {
-
+    public void testHandle() {
+        System.out.println("");
     }
 }

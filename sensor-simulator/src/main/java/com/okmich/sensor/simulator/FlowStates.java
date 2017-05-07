@@ -10,7 +10,7 @@ package com.okmich.sensor.simulator;
  * @author datadev
  */
 public enum FlowStates {
-    STEADY("Steady"), TURBULENCE("Turbulence"), LEAKAGE("Leakage"), DISCONNECTION("Disconnection");
+    NORMAL("Normal"), TURBULENCE("Turbulence"), LEAKAGE("Leakage"), DISCONNECTION("Disconnection"), STOPFLOW("StopFlow");
 
     private final String value;
 

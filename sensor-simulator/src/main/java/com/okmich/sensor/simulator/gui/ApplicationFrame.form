@@ -202,7 +202,7 @@
             <Component class="javax.swing.JComboBox" name="cbmSimMode">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new javax.swing.DefaultComboBoxModel(new String[] { FlowStates.STEADY.toString(), FlowStates.TURBULENCE.toString(), FlowStates.LEAKAGE.toString(), FlowStates.DISCONNECTION.toString(), &quot;StopFlow&quot; })" type="code"/>
+                  <Connection code="new javax.swing.DefaultComboBoxModel(new String[] {FlowStates.NORMAL.toString(), TURBULENCE.toString(), LEAKAGE.toString(), DISCONNECTION.toString(), STOPFLOW.toString() })" type="code"/>
                 </Property>
               </Properties>
             </Component>

@@ -40,10 +40,10 @@ public class CommandReceiverHandler implements DataHandler {
                     ui.setMode(FlowStates.DISCONNECTION.toString());
                     break;
                 case PUTON:
-                    ui.setMode(FlowStates.STEADY.toString());
+                    ui.setMode(FlowStates.NORMAL.toString());
                     break;
                 case DEFLT:
-                    ui.setMode(FlowStates.STEADY.toString());
+                    ui.setMode(FlowStates.NORMAL.toString());
                 default:
             }
         } catch (Exception ex) {

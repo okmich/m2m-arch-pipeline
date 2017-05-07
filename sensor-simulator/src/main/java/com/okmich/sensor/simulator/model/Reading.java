@@ -5,6 +5,8 @@
  */
 package com.okmich.sensor.simulator.model;
 
+import static com.okmich.sensor.simulator.OptionRegistry.DEVICE_ID;
+import static com.okmich.sensor.simulator.OptionRegistry.value;
 import java.io.Serializable;
 
 /**
@@ -38,7 +40,7 @@ public class Reading implements Serializable {
     public static Reading fromString(String str) {
         String[] parts = str.split(";");
         Reading r = new Reading();
-        r.devId = (parts[0]);
+        r.devId = value(DEVICE_ID);
         r.timestamp = (Long.valueOf(parts[1]));
         r.pressure = (getFloat(parts[2]));
         r.temperature = (getFloat(parts[3]));
