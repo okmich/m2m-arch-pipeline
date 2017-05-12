@@ -13,7 +13,7 @@ public interface Status {
 
     int STATUS_OFF = 0;
     int STATUS_ON = 1;
-    int STATUS_STALE = 2;
+    int STATUS_NO_FLOW = 2;
     
     /**
      * 

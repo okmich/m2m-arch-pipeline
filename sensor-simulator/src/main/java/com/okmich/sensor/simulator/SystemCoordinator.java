@@ -87,10 +87,11 @@ public class SystemCoordinator {
     private class ScheduledWorker implements Runnable {
 
         private final DataFlowServerInterface dataFlowNetworkInterface;
+        private final DataHandler dataFlowHandler;
 
         public ScheduledWorker() throws IOException {
-            dataFlowNetworkInterface = new DataFlowServerInterface(
-                    new DataFlowHanderImpl(networkInterface, userInterface));
+            this.dataFlowHandler = new DataFlowHanderImpl(networkInterface, userInterface);
+            dataFlowNetworkInterface = new DataFlowServerInterface(dataFlowHandler);
         }
 
         @Override
@@ -100,6 +101,9 @@ public class SystemCoordinator {
                 userInterface.setConnectionStatus(Status.STATUS_OFF);
                 userInterface.setFlowStatus(Status.STATUS_OFF);
                 return;
+            }
+            if (userInterface.getFlowStatus() == Status.STATUS_NO_FLOW) {
+                dataFlowHandler.handle(DataFlowSimulationGenerator.generateNoFlowReading().toString());
             }
             try {
                 //get new data for reading

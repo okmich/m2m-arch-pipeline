@@ -13,6 +13,8 @@ import com.okmich.sensor.simulator.model.Reading;
  */
 public interface UserInterface {
 
+    int getFlowStatus();
+
     String getMode();
 
     boolean isDisconnectedMode();
@@ -28,5 +30,5 @@ public interface UserInterface {
     void setFlowStatus(int connStatus);
 
     void setMode(String mode);
-    
+
 }

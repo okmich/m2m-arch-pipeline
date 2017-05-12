@@ -287,8 +287,8 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
         cbmSimMode.setSelectedItem(mode);
         this.setTitle("Sensor Simulation (" + this.simMode + ")");
         //
-        if (mode.equals(STOPFLOW.toString()) && !isDisconnectedMode()) {
-            setFlowStatus(Status.STATUS_ON);
+        if (mode.equals(STOPFLOW.toString())) {
+            setFlowStatus(Status.STATUS_NO_FLOW);
         }
     }
 
@@ -339,6 +339,17 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
     public void setConnectionStatus(int connStatus) {
         this.connectionStatus = connStatus;
         connectionStatusLabel.setIcon(this.icons[connStatus]);
+    }
+
+    @Override
+    public int getFlowStatus() {
+        if (this.simMode.equals(STOPFLOW.toString())) {
+            return Status.STATUS_NO_FLOW;
+        } else if (this.simMode.equalsIgnoreCase(DISCONNECTION.toString())) {
+            return Status.STATUS_OFF;
+        } else {
+            return Status.STATUS_ON;
+        }
     }
 
     @Override

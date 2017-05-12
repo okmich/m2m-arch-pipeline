@@ -42,7 +42,7 @@ public class DataFlowHanderImpl implements DataHandler {
             Reading reading = DataFlowSimulationGenerator.generate(response, userInterface.getMode());
             dtServiceInterface.transferDataToServer(reading);
             userInterface.setConnectionStatus(Status.STATUS_ON);
-            userInterface.setFlowStatus(reading.isFlowActive() ? Status.STATUS_ON : Status.STATUS_STALE);
+            userInterface.setFlowStatus(reading.isFlowActive() ? Status.STATUS_ON : Status.STATUS_NO_FLOW);
             //send to application frame for display
             userInterface.refreshTableData(reading);
         } catch (Exception ex) {

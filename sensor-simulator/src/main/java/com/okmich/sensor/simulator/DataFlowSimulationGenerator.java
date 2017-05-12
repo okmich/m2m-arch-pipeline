@@ -43,6 +43,7 @@ public final class DataFlowSimulationGenerator {
     public static Reading generate(String dataFlow, String simMode) {
         Reading reading = Reading.newFromString(dataFlow, value(DEVICE_ID));
         if (reading.getFlowVelocity() == 0.0f || reading.getVolume() == 0.0f) {
+            reading.setTimestamp(System.currentTimeMillis());
             return reading;
         }
         //check the mode
@@ -67,10 +68,25 @@ public final class DataFlowSimulationGenerator {
         } else { //stop flow
             //no need tocheck
             reading.setFlowVelocity(0f);
-            reading.setPressure(getRandomValueBelowRange(PRESSURE_VARIATIONS));
+            reading.setPressure(0f);
             reading.setVolume(0f);
             reading.setExtBodyForce(getRandomValueWithinRange(X_BODY_FORCE_VARIATIONS));
         }
+        reading.setTemperature(getRandomValueWithinRange(TEMP_VARIATIONS));
+        reading.setTimestamp(System.currentTimeMillis());
+
+        return reading;
+    }
+
+    public static Reading generateNoFlowReading() {
+        Reading reading = new Reading();
+
+        reading.setDevId(value(DEVICE_ID));
+        reading.setTimestamp(System.currentTimeMillis());
+        reading.setExtBodyForce(getRandomValueWithinRange(X_BODY_FORCE_VARIATIONS));
+        reading.setFlowVelocity(0f);
+        reading.setVolume(0f);
+        reading.setPressure(0f);
         reading.setTemperature(getRandomValueWithinRange(TEMP_VARIATIONS));
 
         return reading;

@@ -4,7 +4,7 @@ mqtt.server.data.submit.topic=m2m/psensor_data_delivery_topic_5X928
 mqtt.server.cmd.recpt.topic=m2m/psensor_command_topic_238923
 
 
-mqtt.action.command.topic=m2m/psensor_command_topic_238923/
+mqtt.action.command.topic=m2m/psensor_command_topic_238923
 
 
 
