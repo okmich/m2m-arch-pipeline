@@ -56,6 +56,7 @@ public final class CommandReceiverServerInterface implements Runnable, MqttCallb
         try {
             this.mqttClient.setCallback(this);
             this.mqttClient.connect();
+            LOG.log(Level.INFO, "Connect to the server on {0}{1}", new Object[]{TOPIC_ID, value(DEVICE_ID)});
             this.mqttClient.subscribe(TOPIC_ID + value(DEVICE_ID), 1);
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, null, ex);

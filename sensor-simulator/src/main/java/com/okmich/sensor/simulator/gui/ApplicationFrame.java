@@ -8,6 +8,7 @@ package com.okmich.sensor.simulator.gui;
 import com.okmich.sensor.simulator.FlowStates;
 import static com.okmich.sensor.simulator.FlowStates.*;
 import static com.okmich.sensor.simulator.OptionRegistry.*;
+import com.okmich.sensor.simulator.Status;
 import com.okmich.sensor.simulator.model.Reading;
 import java.util.Date;
 import javax.swing.ImageIcon;
@@ -22,6 +23,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     private final ImageIcon[] icons;
     private String simMode = "";
+    private int connectionStatus = 0;
     private final String type;
 
     /**
@@ -38,8 +40,8 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
         initComponents();
 
         //set the default status icons
-        this.setIconLabel(this.connectionStatusLabel, 0);
-        this.setIconLabel(this.flowStatusLabel, 0);
+        this.setIconLabel(this.connectionStatusLabel, connectionStatus);
+        this.setIconLabel(this.flowStatusLabel, connectionStatus);
     }
 
     /**
@@ -246,7 +248,15 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
             cbmSimMode.setSelectedIndex(0);
             return;
         }
+        //handle disconnection
+        if (mode.equalsIgnoreCase(DISCONNECTION.toString())) {
+            setConnectionStatus(Status.STATUS_OFF);
+        } else {
+            setConnectionStatus(Status.STATUS_ON);
+        }
+
         setMode(this.cbmSimMode.getSelectedItem().toString());
+        this.setTitle("Sensor Simulation (" + this.cbmSimMode.getSelectedItem().toString() + ")");
     }//GEN-LAST:event_btnSimulateActionPerformed
 
     /**
@@ -270,14 +280,21 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     @Override
     public void setMode(String mode) {
+        if (isDisconnectedMode()) {
+            return;
+        }
         this.simMode = mode;
         cbmSimMode.setSelectedItem(mode);
         this.setTitle("Sensor Simulation (" + this.simMode + ")");
+        //
+        if (mode.equals(STOPFLOW.toString()) && !isDisconnectedMode()) {
+            setFlowStatus(Status.STATUS_ON);
+        }
     }
 
     @Override
     public boolean isDisconnectedMode() {
-        return this.simMode.equalsIgnoreCase(DISCONNECTION.toString());
+        return this.connectionStatus == Status.STATUS_OFF;
     }
 
     private void setIconLabel(JLabel label, int i) {
@@ -320,6 +337,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
 
     @Override
     public void setConnectionStatus(int connStatus) {
+        this.connectionStatus = connStatus;
         connectionStatusLabel.setIcon(this.icons[connStatus]);
     }
 
