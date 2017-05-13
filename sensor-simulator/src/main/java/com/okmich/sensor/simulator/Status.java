@@ -18,6 +18,6 @@ public interface Status {
     /**
      * 
      */
-    String STN_TYPE_VALVE = "vs";
-    String STN_TYPE_NOT_VALVE = "nvs";
+    String STN_TYPE_BASE_STATION = "bs";
+    String STN_TYPE_NOT_BASE_STATION = "ns";
 }

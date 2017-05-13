@@ -157,7 +157,7 @@ public class ApplicationFrame extends javax.swing.JFrame implements UserInterfac
                 .addContainerGap())
         );
 
-        jLabel3.setText(this.type != null && this.type.equals("vs") ? "Base valve station" : "Non valve station");
+        jLabel3.setText(this.type != null && this.type.equals(Status.STN_TYPE_BASE_STATION) ? "Base station Sensor" : "Pipe data sensor");
         jLabel4.setText(value(DEVICE_ID));
 
         javax.swing.GroupLayout basicDisplayPanelLayout = new javax.swing.GroupLayout(basicDisplayPanel);

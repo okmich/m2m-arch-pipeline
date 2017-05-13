@@ -177,7 +177,7 @@
                 <Property name="horizontalAlignment" type="int" value="4"/>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jLabel3.setText(this.type != null &amp;&amp; this.type.equals(&quot;vs&quot;) ? &quot;Base valve station&quot; : &quot;Non valve station&quot;);"/>
+                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jLabel3.setText(this.type != null &amp;&amp; this.type.equals(Status.STN_TYPE_BASE_STATION) ? &quot;Base station Sensor&quot; : &quot;Pipe data sensor&quot;);"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel4">

@@ -69,7 +69,7 @@ public class SystemCoordinator {
             LOG.log(Level.SEVERE, null, ex);
         }
         //start up the command reception if this is a valve station
-        if (value(TYPE).equals(Status.STN_TYPE_VALVE)) {
+        if (value(TYPE).equals(Status.STN_TYPE_BASE_STATION)) {
             DataHandler controlCommandHandler = new CommandReceiverHandler(this.userInterface);
             try {
                 //start another thread that listens for command from control
