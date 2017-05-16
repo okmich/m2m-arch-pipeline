@@ -76,7 +76,7 @@ public class UniqueKeyTableModel extends AbstractTableModel {
                 case 1:
                     return row.getAddress();
                 case 2:
-                    return row.getTimestamp();
+                    return row.getDateTimeAsString();
             }
             return "";
         }

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> {
 
@@ -35,20 +35,40 @@ public class ActionPanel extends javax.swing.JPanel implements UIView<String[]> 
 
         jScrollPane1 = new javax.swing.JScrollPane();
         triggerActionTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Automated Action Log"));
         setPreferredSize(new java.awt.Dimension(350, 424));
-        setLayout(new java.awt.GridLayout(1, 1, 5, 5));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
         triggerActionTable.setModel(tableModel);
         triggerActionTable.setEnabled(false);
         jScrollPane1.setViewportView(triggerActionTable);
 
         add(jScrollPane1);
+
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton1.setText("Clear");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        tableModel.clear();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable triggerActionTable;
     // End of variables declaration//GEN-END:variables

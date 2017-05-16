@@ -5,28 +5,12 @@
  */
 package com.okmich.m2m.backoffice.dashboard;
 
-import com.okmich.m2m.backoffice.dashboard.controllers.ActionPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.SensorPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.ConsolePanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.DashboardPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.DisconnectedSensorPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.EventPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.NetworkStatusDistPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.SensorNetworkPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.SourceProductionChartPanelController;
-import com.okmich.m2m.backoffice.dashboard.controllers.UIController;
+import com.okmich.m2m.backoffice.dashboard.controllers.*;
 import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.db.CacheServiceImpl;
 import com.okmich.m2m.backoffice.dashboard.messaging.KafkaMessageConsumer;
-import com.okmich.m2m.backoffice.dashboard.model.Sensor;
-import com.okmich.m2m.backoffice.dashboard.views.ActionPanel;
-import com.okmich.m2m.backoffice.dashboard.views.SensorPanel;
-import com.okmich.m2m.backoffice.dashboard.views.ConsolePanel;
-import com.okmich.m2m.backoffice.dashboard.views.DashboardPanel;
-import com.okmich.m2m.backoffice.dashboard.views.EventPanel;
-import com.okmich.m2m.backoffice.dashboard.views.NetworkStatusDistPanel;
-import com.okmich.m2m.backoffice.dashboard.views.SensorNetworkPanel;
-import com.okmich.m2m.backoffice.dashboard.views.SourceProductionChartPanel;
+import com.okmich.m2m.backoffice.dashboard.model.*;
+import com.okmich.m2m.backoffice.dashboard.views.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -81,23 +65,20 @@ public final class Main {
         //create all the controllers
         UIController<String> consolePanelController = new ConsolePanelController(consolePanel);
         DashboardPanelController dashboardPanelController = new DashboardPanelController(dashboardPanel);
-        UIController<Sensor> networkStatusDistPanelController = new NetworkStatusDistPanelController(networkStatusDistPanel);
+        UIController<SensorEvent> networkStatusDistPanelController = new NetworkStatusDistPanelController(networkStatusDistPanel);
         UIController<Sensor> sensorNetworkPanelController
                 = new SensorNetworkPanelController(sensorNetworkPanel);
-        UIController<Sensor> sourceProductionChartPanelController
+        UIController<SensorReading> sourceProductionChartPanelController
                 = new SourceProductionChartPanelController(sourceProductionChartPanel, cacheService);
 
         UIController<String[]> actionPanelController = new ActionPanelController(actionPanel);
         UIController<Sensor> sensorPanelController = new SensorPanelController(sensorPanel);
         UIController<Sensor> disconnectedSensorPanelController = new DisconnectedSensorPanelController(null);
-        UIController<String[]> eventPanelController = new EventPanelController(eventPanel);
+        UIController<SensorEvent> eventPanelController = new EventPanelController(eventPanel);
 
         //wire the contoller chains
-        sensorPanelController.addChainControllers(sourceProductionChartPanelController,
-                networkStatusDistPanelController, sensorNetworkPanelController);
-        disconnectedSensorPanelController.addChainControllers(sensorPanelController,
-                networkStatusDistPanelController,
-                sensorNetworkPanelController);
+        disconnectedSensorPanelController.addChainControllers(sensorPanelController, sensorNetworkPanelController);
+        eventPanelController.addChainControllers(networkStatusDistPanelController);
 
         //create the main gui
         mainGUIFrame = new MainGUIFrame(sensorPanel,
@@ -111,7 +92,9 @@ public final class Main {
         kafkaMessageConsumer = new KafkaMessageConsumer(actionPanelController,
                 sensorPanelController,
                 disconnectedSensorPanelController,
+                sensorNetworkPanelController,
                 eventPanelController,
+                sourceProductionChartPanelController,
                 consolePanelController);
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public interface UIView<T> {
     

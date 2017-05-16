@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class DashboardPanel extends javax.swing.JPanel implements UIView<String> {
 

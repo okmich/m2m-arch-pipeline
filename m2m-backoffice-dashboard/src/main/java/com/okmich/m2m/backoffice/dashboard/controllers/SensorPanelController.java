@@ -10,7 +10,7 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class SensorPanelController extends AbstractController<Sensor> {
 
@@ -19,17 +19,15 @@ public class SensorPanelController extends AbstractController<Sensor> {
     }
 
     @Override
-    public Sensor transformPayload(String t) {
-        //devId;ts;prs;tmp;vol;flv;xbf;devId;ts;prs;tmp;vol;flv;xbf;dist;clz;incd
-        String[] fields = t.split(";");
-        Sensor sensor = new Sensor();
-        sensor.setDevId(fields[7]);
-        sensor.setTimestamp(Long.parseLong(fields[8]));
-        sensor.setCapacity(Double.parseDouble(fields[11]));
-        sensor.setFlowVelocity(Double.parseDouble(fields[12]));
-        sensor.setSupplyDevId(fields[0]);
+    protected Sensor prePerform(Sensor sensor) {
         sensor.setStatus(Sensor.STATUS_ACTIVE);
-
+        sensor.setTimestamp(System.currentTimeMillis());
         return sensor;
+    }
+
+    @Override
+    public Sensor transformPayload(String t) {
+        //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
+        return Sensor.valueOf(t.split("\\|")[1]);
     }
 }

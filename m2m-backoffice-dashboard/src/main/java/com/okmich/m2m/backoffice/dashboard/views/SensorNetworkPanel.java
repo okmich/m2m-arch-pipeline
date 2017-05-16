@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class SensorNetworkPanel extends JPanel implements UIView<Sensor> {
 
@@ -102,7 +102,7 @@ public class SensorNetworkPanel extends JPanel implements UIView<Sensor> {
             String status = f.getStatus();
             switch (status) {
                 case Sensor.STATUS_ACTIVE:
-                    return Color.GREEN;
+                    return f.isStale() ? Color.WHITE : Color.GREEN;
                 case Sensor.STATUS_INACTIVE:
                     return Color.RED;
                 default:

@@ -7,7 +7,7 @@ package com.okmich.m2m.backoffice.dashboard.controllers;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public interface UIController<T> {
 

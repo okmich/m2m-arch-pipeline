@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.server.db;
-
-import redis.clients.jedis.Jedis;
+package com.okmich.sensor.server.db.cache;
 
 /**
  *
@@ -13,8 +11,4 @@ import redis.clients.jedis.Jedis;
  */
 public interface CacheService extends SensorCacheService, SensorReadingCacheService {
 
-    default Jedis getJedis() {
-
-        return null;
-    }
 }

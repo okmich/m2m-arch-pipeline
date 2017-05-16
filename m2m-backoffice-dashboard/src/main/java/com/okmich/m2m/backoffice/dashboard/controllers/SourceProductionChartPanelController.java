@@ -8,13 +8,14 @@ package com.okmich.m2m.backoffice.dashboard.controllers;
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
 import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import com.okmich.m2m.backoffice.dashboard.model.SensorReading;
 import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public class SourceProductionChartPanelController extends AbstractController<Sensor> {
+public class SourceProductionChartPanelController extends AbstractController<SensorReading> {
 
     private final CacheService cacheService;
     private final static String SOURCE_SENSOR = value(SOURCE_SENSOR_ID);
@@ -30,22 +31,7 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
     }
 
     @Override
-    public void process(String t) {
-        //devId;ts;prs;tmp;vol;flv;xbf
-        String[] fields = t.split(";");
-        long ts = Long.parseLong(fields[1]);
-
-        if (SOURCE_SENSOR.equals(fields[0])) {
-            Sensor sensor = new Sensor();
-            sensor.setDevId(fields[0]);
-            sensor.setStatus(Sensor.STATUS_ACTIVE);
-            //do some load
-            perform(sensor);
-        }
-    }
-
-    @Override
-    public void perform(Sensor t) {
+    public void perform(SensorReading t) {
         if (!SOURCE_SENSOR.equals(t.getDevId())) {
             return;
         }
@@ -57,8 +43,9 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
     }
 
     @Override
-    protected Sensor transformPayload(String payload) {
-        return null;
+    protected SensorReading transformPayload(String payload) {
+        //devId;ts;prs;tmp;vol;flv;xbf
+        return new SensorReading(payload);
     }
 
 }

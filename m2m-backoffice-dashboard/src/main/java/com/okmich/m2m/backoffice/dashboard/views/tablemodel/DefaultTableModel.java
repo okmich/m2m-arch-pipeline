@@ -23,10 +23,10 @@ public class DefaultTableModel extends AbstractTableModel {
     private static final Logger LOG = Logger.getLogger(DefaultTableModel.class.getName());
 
     /**
-     * 
-     * @param columnNames 
+     *
+     * @param columnNames
      */
-    public DefaultTableModel(String[]  columnNames) {
+    public DefaultTableModel(String[] columnNames) {
         this.columnNames = columnNames;
         this.dataset = new ArrayList<>();
     }
@@ -35,8 +35,6 @@ public class DefaultTableModel extends AbstractTableModel {
     public int getRowCount() {
         return dataset.size();
     }
-
- 
 
     @Override
     public int getColumnCount() {
@@ -58,11 +56,16 @@ public class DefaultTableModel extends AbstractTableModel {
     }
 
     public void add(String[] data) {
-       this.dataset.add(data);
+        this.dataset.add(data);
         try {
             this.fireTableDataChanged();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
         }
+    }
+
+    public void clear() {
+        dataset.clear();
+        this.fireTableDataChanged();
     }
 }

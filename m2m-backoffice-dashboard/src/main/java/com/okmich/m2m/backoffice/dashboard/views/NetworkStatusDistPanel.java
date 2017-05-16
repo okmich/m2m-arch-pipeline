@@ -7,11 +7,11 @@ package com.okmich.m2m.backoffice.dashboard.views;
 
 import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import com.okmich.m2m.backoffice.dashboard.model.SensorEvent;
 import java.awt.Font;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.jfree.chart.ChartFactory;
@@ -23,16 +23,18 @@ import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public final class NetworkStatusDistPanel extends ChartPanel implements UIView<Sensor> {
+public final class NetworkStatusDistPanel extends ChartPanel implements UIView<SensorEvent> {
 
     private static DefaultPieDataset dataset;
-    private final Set<String> sensors = new HashSet<>();
+    private final Map<String, String> sensors = new HashMap<>();
 
     public NetworkStatusDistPanel(CacheService cacheService) {
         super(createJFreeChart());
-        refreshData(cacheService.getSensors());
+        for (Sensor s : cacheService.getSensors()) {
+            this.sensors.put(s.getDevId(), Sensor.STATUS_INACTIVE);
+        }
     }
 
     /**
@@ -64,27 +66,27 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
     }
 
     @Override
-    public void refreshData(List<Sensor> tList) {
-        tList.stream().forEach((Sensor s) -> refreshData(s));
+    public void refreshData(List<SensorEvent> tList) {
+        tList.stream().forEach((SensorEvent s) -> refreshData(s));
     }
 
     @Override
-    public void refreshData(Sensor t) {
-        boolean added = this.sensors.add(t.getDevId() + "=" + t.getStatus());
-        if (added) {
-            reloadDataset();
-        }
+    public void refreshData(SensorEvent t) {
+        this.sensors.put(t.getDevId(), t.getStatus());
+        reloadDataset();
+        System.out.println(">>>>>>>>>>>>>>>>>>>> " + this.sensors);
     }
 
     private void reloadDataset() {
-        Map<String, Long> groupting = this.sensors.stream()
-                .map((String t) -> t.split("=")[1])
+        Map<String, Long> groupting = this.sensors.keySet().stream()
+                .map((String t) -> this.sensors.get(t))
                 .map((String s) -> getLabel(s))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         groupting.keySet().stream().forEach((key) -> {
             dataset.setValue(key, groupting.get(key));
         });
+        repaint();
     }
 
     /**
@@ -95,7 +97,7 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
     private String getLabel(String s) {
         switch (s) {
             case Sensor.STATUS_ACTIVE:
-                return "Active";
+                return "Connected";
             case Sensor.STATUS_INACTIVE:
                 return "Disconnected";
             default:

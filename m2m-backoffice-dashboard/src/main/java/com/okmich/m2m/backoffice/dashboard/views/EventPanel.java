@@ -5,14 +5,15 @@
  */
 package com.okmich.m2m.backoffice.dashboard.views;
 
+import com.okmich.m2m.backoffice.dashboard.model.SensorEvent;
 import com.okmich.m2m.backoffice.dashboard.views.tablemodel.DefaultTableModel;
 import java.util.List;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
+public class EventPanel extends javax.swing.JPanel implements UIView<SensorEvent> {
 
     private final DefaultTableModel tableModel;
 
@@ -35,33 +36,56 @@ public class EventPanel extends javax.swing.JPanel implements UIView<String[]> {
 
         jScrollPane3 = new javax.swing.JScrollPane();
         eventTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Detected Event"));
         setPreferredSize(new java.awt.Dimension(350, 424));
-        setLayout(new java.awt.GridLayout(1, 0));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
         eventTable.setModel(tableModel);
         eventTable.setEnabled(false);
         jScrollPane3.setViewportView(eventTable);
 
         add(jScrollPane3);
+
+        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton1.setText("Clear");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.tableModel.clear();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable eventTable;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void refreshData(List<String[]> tList) {
-        for (String[] data : tList) {
-            this.tableModel.add(data);
+    public void refreshData(List<SensorEvent> tList) {
+        for (SensorEvent data : tList) {
+            refreshData(data);
         }
     }
 
     @Override
-    public void refreshData(String[] datat) {
-        this.tableModel.add(datat);
+    public void refreshData(SensorEvent se) {
+        System.out.println(">>>>>>>>>>>>>>>>>>>> ");
+        if (!SensorEvent.NORMAL.equals(se.getClazz())) {
+            this.tableModel.add(new String[]{se.getDevId(), se.getClazz(), se.getClazz(), se.getDateTimeAsString()});
+        }
     }
 }

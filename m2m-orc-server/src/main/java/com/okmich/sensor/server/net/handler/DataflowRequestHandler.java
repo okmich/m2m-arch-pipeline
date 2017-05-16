@@ -6,8 +6,8 @@
 package com.okmich.sensor.server.net.handler;
 
 import static com.okmich.sensor.server.OptionRegistry.*;
-import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
+import com.okmich.sensor.server.db.cache.CacheService;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
 

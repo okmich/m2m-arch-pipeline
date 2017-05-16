@@ -35,6 +35,6 @@ public interface CacheService {
      * @param ts
      * @return 
      */
-    Double getDailyProduction(long ts);
+    Float getDailyProduction(long ts);
 
 }

@@ -56,13 +56,13 @@ public final class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public Double getDailyProduction(long ts) {
+    public Float getDailyProduction(long ts) {
         String key = SDF.format(new Date(ts));
         String prodVal = jedis.hget(M2M_PRODUCTION, key);
         if (prodVal == null || prodVal.isEmpty()) {
-            return 0.0;
+            return 0.0f;
         }
-        return Double.valueOf(prodVal);
+        return Float.valueOf(prodVal);
     }
 
 }

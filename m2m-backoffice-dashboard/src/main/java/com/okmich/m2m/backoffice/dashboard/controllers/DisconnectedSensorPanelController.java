@@ -10,7 +10,7 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class DisconnectedSensorPanelController extends AbstractController<Sensor> {
 
@@ -33,7 +33,7 @@ public class DisconnectedSensorPanelController extends AbstractController<Sensor
 
         return sensor;
     }
-
+    
     @Override
     public void perform(Sensor t) {
         //do nothing

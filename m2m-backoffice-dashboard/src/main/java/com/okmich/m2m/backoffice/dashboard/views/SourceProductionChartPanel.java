@@ -6,7 +6,7 @@
 package com.okmich.m2m.backoffice.dashboard.views;
 
 import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
-import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import com.okmich.m2m.backoffice.dashboard.model.SensorReading;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -29,11 +29,12 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public class SourceProductionChartPanel extends ChartPanel implements UIView<Sensor> {
+public class SourceProductionChartPanel extends ChartPanel implements UIView<SensorReading> {
 
-    private static DefaultValueDataset dataset;
+    private static DefaultValueDataset dailyDs;
+    private static DefaultValueDataset instantDs;
 
     /**
      *
@@ -43,11 +44,14 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Sen
     }
 
     private static JFreeChart createSourceProductionChart() {
-        dataset = new DefaultValueDataset(0D);
+        dailyDs = new DefaultValueDataset(0D);
+        instantDs = new DefaultValueDataset(0.5);
 
         DialPlot dialplot = new DialPlot();
+
         dialplot.setView(0.0D, 0.0D, 1.0D, 1.0D);
-        dialplot.setDataset(0, dataset);
+        dialplot.setDataset(0, dailyDs);
+        dialplot.setDataset(1, instantDs);
 
         StandardDialFrame standarddialframe = new StandardDialFrame();
         standarddialframe.setBackgroundPaint(Color.lightGray);
@@ -60,7 +64,7 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Sen
         dialbackground.setGradientPaintTransformer(new StandardGradientPaintTransformer(GradientPaintTransformType.VERTICAL));
         dialplot.setBackground(dialbackground);
 
-        DialTextAnnotation dialtextannotation = new DialTextAnnotation("Cubic metrics");
+        DialTextAnnotation dialtextannotation = new DialTextAnnotation("Temperature");
         dialtextannotation.setFont(new Font("Dialog", 1, 14));
         dialtextannotation.setRadius(0.69999999999999996D);
         dialplot.addLayer(dialtextannotation);
@@ -72,14 +76,31 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Sen
         dialvalueindicator.setAngle(-103D);
         dialplot.addLayer(dialvalueindicator);
 
-        StandardDialScale standarddialscale = new StandardDialScale(00D, 60D, -120D, -300D, 10D, 4);
+        DialValueIndicator dialvalueindicator1 = new DialValueIndicator(1);
+        dialvalueindicator1.setFont(new Font("Dialog", 0, 10));
+        dialvalueindicator1.setOutlinePaint(Color.red);
+        dialvalueindicator1.setRadius(0.59999999999999998D);
+        dialvalueindicator1.setAngle(-77D);
+        dialplot.addLayer(dialvalueindicator1);
+
+        StandardDialScale standarddialscale = new StandardDialScale(-40D, 60D, -120D, -300D, 10D, 4);
         standarddialscale.setTickRadius(0.88D);
         standarddialscale.setTickLabelOffset(0.14999999999999999D);
         standarddialscale.setTickLabelFont(new Font("Dialog", 0, 14));
         dialplot.addScale(0, standarddialscale);
 
+        StandardDialScale standarddialscale1 = new StandardDialScale(0.0D, 100D, -90D, -270D, 10D, 4);
+        standarddialscale1.setTickRadius(0.5D);
+        standarddialscale1.setTickLabelOffset(0.14999999999999999D);
+        standarddialscale1.setTickLabelFont(new Font("Dialog", 0, 10));
+        standarddialscale1.setMajorTickPaint(Color.red);
+        standarddialscale1.setMinorTickPaint(Color.red);
+        dialplot.addScale(1, standarddialscale1);
+
+        dialplot.mapDatasetToScale(0, 0);
+
         StandardDialRange standarddialrange = new StandardDialRange(90D, 100D, Color.blue);
-        standarddialrange.setScaleIndex(0);
+        standarddialrange.setScaleIndex(1);
         standarddialrange.setInnerRadius(0.58999999999999997D);
         standarddialrange.setOuterRadius(0.58999999999999997D);
         dialplot.addLayer(standarddialrange);
@@ -103,12 +124,13 @@ public class SourceProductionChartPanel extends ChartPanel implements UIView<Sen
     }
 
     @Override
-    public void refreshData(List<Sensor> tList) {
+    public void refreshData(List<SensorReading> tList) {
 
     }
 
     @Override
-    public void refreshData(Sensor t) {
-        dataset.setValue(t.getCapacity());
+    public void refreshData(SensorReading t) {
+        dailyDs.setValue(t.getCapacity());
+        instantDs.setValue(t.getFlowVelocity());
     }
 }

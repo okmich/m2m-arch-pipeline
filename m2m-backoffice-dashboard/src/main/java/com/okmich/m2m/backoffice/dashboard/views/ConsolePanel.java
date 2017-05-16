@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class ConsolePanel extends javax.swing.JPanel implements UIView<String> {
 

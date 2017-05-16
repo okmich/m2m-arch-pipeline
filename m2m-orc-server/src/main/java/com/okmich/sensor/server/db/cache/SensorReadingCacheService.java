@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.server.db;
+package com.okmich.sensor.server.db.cache;
 
 import com.okmich.sensor.server.model.SensorReading;
+import redis.clients.jedis.JedisPool;
 
 /**
  *
@@ -35,4 +36,11 @@ public interface SensorReadingCacheService {
      * @param ts
      */
     void updateDailyProduction(double vol, long ts);
+
+    /**
+     *
+     * @param jedisPool
+     */
+    void setPool(JedisPool jedisPool);
+
 }

@@ -9,7 +9,7 @@ import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class ConsolePanelController extends AbstractController<String> {
 

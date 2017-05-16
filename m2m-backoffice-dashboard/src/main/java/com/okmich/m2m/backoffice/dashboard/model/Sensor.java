@@ -6,6 +6,9 @@
 package com.okmich.m2m.backoffice.dashboard.model;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -17,6 +20,7 @@ public class Sensor implements Serializable {
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_INACTIVE = "I";
     public static final String STATUS_STALE = "S";
+    private final static DateFormat DF = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     private String devId;
     private String type;
@@ -26,10 +30,10 @@ public class Sensor implements Serializable {
     private float distSupplyStation;
     private String geo;
     private String status = STATUS_INACTIVE;
-    
+
     private long timestamp;
-    private Double capacity;
-    private Double flowVelocity;
+    private float capacity;
+    private float flowVelocity;
 
     public Sensor() {
     }
@@ -171,15 +175,22 @@ public class Sensor implements Serializable {
     /**
      * @return the capacity
      */
-    public Double getCapacity() {
+    public float getCapacity() {
         return capacity;
     }
 
     /**
      * @param capacity the capacity to set
      */
-    public void setCapacity(Double capacity) {
+    public void setCapacity(float capacity) {
         this.capacity = capacity;
+    }
+
+    /**
+     * @return the time in string format
+     */
+    public String getDateTimeAsString() {
+        return DF.format(new Date(this.timestamp));
     }
 
     @Override
@@ -239,14 +250,23 @@ public class Sensor implements Serializable {
     /**
      * @return the flowVelocity
      */
-    public Double getFlowVelocity() {
+    public float getFlowVelocity() {
         return flowVelocity;
     }
 
     /**
      * @param flowVelocity the flowVelocity to set
      */
-    public void setFlowVelocity(Double flowVelocity) {
+    public void setFlowVelocity(float flowVelocity) {
         this.flowVelocity = flowVelocity;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isStale() {
+        return false;
+//        return this.capacity == 0f && this.flowVelocity == 0f;
     }
 }

@@ -5,10 +5,10 @@
  */
 package com.okmich.sensor.server.net.handler;
 
-import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.db.SensorHBaseRepo;
 import com.okmich.sensor.server.db.SensorReadingHBaseRepo;
+import com.okmich.sensor.server.db.cache.CacheService;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

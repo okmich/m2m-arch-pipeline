@@ -8,21 +8,17 @@ package com.okmich.m2m.backoffice.dashboard.views;
 import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import com.okmich.m2m.backoffice.dashboard.views.tablemodel.UniqueKeyTableModel;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
+public final class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
 
     private final UniqueKeyTableModel connectedSensorTableModel;
     private final UniqueKeyTableModel disconnectedSensorTableModel;
 
-    private final static DateFormat DF = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     /**
      * Creates new form FeedStatusPanel
@@ -105,7 +101,6 @@ public class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
     }
 
     private void loadTableModels(Sensor sensor) {
-        String dateTime = DF.format(new Date(sensor.getTimestamp()));
         if (Sensor.STATUS_INACTIVE.equals(sensor.getStatus())) {
             disconnectedSensorTableModel.add(sensor.getDevId(), sensor);
             connectedSensorTableModel.remove(sensor.getDevId());

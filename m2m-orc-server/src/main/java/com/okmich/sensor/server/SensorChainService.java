@@ -10,6 +10,7 @@ import static com.okmich.sensor.server.OptionRegistry.NO_DATA_THRESHHOLD;
 import static com.okmich.sensor.server.OptionRegistry.value;
 import static com.okmich.sensor.server.OptionRegistry.valueAsInteger;
 import com.okmich.sensor.server.db.SensorChainDAO;
+import com.okmich.sensor.server.db.cache.CacheService;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
@@ -20,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.okmich.sensor.server.db.CacheService;
 
 /**
  *

@@ -3,12 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.sensor.server.db.impl;
+package com.okmich.sensor.server.db.cache.impl;
 
-import com.okmich.sensor.server.db.*;
+import static com.okmich.sensor.server.OptionRegistry.REDIS_SERVER_ADDRESS;
+import static com.okmich.sensor.server.OptionRegistry.REDIS_SERVER_PORT;
+import static com.okmich.sensor.server.OptionRegistry.value;
+import static com.okmich.sensor.server.OptionRegistry.valueAsInteger;
+import com.okmich.sensor.server.db.cache.SensorReadingCacheService;
+import com.okmich.sensor.server.db.cache.SensorCacheService;
+import com.okmich.sensor.server.db.cache.CacheService;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
 import java.util.List;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  *
@@ -25,8 +33,16 @@ public final class CacheServiceImpl implements CacheService {
      * @param srcs
      */
     public CacheServiceImpl(SensorCacheService scs, SensorReadingCacheService srcs) {
+        JedisPool pool = new JedisPool(new JedisPoolConfig(),
+                value(REDIS_SERVER_ADDRESS),
+                valueAsInteger(REDIS_SERVER_PORT), 3000);
+        
         this.sensorCacheService = scs;
+        this.sensorCacheService.setPool(pool);
+        
         this.sensorReadingCacheService = srcs;
+        this.sensorReadingCacheService.setPool(pool);
+
     }
 
     @Override
@@ -62,6 +78,11 @@ public final class CacheServiceImpl implements CacheService {
     @Override
     public void updateDailyProduction(double vol, long ts) {
         this.sensorReadingCacheService.updateDailyProduction(vol, ts);
+    }
+
+    @Override
+    public void setPool(JedisPool jedisPool) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

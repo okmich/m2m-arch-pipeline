@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
 public class MainGUIFrame extends javax.swing.JFrame {
 

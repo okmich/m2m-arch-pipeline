@@ -5,6 +5,9 @@
  */
 package com.okmich.sensor.server;
 
+import com.okmich.sensor.server.db.cache.impl.SensorReadingCacheServiceImpl;
+import com.okmich.sensor.server.db.cache.impl.SensorCacheServiceImpl;
+import com.okmich.sensor.server.db.cache.impl.CacheServiceImpl;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.net.DataFlowNetworkInterface;
 import com.okmich.sensor.server.net.handler.MQBrokerCommandRunner;
@@ -14,11 +17,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.okmich.sensor.server.db.*;
+import com.okmich.sensor.server.db.cache.CacheService;
 import com.okmich.sensor.server.db.impl.*;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import com.okmich.sensor.server.model.Sensor;
 import java.util.List;
-import com.okmich.sensor.server.db.SensorReadingCacheService;
 
 /**
  *

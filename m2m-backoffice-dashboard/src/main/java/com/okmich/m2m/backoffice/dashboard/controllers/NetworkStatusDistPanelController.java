@@ -5,14 +5,14 @@
  */
 package com.okmich.m2m.backoffice.dashboard.controllers;
 
-import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import com.okmich.m2m.backoffice.dashboard.model.SensorEvent;
 import com.okmich.m2m.backoffice.dashboard.views.UIView;
 
 /**
  *
- * @author ABME340
+ * @author m.enudi
  */
-public class NetworkStatusDistPanelController extends AbstractController<Sensor> {
+public class NetworkStatusDistPanelController extends AbstractController<SensorEvent> {
 
     /**
      *
@@ -23,12 +23,7 @@ public class NetworkStatusDistPanelController extends AbstractController<Sensor>
     }
 
     @Override
-    public void process(String t) {
-        //do nothing
-    }
-
-    @Override
-    protected Sensor transformPayload(String payload) {
+    protected SensorEvent transformPayload(String payload) {
         return null;
     }
 
