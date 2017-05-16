@@ -107,7 +107,7 @@ public class KafkaMessageConsumer {
                         //sensorPanelController.process(payload);
                     } else if (topic.equals(TOPIC_RAW_EVENT_LOG)) {
                         //devId;ts;prs;tmp;vol;flv;xbf
-                        sensorPanelController.process(payload);
+                        //sensorPanelController.process(payload);
                     }
                     consoleController.process(payload);
                     LOG.log(Level.INFO, "message received on {0}", topic);
