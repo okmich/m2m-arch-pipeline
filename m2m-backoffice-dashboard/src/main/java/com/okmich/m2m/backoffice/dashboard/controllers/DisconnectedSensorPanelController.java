@@ -33,7 +33,7 @@ public class DisconnectedSensorPanelController extends AbstractController<Sensor
 
         return sensor;
     }
-
+    
     @Override
     public void perform(Sensor t) {
         //do nothing

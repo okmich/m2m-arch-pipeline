@@ -27,7 +27,9 @@ public class KafkaMessageConsumer {
     private UIController actionPanelController;
     private UIController sensorPanelController;
     private UIController disconnectedPanelController;
+    private UIController networkStatDistController;
     private UIController eventPanelController;
+    private UIController sourceProdChartController;
     private UIController consoleController;
 
     private final KafkaConsumer<String, String> kafkaConsumer;
@@ -71,7 +73,9 @@ public class KafkaMessageConsumer {
     public KafkaMessageConsumer(UIController actionPanelController,
             UIController sensorPanelController,
             UIController disconnectedPanelController,
+            UIController networkStatDistController,
             UIController eventPanelController,
+            UIController sourceProductionChartPanelController,
             UIController consoleController) {
         this();
 
@@ -80,6 +84,8 @@ public class KafkaMessageConsumer {
         this.eventPanelController = eventPanelController;
         this.disconnectedPanelController = disconnectedPanelController;
         this.consoleController = consoleController;
+        this.networkStatDistController = networkStatDistController;
+        this.sourceProdChartController = sourceProductionChartPanelController;
     }
 
     /**
@@ -104,9 +110,10 @@ public class KafkaMessageConsumer {
                         disconnectedPanelController.process(payload);
                     } else if (topic.equals(TOPIC_ENRICHED_EVENT_LOG)) {
                         //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
-                        //sensorPanelController.process(payload);
+                        networkStatDistController.process(payload);
                     } else if (topic.equals(TOPIC_RAW_EVENT_LOG)) {
                         //devId;ts;prs;tmp;vol;flv;xbf
+                        sourceProdChartController.process(payload);
                         sensorPanelController.process(payload);
                     }
                     consoleController.process(payload);

@@ -23,12 +23,18 @@ public class SensorNetworkPanelController extends AbstractController<Sensor> {
     }
 
     @Override
-    public void process(String t) {
-    }
-
-    @Override
     protected Sensor transformPayload(String payload) {
-        return null;
+        //devId;ts;prs;tmp;vol;flv;xbf;devId;ts;prs;tmp;vol;flv;xbf;fsts;dist;clz;incd
+        String[] fields = payload.split(";");
+        Sensor sensor = new Sensor();
+        sensor.setDevId(fields[7]);
+        sensor.setTimestamp(Long.parseLong(fields[8]));
+        sensor.setCapacity(Double.parseDouble(fields[11]));
+        sensor.setFlowVelocity(Double.parseDouble(fields[12]));
+        sensor.setSupplyDevId(fields[0]);
+        sensor.setStatus(fields[15]);
+
+        return sensor;
     }
 
 }

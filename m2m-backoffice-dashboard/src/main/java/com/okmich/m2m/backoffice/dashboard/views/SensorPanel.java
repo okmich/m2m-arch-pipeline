@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author ABME340
  */
-public class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
+public final class SensorPanel extends javax.swing.JPanel implements UIView<Sensor> {
 
     private final UniqueKeyTableModel connectedSensorTableModel;
     private final UniqueKeyTableModel disconnectedSensorTableModel;

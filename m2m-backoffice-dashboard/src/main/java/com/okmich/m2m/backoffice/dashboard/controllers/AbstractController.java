@@ -37,6 +37,8 @@ public abstract class AbstractController<T> implements UIController<T> {
     public void process(String payload) {
         //event loop as follows
         T t = transformPayload(payload);
+        //before perform
+        prePerform(t);
         //perform
         perform(t);
         //call chain

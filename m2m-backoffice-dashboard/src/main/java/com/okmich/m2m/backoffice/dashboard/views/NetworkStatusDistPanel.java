@@ -8,10 +8,9 @@ package com.okmich.m2m.backoffice.dashboard.views;
 import com.okmich.m2m.backoffice.dashboard.db.CacheService;
 import com.okmich.m2m.backoffice.dashboard.model.Sensor;
 import java.awt.Font;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.jfree.chart.ChartFactory;
@@ -28,7 +27,7 @@ import org.jfree.data.general.DefaultPieDataset;
 public final class NetworkStatusDistPanel extends ChartPanel implements UIView<Sensor> {
 
     private static DefaultPieDataset dataset;
-    private final Set<String> sensors = new HashSet<>();
+    private final Map<String, String> sensors = new HashMap<>();
 
     public NetworkStatusDistPanel(CacheService cacheService) {
         super(createJFreeChart());
@@ -70,15 +69,13 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
 
     @Override
     public void refreshData(Sensor t) {
-        boolean added = this.sensors.add(t.getDevId() + "=" + t.getStatus());
-        if (added) {
-            reloadDataset();
-        }
+        this.sensors.put(t.getDevId(), t.getStatus());
+        reloadDataset();
     }
 
     private void reloadDataset() {
-        Map<String, Long> groupting = this.sensors.stream()
-                .map((String t) -> t.split("=")[1])
+        Map<String, Long> groupting = this.sensors.keySet().stream()
+                .map((String t) -> this.sensors.get(t))
                 .map((String s) -> getLabel(s))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 

@@ -30,21 +30,6 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
     }
 
     @Override
-    public void process(String t) {
-        //devId;ts;prs;tmp;vol;flv;xbf
-        String[] fields = t.split(";");
-        long ts = Long.parseLong(fields[1]);
-
-        if (SOURCE_SENSOR.equals(fields[0])) {
-            Sensor sensor = new Sensor();
-            sensor.setDevId(fields[0]);
-            sensor.setStatus(Sensor.STATUS_ACTIVE);
-            //do some load
-            perform(sensor);
-        }
-    }
-
-    @Override
     public void perform(Sensor t) {
         if (!SOURCE_SENSOR.equals(t.getDevId())) {
             return;
@@ -58,7 +43,8 @@ public class SourceProductionChartPanelController extends AbstractController<Sen
 
     @Override
     protected Sensor transformPayload(String payload) {
-        return null;
+        //devId;ts;prs;tmp;vol;flv;xbf
+        return Sensor.valueOf(payload);
     }
 
 }

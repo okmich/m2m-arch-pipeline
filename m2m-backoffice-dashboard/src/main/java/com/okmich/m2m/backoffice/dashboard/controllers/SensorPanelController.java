@@ -18,18 +18,17 @@ public class SensorPanelController extends AbstractController<Sensor> {
         super(view);
     }
 
+    
+    @Override
+    protected Sensor prePerform(Sensor sensor) {
+        sensor.setStatus(Sensor.STATUS_ACTIVE);
+        return sensor;
+    }
+
+    
     @Override
     public Sensor transformPayload(String t) {
-        //devId;ts;prs;tmp;vol;flv;xbf;devId;ts;prs;tmp;vol;flv;xbf;dist;clz;incd
-        String[] fields = t.split(";");
-        Sensor sensor = new Sensor();
-        sensor.setDevId(fields[7]);
-        sensor.setTimestamp(Long.parseLong(fields[8]));
-        sensor.setCapacity(Double.parseDouble(fields[11]));
-        sensor.setFlowVelocity(Double.parseDouble(fields[12]));
-        sensor.setSupplyDevId(fields[0]);
-        sensor.setStatus(Sensor.STATUS_ACTIVE);
-
-        return sensor;
+        //devId;ts;prs;tmp;vol;flv;xbf
+        return Sensor.valueOf(t);
     }
 }
