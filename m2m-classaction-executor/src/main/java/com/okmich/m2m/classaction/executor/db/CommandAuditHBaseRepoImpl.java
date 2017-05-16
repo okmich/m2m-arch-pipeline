@@ -80,7 +80,7 @@ public class CommandAuditHBaseRepoImpl implements CommandAuditRepo {
     @Override
     public void saveCommand(String command, String[] payload) {
         //command= cmd,bsdevId,arg,ts
-        String[] cmdParts = command.split("\\|");
+        String[] cmdParts = command.split(";");
         long ts = Long.valueOf(cmdParts[3]);
         Put put = new Put(as(cmdParts[1] + ":" + (Long.MAX_VALUE - ts)));
 

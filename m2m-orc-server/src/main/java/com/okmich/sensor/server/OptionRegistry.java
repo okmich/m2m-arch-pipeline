@@ -38,6 +38,7 @@ public final class OptionRegistry {
     public final static String LAST_CONNECT_TIME = "lct";
 
     public final static String KAFKA_BROKER_URL = "kafka.broker.url";
+    public final static String KAFKA_RAW_MESSAGE_TOPIC = "kafka.raw.data.topic";
     public final static String KAFKA_LOST_CONN_TOPIC = "kafka.loss.conn.topic";
     public final static String KAFKA_ENRICHED_MESSAGE_TOPIC = "kafka.enrich.data.topic";
 

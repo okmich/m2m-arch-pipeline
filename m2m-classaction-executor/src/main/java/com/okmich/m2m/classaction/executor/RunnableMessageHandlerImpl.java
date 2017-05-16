@@ -65,18 +65,25 @@ public class RunnableMessageHandlerImpl implements Runnable, MessageHandler {
 
     @Override
     public void run() {
+        LOG.log(Level.INFO, "processing {0}", payload);
         this.handle(payload);
+        LOG.log(Level.INFO, "done processing {0}", payload);
     }
 
     @Override
     public void handle(String payload) {
         //split payloads
         String[] parts = payload.split(";");
+        if (parts.length < 17) {
+            LOG.log(Level.SEVERE, "{0} is an invalid payload for processing", payload);
+            return;
+        }
         //do the whole processing as thus
         //extract the clz 
         String clz = parts[16];
         //lookup the command from the clz
         String cmd = CommandRegistry.getCommand(clz);
+        LOG.log(Level.INFO, "sending comming {0}", cmd);
         if (cmd != null && !cmd.isEmpty()) {
             try {
                 String command = createSensorCommand(cmd, parts);

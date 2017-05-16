@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.m2m.backoffice.dashboard.db;
+package com.okmich.sensor.server.db.impl;
 
-import static com.okmich.m2m.backoffice.dashboard.OptionRegistry.*;
-import com.okmich.m2m.backoffice.dashboard.model.Sensor;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import static com.okmich.sensor.server.OptionRegistry.*;
+import com.okmich.sensor.server.db.SensorCacheService;
+import com.okmich.sensor.server.model.Sensor;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import redis.clients.jedis.Jedis;
 
@@ -19,15 +19,37 @@ import redis.clients.jedis.Jedis;
  *
  * @author m.enudi
  */
-public final class CacheServiceImpl implements CacheService {
-
-    private static final DateFormat SDF = new SimpleDateFormat("yyyyMMddd");
+public final class SensorCacheServiceImpl implements SensorCacheService {
 
     private final Jedis jedis;
+    /**
+     *
+     */
+    private static final Logger LOG = Logger.getLogger(SensorCacheServiceImpl.class.getName());
 
-    public CacheServiceImpl() {
+    public SensorCacheServiceImpl() {
         jedis = new Jedis(value(REDIS_SERVER_ADDRESS),
                 valueAsInteger(REDIS_SERVER_PORT), 30000);
+    }
+
+    /**
+     *
+     * @param sensor
+     */
+    @Override
+    public void saveSensor(Sensor sensor) {
+        jedis.hset(SENSOR_HASH_KEY, sensor.getDevId(), sensor.toString());
+    }
+
+    /**
+     *
+     * @param sensors
+     */
+    @Override
+    public void saveSensors(List<Sensor> sensors) {
+        for (Sensor s : sensors) {
+            saveSensor(s);
+        }
     }
 
     /**
@@ -41,6 +63,7 @@ public final class CacheServiceImpl implements CacheService {
         if (record == null || record.trim().isEmpty()) {
             return null;
         }
+        LOG.log(Level.INFO, record);
         return Sensor.valueOf(record);
     }
 
@@ -54,15 +77,4 @@ public final class CacheServiceImpl implements CacheService {
         return hashMap.values().stream().map((String t) -> Sensor.valueOf(t))
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public Double getDailyProduction(long ts) {
-        String key = SDF.format(new Date(ts));
-        String prodVal = jedis.hget(M2M_PRODUCTION, key);
-        if (prodVal == null || prodVal.isEmpty()) {
-            return 0.0;
-        }
-        return Double.valueOf(prodVal);
-    }
-
 }

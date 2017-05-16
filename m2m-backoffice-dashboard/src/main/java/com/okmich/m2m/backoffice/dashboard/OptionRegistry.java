@@ -25,6 +25,7 @@ public final class OptionRegistry {
 
     public final static String KAFKA_BROKER_URL = "kafka.broker.url";
 
+    public final static String KAFKA_RAW_EVENT_TOPIC = "kafka.m2m.raw.data.topic";
     public final static String KAFKA_ENRICHED_EVENT_TOPIC = "kafka.m2m.enriched.event.data.topic";
     public final static String KAFKA_CLASSIFIED_EVENT_TOPIC = "kafka.m2m.classified.msg.topic";
     public final static String KAFKA_LOSS_CONN_TOPIC = "kafka.m2m.loss.sensor.conn.topic";

@@ -5,10 +5,8 @@
  */
 package com.okmich.m2m.classaction.executor;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  *
@@ -29,23 +27,9 @@ public final class CommandRegistry {
 
     /**
      *
-     * @param properties
      */
-    public static void initialize(Properties properties) {
-        properties.keySet().forEach((key) -> {
-            hashMap.put((String) key, (String) properties.get(key));
-        });
-    }
-
-    /**
-     *
-     */
-    public static void initialize() throws IOException {
-        Properties properties = new Properties();
-        properties.load(ClassLoader.getSystemResourceAsStream("commands.properties"));
-        properties.keySet().forEach((key) -> {
-            hashMap.put((String) key, (String) properties.get(key));
-        });
+    public static void initialize() {
+        OptionRegistry.initialize("commands.properties", hashMap);
     }
 
     /**

@@ -52,7 +52,7 @@ public class KafkaMessageConsumer {
 
         Properties props = new Properties();
         props.put("bootstrap.servers", value(KAFKA_BROKER_URL));
-        props.put("group.id", "test");
+        props.put("group.id", "m2m.CommandExecutor");
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");

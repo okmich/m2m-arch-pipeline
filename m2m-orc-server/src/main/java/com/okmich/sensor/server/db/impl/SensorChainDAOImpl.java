@@ -10,7 +10,8 @@ import static com.okmich.sensor.server.OptionRegistry.REDIS_SERVER_PORT;
 import static com.okmich.sensor.server.OptionRegistry.value;
 import static com.okmich.sensor.server.OptionRegistry.valueAsInteger;
 import com.okmich.sensor.server.db.SensorChainDAO;
-import java.util.Map;
+import com.okmich.sensor.server.model.Sensor;
+import java.util.List;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -25,11 +26,11 @@ public class SensorChainDAOImpl implements SensorChainDAO {
     /**
      *
      */
-    private static final String PRE = "0";
+    private static final String FROM_PREFIX = "0";
     /**
      *
      */
-    private static final String POST = "1";
+    private static final String TO_PREFIX = "1";
 
     /**
      *
@@ -40,38 +41,45 @@ public class SensorChainDAOImpl implements SensorChainDAO {
     }
 
     @Override
-    public void loadSensorChain(Map<String, String> chainMap) {
-        String[] vals;
-        for (String key : chainMap.keySet()) {
-            vals = chainMap.get(key).split("-");
-            jedis.hset(CHAIN_HASH_KEY, PRE + key, vals[0]);
-            jedis.hset(CHAIN_HASH_KEY, POST + key, vals[1]);
+    public void loadSensorChain(List<Sensor> sensors) {
+        String sDevId, devId;
+        for (Sensor sensor : sensors) {
+            sDevId = sensor.getSupplyDevId();
+            devId = sensor.getDevId();
+            if (sDevId != null && !sDevId.trim().isEmpty()) {
+                jedis.hset(CHAIN_HASH_KEY, FROM_PREFIX + devId, sDevId);
+                jedis.hset(CHAIN_HASH_KEY, TO_PREFIX + sDevId, devId);
+            }
         }
     }
 
     @Override
     public String getOrgFromDevID(String devId) {
-        return jedis.hget(CHAIN_HASH_KEY, PRE + devId);
+        return jedis.hget(CHAIN_HASH_KEY, FROM_PREFIX + devId);
     }
 
     @Override
     public String getOrgToDevID(String devId) {
-        return jedis.hget(CHAIN_HASH_KEY, POST + devId);
+        return jedis.hget(CHAIN_HASH_KEY, TO_PREFIX + devId);
     }
 
     @Override
     public void saveSensorChain(String devId, String fromID, String toID) {
-        jedis.hset(CHAIN_HASH_KEY, PRE + devId, fromID);
-        jedis.hset(CHAIN_HASH_KEY, POST + devId, toID);
+        if (devId != null && fromID != null) {
+            jedis.hset(CHAIN_HASH_KEY, FROM_PREFIX + devId, fromID);
+        }
+        if (devId != null && toID != null) {
+            jedis.hset(CHAIN_HASH_KEY, TO_PREFIX + devId, toID);
+        }
     }
 
     @Override
     public String getFromDevID(String devId) {
-        return jedis.hget(CHAIN_HASH_KEY, PRE + devId);
+        return jedis.hget(CHAIN_HASH_KEY, FROM_PREFIX + devId);
     }
 
     @Override
     public String getToDevID(String devId) {
-        return jedis.hget(CHAIN_HASH_KEY, POST + devId);
+        return jedis.hget(CHAIN_HASH_KEY, TO_PREFIX + devId);
     }
 }

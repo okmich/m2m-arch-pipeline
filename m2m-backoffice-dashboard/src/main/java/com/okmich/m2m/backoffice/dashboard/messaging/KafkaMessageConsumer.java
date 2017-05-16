@@ -40,6 +40,7 @@ public class KafkaMessageConsumer {
     private static final String TOPIC_ACTION_LOG = value(KAFKA_ACTION_LOG_TOPIC);
     private static final String TOPIC_CLASSIFIED_EVENT_LOG = value(KAFKA_CLASSIFIED_EVENT_TOPIC);
     private static final String TOPIC_LOSS_CONN_LOG = value(KAFKA_LOSS_CONN_TOPIC);
+    private static final String TOPIC_RAW_EVENT_LOG = value(KAFKA_RAW_EVENT_TOPIC);
     private static final String TOPIC_ENRICHED_EVENT_LOG = value(KAFKA_ENRICHED_EVENT_TOPIC);
 
     /**
@@ -58,6 +59,7 @@ public class KafkaMessageConsumer {
         this.kafkaConsumer = new KafkaConsumer<>(props);
         //load topics
         this.kafkaConsumer.subscribe(Arrays.asList(
+                TOPIC_RAW_EVENT_LOG,
                 TOPIC_ENRICHED_EVENT_LOG,
                 TOPIC_CLASSIFIED_EVENT_LOG,
                 TOPIC_ACTION_LOG,
@@ -102,6 +104,9 @@ public class KafkaMessageConsumer {
                         disconnectedPanelController.process(payload);
                     } else if (topic.equals(TOPIC_ENRICHED_EVENT_LOG)) {
                         //devId;ts;prs;tmp;vol;flv;xbf|devId;ts;prs;tmp;vol;flv;xbf|dist
+                        //sensorPanelController.process(payload);
+                    } else if (topic.equals(TOPIC_RAW_EVENT_LOG)) {
+                        //devId;ts;prs;tmp;vol;flv;xbf
                         sensorPanelController.process(payload);
                     }
                     consoleController.process(payload);

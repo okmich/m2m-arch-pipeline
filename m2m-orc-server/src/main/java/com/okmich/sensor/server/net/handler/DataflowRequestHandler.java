@@ -9,7 +9,6 @@ import static com.okmich.sensor.server.OptionRegistry.*;
 import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.model.Sensor;
-import com.okmich.sensor.server.db.SensorReadingDAO;
 import com.okmich.sensor.server.model.SensorReading;
 
 /**

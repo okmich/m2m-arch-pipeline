@@ -5,16 +5,10 @@
  */
 package com.okmich.sensor.server.db.impl;
 
-import com.okmich.sensor.server.db.CacheService;
-import static com.okmich.sensor.server.OptionRegistry.*;
+import com.okmich.sensor.server.db.*;
 import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import redis.clients.jedis.Jedis;
 
 /**
  *
@@ -22,95 +16,52 @@ import redis.clients.jedis.Jedis;
  */
 public final class CacheServiceImpl implements CacheService {
 
-    private static final DateFormat SDF = new SimpleDateFormat("yyyyMMddd");
-
-    private final Jedis jedis;
-
-    public CacheServiceImpl() {
-        jedis = new Jedis(value(REDIS_SERVER_ADDRESS),
-                valueAsInteger(REDIS_SERVER_PORT), 30000);
-    }
+    private final SensorCacheService sensorCacheService;
+    private final SensorReadingCacheService sensorReadingCacheService;
 
     /**
      *
-     * @param sensor
+     * @param scs
+     * @param srcs
      */
-    @Override
-    public void saveSensor(Sensor sensor) {
-        jedis.hset(SENSOR_HASH_KEY, sensor.getDevId(), sensor.toString());
+    public CacheServiceImpl(SensorCacheService scs, SensorReadingCacheService srcs) {
+        this.sensorCacheService = scs;
+        this.sensorReadingCacheService = srcs;
     }
 
-    /**
-     *
-     * @param sensors
-     */
-    @Override
-    public void saveSensors(List<Sensor> sensors) {
-        jedis.del(M2M_SENSORS);
-        for (Sensor s : sensors) {
-            jedis.rpush(M2M_SENSORS, s.toString());
-        }
-    }
-
-    /**
-     *
-     * @param devId
-     * @return
-     */
     @Override
     public Sensor getSensor(String devId) {
-        String record = jedis.hget(SENSOR_HASH_KEY, devId);
-        if (record == null || record.trim().isEmpty()) {
-            return null;
-        }
-        return Sensor.valueOf(record);
+        return this.sensorCacheService.getSensor(devId);
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public List<Sensor> getSensors() {
-        Long len = jedis.llen(M2M_SENSORS);
-        List<String> strs = jedis.lrange(M2M_SENSORS, 0, len);
-
-        return strs.stream().map((String t) -> Sensor.valueOf(t))
-                .collect(Collectors.toList());
+        return sensorCacheService.getSensors();
     }
 
-    /**
-     *
-     * @param sensorReading
-     */
     @Override
-    public void saveSensorReading(SensorReading sensorReading) {
-        jedis.hset(READING_HASH_KEY, sensorReading.getDevId(), sensorReading.toString());
+    public void saveSensor(Sensor sensor) {
+        sensorCacheService.saveSensor(sensor);
     }
 
-    /**
-     *
-     * @param devId
-     * @return
-     */
+    @Override
+    public void saveSensors(List<Sensor> sensors) {
+        this.sensorCacheService.saveSensors(sensors);
+    }
+
     @Override
     public SensorReading getSensorReading(String devId) {
-        String record = jedis.hget(READING_HASH_KEY, devId);
-        if (record == null || record.trim().isEmpty()) {
-            return null;
-        }
-        return new SensorReading(record);
+        return this.sensorReadingCacheService.getSensorReading(devId);
+    }
+
+    @Override
+    public void saveSensorReading(SensorReading sensorReading) {
+        sensorReadingCacheService.saveSensorReading(sensorReading);
     }
 
     @Override
     public void updateDailyProduction(double vol, long ts) {
-        String key = SDF.format(new Date(ts));
-        String prodVal = jedis.hget(M2M_PRODUCTION, key);
-        double totalProd = 0d;
-        if (prodVal != null) {
-            totalProd = Double.parseDouble(prodVal);
-        }
-        totalProd += vol;
-        jedis.hset(M2M_PRODUCTION, key, Double.toString(totalProd));
+        this.sensorReadingCacheService.updateDailyProduction(vol, ts);
     }
+
 }

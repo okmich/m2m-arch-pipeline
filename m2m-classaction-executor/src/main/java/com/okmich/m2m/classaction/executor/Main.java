@@ -58,11 +58,11 @@ public final class Main {
         //initilize the OptionRegistry
         LOG.info("Initializing the configuration registry");
         OptionRegistry.initialize(args);
-        //initialize CommandRegistry
-        LOG.info("Initializing the command registry registry");
-        CommandRegistry.initialize(null);
 
         try {
+            //initialize CommandRegistry
+            LOG.info("Initializing the command registry registry");
+            CommandRegistry.initialize();
             LOG.info("Starting the main process");
             new Main().start();
         } catch (Exception ex) {

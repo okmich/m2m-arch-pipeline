@@ -3,19 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.okmich.m2m.backoffice.dashboard.db;
+package com.okmich.sensor.server.db;
 
-import com.okmich.m2m.backoffice.dashboard.model.Sensor;
+import com.okmich.sensor.server.model.Sensor;
 import java.util.List;
 
 /**
  *
- * @author m.enudi
+ * @author datadev
  */
-public interface CacheService {
+public interface SensorCacheService {
 
     String SENSOR_HASH_KEY = "sensors";
-    String M2M_PRODUCTION = "m2m.prod";
 
     /**
      *
@@ -31,10 +30,15 @@ public interface CacheService {
     List<Sensor> getSensors();
 
     /**
-     * 
-     * @param ts
-     * @return 
+     *
+     * @param sensor
      */
-    Double getDailyProduction(long ts);
+    void saveSensor(Sensor sensor);
+
+    /**
+     *
+     * @param sensors
+     */
+    void saveSensors(List<Sensor> sensors);
 
 }

@@ -28,13 +28,13 @@ public class SensorReading implements Serializable {
     public SensorReading(String readings) {
         //devId;ts;prs;tmp;vol;flv;xbf
         String[] fields = readings.split(";");
-        this.devId = (fields[0]);
-        this.timestamp = (Long.valueOf(fields[1]));
-        this.pressure = (getFloat(fields[2]));
-        this.temperature = (getFloat(fields[3]));
-        this.volume = (getFloat(fields[4]));
-        this.flowVelocity = (getFloat(fields[5]));
-        this.extBodyForce = (getFloat(fields[6]));
+        this.devId = fields[0];
+        this.timestamp = Long.valueOf(fields[1]);
+        this.pressure = getFloat(fields[2]);
+        this.temperature = getFloat(fields[3]);
+        this.volume = getFloat(fields[4]);
+        this.flowVelocity = getFloat(fields[5]);
+        this.extBodyForce = getFloat(fields[6]);
     }
 
     /**

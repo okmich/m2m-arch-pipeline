@@ -5,63 +5,16 @@
  */
 package com.okmich.sensor.server.db;
 
-import com.okmich.sensor.server.model.Sensor;
-import com.okmich.sensor.server.model.SensorReading;
-import java.util.List;
+import redis.clients.jedis.Jedis;
 
 /**
  *
  * @author m.enudi
  */
-public interface CacheService {
+public interface CacheService extends SensorCacheService, SensorReadingCacheService {
 
-    String M2M_SENSORS = "m2m.sensors";
-    String M2M_PRODUCTION = "m2m.prod";
-    String SENSOR_HASH_KEY = "sensor";
-    String READING_HASH_KEY = "sensor.reading";
+    default Jedis getJedis() {
 
-    /**
-     *
-     * @param devId
-     * @return
-     */
-    Sensor getSensor(String devId);
-
-    /**
-     *
-     * @return
-     */
-    List<Sensor> getSensors();
-
-    /**
-     *
-     * @param devId
-     * @return
-     */
-    SensorReading getSensorReading(String devId);
-
-    /**
-     *
-     * @param sensor
-     */
-    void saveSensor(Sensor sensor);
-
-    /**
-     *
-     * @param sensors
-     */
-    void saveSensors(List<Sensor> sensors);
-
-    /**
-     *
-     * @param sensorReading
-     */
-    void saveSensorReading(SensorReading sensorReading);
-
-    /**
-     *
-     * @param vol
-     */
-    void updateDailyProduction(double vol, long ts);
-
+        return null;
+    }
 }

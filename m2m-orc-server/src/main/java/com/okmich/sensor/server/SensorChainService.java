@@ -9,7 +9,6 @@ import static com.okmich.sensor.server.OptionRegistry.KAFKA_LOST_CONN_TOPIC;
 import static com.okmich.sensor.server.OptionRegistry.NO_DATA_THRESHHOLD;
 import static com.okmich.sensor.server.OptionRegistry.value;
 import static com.okmich.sensor.server.OptionRegistry.valueAsInteger;
-import com.okmich.sensor.server.db.CacheService;
 import com.okmich.sensor.server.db.SensorChainDAO;
 import com.okmich.sensor.server.messaging.KafkaMessageProducer;
 import com.okmich.sensor.server.model.Sensor;
@@ -21,6 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.okmich.sensor.server.db.CacheService;
 
 /**
  *
@@ -61,6 +61,8 @@ public class SensorChainService {
         executorService = Executors.newFixedThreadPool(1);
 
         sensorChainRestorService = new SensorChainRestorService();
+        //load all sensor chains
+        this.sensorChainDAO.loadSensorChain(cacheService.getSensors());
     }
 
     /**
@@ -98,7 +100,7 @@ public class SensorChainService {
 
         @Override
         public void run() {
-            LOG.info("==== start running sensorChainUpdateService");
+            LOG.info(">>>>>>>>>>>> start running sensorChainUpdateService <<<<<<<<<<<<<<<<<");
             //get the list of all sensors
             List<Sensor> sensors;
             try {
@@ -112,24 +114,29 @@ public class SensorChainService {
             String devId;
             for (Sensor sensor : sensors) {
                 devId = sensor.getDevId();
-                //return the latest reading from cache
-                sensorReading = cacheService.getSensorReading(devId);
-                if (sensorReading == null || isStaleReading(sensorReading)) {
-                    //if the last reading is mor than threshhold seconds ago
-                    //send lost sensor connection message to kafka
-                    kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId + ";" + System.currentTimeMillis());
-                    //get the real time chain-post sensor for this sensor and make its 
-                    //chain-pre sensor the real time chain-pre sensor for this sensor 
-                    String fromDevId = sensorChainDAO.getFromDevID(devId);
-                    if (fromDevId != null) {
-                        sensorChainDAO.saveSensorChain(fromDevId,
-                                sensorChainDAO.getFromDevID(fromDevId),
-                                sensorChainDAO.getToDevID(devId));
+                try {
+
+                    //return the latest reading from cache
+                    sensorReading = cacheService.getSensorReading(devId);
+                    if (sensorReading == null || isStaleReading(sensorReading)) {
+                        //if the last reading is mor than threshhold seconds ago
+                        //send lost sensor connection message to kafka
+                        kafkaMessageProducer.send(value(KAFKA_LOST_CONN_TOPIC), devId + ";" + System.currentTimeMillis());
+                        //get the real time chain-post sensor for this sensor and make its 
+                        //chain-pre sensor the real time chain-pre sensor for this sensor 
+                        String fromDevId = sensorChainDAO.getFromDevID(devId);
+                        if (fromDevId != null) {
+                            sensorChainDAO.saveSensorChain(fromDevId,
+                                    sensorChainDAO.getFromDevID(fromDevId),
+                                    sensorChainDAO.getToDevID(devId));
+                        }
                     }
+                } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, ex.getMessage(), ex);
                 }
                 //if the last reading is withing the threshhold seconds, do nothing
             }
-            LOG.info("==== done running sensorChainUpdateService");
+            LOG.info(">>>>>>>>>>> done running sensorChainUpdateService <<<<<<<<<<<<<<<<");
         }
 
         /**

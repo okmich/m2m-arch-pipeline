@@ -50,8 +50,9 @@ public class ConnectionInitiationHandler extends Handler {
             if (sensor1 == null) {
                 throw new IllegalArgumentException("device node does not exist");
             }
+            //do nothing
             //save the data to cache
-            this.cacheService.saveSensor(sensor);
+            //this.cacheService.saveSensor(sensor);
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, null, ex);
             return null;

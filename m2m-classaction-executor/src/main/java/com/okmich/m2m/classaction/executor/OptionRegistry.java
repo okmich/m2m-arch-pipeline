@@ -5,7 +5,6 @@
  */
 package com.okmich.m2m.classaction.executor;
 
-import com.okmich.m2m.classaction.executor.mqtt.CommandPublisherImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,8 +29,8 @@ public final class OptionRegistry {
     public final static String DEVICE_ID = "devId";
 
     public final static String KAFKA_BROKER_URL = "kafka.broker.url";
-    public final static String KAFKA_CLASSFIED_MSG_TOPIC = "kafka.classified.msg.topic";
-    public final static String KAFKA_CLASSFIED_ACTION_TOPIC = "kafka.classified.action.topic";
+    public final static String KAFKA_CLASSFIED_MSG_TOPIC = "kafka.classified.event.topic";
+    public final static String KAFKA_CLASSFIED_ACTION_TOPIC = "kafka.action.log.topic";
 
     public final static String HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
     public final static String HBASE_ZOOKEEPER_CLIENT_PORT = "hbase.zookeeper.property.clientPort";
@@ -56,24 +55,33 @@ public final class OptionRegistry {
      * @param args
      */
     public static void initialize(String[] args) {
+        initialize("config.properties", hashMap);
+    }
+
+    /**
+     *
+     * @param filename
+     * @param reg
+     */
+    public static void initialize(String filename, Map<String, String> reg) {
         Properties properties = new Properties();
-        String sensorConfig = System.getProperty("user.dir") + File.separator + "config.properties";
+        String sensorConfig = System.getProperty("user.dir") + File.separator + filename;
         File file = new File(sensorConfig);
         if (file.exists() && file.canRead()) {
             try {
                 properties.load(new FileInputStream(file));
-                loadConfig(properties);
+                loadConfig(properties, reg);
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
             }
         } else {
             try {
-                properties.load(ClassLoader.getSystemResourceAsStream("config.properties"));
+                properties.load(ClassLoader.getSystemResourceAsStream(filename));
                 //save this file to user directory
                 properties.store(new FileOutputStream(sensorConfig), "System configuration");
                 //load it
-                loadConfig(properties);
+                loadConfig(properties, reg);
             } catch (IOException ex) {
                 LOG.log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
@@ -86,11 +94,11 @@ public final class OptionRegistry {
      *
      * @param properties
      */
-    private static void loadConfig(Properties properties) {
+    private static void loadConfig(Properties properties, Map<String, String> reg) {
         properties.putAll(System.getProperties());
         //user properties file to load the hashMap
         properties.keySet().forEach((key) -> {
-            hashMap.put((String) key, (String) properties.get(key));
+            reg.put((String) key, (String) properties.get(key));
         });
     }
 

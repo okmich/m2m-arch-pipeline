@@ -5,7 +5,8 @@
  */
 package com.okmich.sensor.server.db;
 
-import java.util.Map;
+import com.okmich.sensor.server.model.Sensor;
+import java.util.List;
 
 /**
  *
@@ -17,7 +18,7 @@ public interface SensorChainDAO {
 
     String getOrgToDevID(String devId);
 
-    void loadSensorChain(Map<String, String> chainMap);
+    void loadSensorChain(List<Sensor> sensors);
 
     void saveSensorChain(String devId, String fromID, String toID);
 

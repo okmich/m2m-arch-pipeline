@@ -14,6 +14,7 @@ import com.okmich.sensor.server.model.Sensor;
 import com.okmich.sensor.server.model.SensorReading;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.okmich.sensor.server.db.SensorReadingCacheService;
 
 /**
  *
@@ -70,6 +71,8 @@ public class DataTransmissionRequestHandler extends Handler {
         }
         SensorReading sensorReading = new SensorReading(request);
         try {
+            //send raw data to kafka
+            kafkaMessageProducer.send(value(KAFKA_RAW_MESSAGE_TOPIC), request);
             //cache the latest reading
             cacheService.saveSensorReading(sensorReading);
             //enrich it with latest reading for the pre-chain sensor
@@ -86,7 +89,7 @@ public class DataTransmissionRequestHandler extends Handler {
             sensorReadingHBaseRepo.save(sensorReading);
             return "received";
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
         return null;
     }

@@ -9,7 +9,7 @@ m2m.sensor.conn.topic	when sensors are detected to have loss connection, all suc
 
 m2m.classified.event.topic	The topic that where the streaming engine will place all event that has been classified and inferred upon. The main consumers of this topic will be the dashboard and action trigger applications 
 
- m2m.action.log.topic		Where every generated action from the action trigger application will be logged. The main consumer of this topic is the front end.
+m2m.action.log.topic		Where every generated action from the action trigger application will be logged. The main consumer of this topic is the front end.
 
 
 
