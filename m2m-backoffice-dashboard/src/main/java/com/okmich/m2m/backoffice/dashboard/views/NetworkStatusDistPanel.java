@@ -74,7 +74,6 @@ public final class NetworkStatusDistPanel extends ChartPanel implements UIView<S
     public void refreshData(SensorEvent t) {
         this.sensors.put(t.getDevId(), t.getStatus());
         reloadDataset();
-        System.out.println(">>>>>>>>>>>>>>>>>>>> " + this.sensors);
     }
 
     private void reloadDataset() {

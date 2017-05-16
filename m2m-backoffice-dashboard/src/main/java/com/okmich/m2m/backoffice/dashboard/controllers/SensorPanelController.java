@@ -18,6 +18,7 @@ public class SensorPanelController extends AbstractController<Sensor> {
         super(view);
     }
 
+    
     @Override
     protected Sensor prePerform(Sensor sensor) {
         sensor.setStatus(Sensor.STATUS_ACTIVE);
